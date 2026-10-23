@@ -1,0 +1,157 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[expansion=false]{microtype}
+\usepackage[top=0.55in,bottom=0.55in,left=0.65in,right=0.65in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue!70!black,citecolor=teal!70!black,urlcolor=blue!70!black]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2.5pt}
+\setlist[itemize]{leftmargin=1.4em,itemsep=1pt,topsep=1.5pt}
+\setlist[enumerate]{leftmargin=1.5em,itemsep=1pt,topsep=1.5pt}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Ha}{\mathbb{H}}
+\newcommand{\Oc}{\mathbb{O}}
+\newcommand{\Se}{\mathbb{S}}
+\newcommand{\PG}{\mathrm{PG}}
+
+\begin{document}
+
+% ==============================================================================
+% HEADER BANNER (DARPA / ONR GLOBAL BAA EXECUTIVE CONCEPT WHITE PAPER)
+% ==============================================================================
+\begin{center}
+{\large\textbf{EXECUTIVE CONCEPT WHITE PAPER (BAA SEEDLING / RESEARCH GRANT)}}\\[0.3em]
+{\Large\textbf{Matrix-Inversion-Free $\mathcal{O}(1)$ Sedenion $\PG(3,2)$ Zero-Divisor Beamforming\\for Assured PNT, $+80\,\mathrm{dB}$ GNSS Anti-Jamming, and Anti-Spoofing}}\\[0.4em]
+\textbf{Principal Investigator:} Dionisio Chiuratto Agourakis \quad$\cdot$\quad \href{mailto:dionisio.ca@gmail.com}{\texttt{dionisio.ca@gmail.com}}\\
+\textbf{Target Offices:} DARPA STO (Assured PNT / EW) $\cdot$ DARPA MTO (Low-SWaP RF) $\cdot$ DARPA I2O/DSO (Lean~4 Assured Math) $\cdot$ ONR Global\\
+\textbf{Open-Source Code, Benchmarks \& Lean~4 Proofs:} \url{https://github.com/josaum/sedenion-pg32} $\cdot$ DOI: \href{https://doi.org/10.5281/zenodo.23588274}{\texttt{10.5281/zenodo.23588274}}
+\end{center}
+\vspace{-0.4em}
+\hrule height 1pt
+\vspace{0.4em}
+
+% ==============================================================================
+% HEILMEIER QUESTION 1
+% ==============================================================================
+\textbf{1. What are we trying to do? (Plain-Language Objective)}\\
+We aim to protect military and civilian GPS/GNSS receivers from high-power electronic warfare (EW) jammers ($+80\,\mathrm{dB}$ Jammer-to-Signal Ratio, $\mathrm{JSR}$) and coherent repeater/meaconing spoofers \textbf{without} performing computationally expensive, numerically ill-conditioned covariance matrix inversions ($\hat{\bm{R}}_{xx}^{-1}$). By mapping the $16$ real baseband channels ($8\times I/Q$) of an 8-element Controlled Reception Pattern Antenna (CRPA) onto the 16-dimensional \textbf{sedenion algebra} ($\Se$) governed by the finite projective space $\PG(3,2)$, our receiver computes exact spatial-polarimetric jammer nulls in \textbf{$\mathcal{O}(1)$ arithmetic operations (zero matrix inversions)}, preserves centimeter-level Real-Time Kinematic (RTK) carrier phase with \textbf{$0.0000^\circ$ phase jump} during dynamic null switches, and comes with \textbf{machine-checked mathematical proofs in Lean~4} (\texttt{0 sorry}).
+
+% ==============================================================================
+% HEILMEIER QUESTION 2
+% ==============================================================================
+\textbf{2. How is it done today, and what are the limits of current practice?}\\
+Terrestrial GPS L1 C/A signals arrive roughly $20\,\mathrm{dB}$ below thermal noise ($\approx -130\,\mathrm{dBm}$). Current multi-antenna anti-jamming and anti-spoofing architectures face three structural bottlenecks:
+\begin{itemize}
+    \item \textbf{Ill-Conditioned $\mathcal{O}(d^3)$ Matrix Inversion \& Finite-Sample Sidelobe Bleed:} Classical Space-Time Adaptive Processing (STAP) and Minimum Variance Distortionless Response (MVDR / Capon) Sample Matrix Inversion (SMI) must invert a $d \times d$ sample covariance matrix $\hat{\bm{R}}_{xx}^{-1}$ in $\mathcal{O}(d^3)$ operations. At $\mathrm{JSR} = +80\,\mathrm{dB}$, the condition number $\kappa(\hat{\bm{R}}_{xx}) \ge 10^6$ amplifies FP32 round-off, while sub-degree ($0.5^\circ$) jammer drift and diagonal loading cap practical null depth at $47.9\,\mathrm{dB}$, leaving the GPS PRN correlation peak buried ($P_d = 8.2\%$).
+    \item \textbf{The Hurwitz Division-Algebra Obstruction in Polarimetric Arrays:} Hypercomplex array processors based on complex ($\C^8$), quaternion ($\Ha^4$), or octonion ($\Oc^2$) division algebras obey Hurwitz's norm identity $\|u \cdot v\|_2 = \|u\|_2 \|v\|_2$. They are algebraically prohibited from annihilating a non-zero interferer $u \neq 0$ via single-channel multiplication ($u \cdot v = 0$ is impossible).
+    \item \textbf{RTK Carrier-Phase Cycle Slips:} Re-estimating unconstrained MVDR weights when a jammer activates rotates the complex passband phase, causing Phase-Locked Loop (PLL) cycle slips ($>15^\circ$) that break centimeter-level navigation.
+\end{itemize}
+
+% ==============================================================================
+% HEILMEIER QUESTION 3
+% ==============================================================================
+\textbf{3. What is new in our approach, and why will it succeed?}\\
+Unlike $\C, \Ha,$ and $\Oc$, the 16-dimensional Cayley--Dickson \textbf{sedenion algebra} ($\Se = \Oc \oplus \Oc e_8 \cong \C^8$) contains an 11-dimensional Stiefel cone of \textbf{exact zero divisors} $V_2(\R^7)$ and splits under $\PG(3,2)$ parity routing into \textbf{8 norm-preserving octonion workspaces} ($\mathcal{F}_{\mathrm{alt}}$) and \textbf{7 zero-divisor workspaces} ($\mathcal{F}_{\mathrm{ZD}}$). We exploit three machine-checked algebraic theorems:
+\begin{enumerate}
+    \item \textbf{$\mathcal{O}(1)$ Analytical Moreno Null-Steering (Zero Matrix Inversions):} Projecting the dominant jammer onto $u_{\mathrm{jam}} = (a, b) \in V_2(\R^7)$ yields a closed-form 4-dimensional nullspace operator $v_{\mathrm{beam}}(c_{\mathrm{sat}}) = \frac{1}{\sqrt{2}}\big(c_{\mathrm{sat}}, (a \cdot_{\Oc} c_{\mathrm{sat}}) \cdot_{\Oc} b\big) \in \ker L_{\Se}(u_{\mathrm{jam}})$ that annihilates the jammer identically ($u_{\mathrm{jam}} \cdot_{\Se} v_{\mathrm{beam}} = 0$) in $\mathcal{O}(1)$ operations while providing $+3.01\,\mathrm{dB}$ coherent array gain ($\|u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}}\|_2 = \sqrt{2}$) to the orthogonal anti-partner satellite manifold.
+    \item \textbf{Cycle-Slip-Free RTK Carrier Tracking via $\PG(3,2)$ Quaternion Hinges:} Any benign workspace $H_{\omega_1} \in \mathcal{F}_{\mathrm{alt}}$ and jammer-nulling workspace $H_{\omega_2} \in \mathcal{F}_{\mathrm{ZD}}$ intersect in a 3-node projective line $L_{12} = H_{\omega_1} \cap H_{\omega_2} \cong \Ha$. Routing the quadrature carrier reference $(e_i, e_j)$ through $\Ha_{L_{12}}$ guarantees $[X_{\mathrm{carrier}}, u_1, u_2]_{\Se} \equiv 0$, yielding \textbf{$0.0000^\circ$ phase jump} and \textbf{$0.0\%$ PLL cycle slips}.
+    \item \textbf{Continuous Half-Sphere Spoofer Modulation:} Modulating candidate peaks along $k_j(\phi_j)$ with phase $\phi_j \in [0,\pi]$ keeps $\|k_j(\phi_j)\|_2 \equiv 1$ (zero thermal noise amplification) while sweeping gain from $\sqrt{2}$ (authentic satellite) to \textbf{exact zero} (spoofer excision), allowing a $-47.4\%$ smaller FFN-free neural CRPA to achieve \textbf{$100.0\%$ OOD multi-spoofer rejection}.
+\end{enumerate}
+
+\vspace{0.2em}
+\noindent\textbf{Verified TRL-3 Baseline Benchmark Results} (\texttt{bench/gps\_jamming/run\_gps\_bench.py}): GPS L1 C/A 1023-Chip Gold-Code Acquisition at $\mathrm{JSR} = +80\,\mathrm{dB}$ ($\mathrm{SNR}_{\mathrm{pre}} = -20\,\mathrm{dB}$), RTK Phase Continuity ($512$ switches), and OOD Multi-Spoofer ($J=3$) Rejection:
+
+\vspace{0.2em}
+\noindent\resizebox{\linewidth}{!}{\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{CRPA Architecture} & \textbf{Algebra} & \textbf{Nulling Cost} & \textbf{Jammer Supp.\ $\uparrow$} & \textbf{Post-Corr.\ SINR $\uparrow$} & \textbf{L1 C/A $P_d$ $\uparrow$} & \textbf{PLL Cycle-Slip $\downarrow$} & \textbf{OOD Spoof FLR $\downarrow$} \\
+\midrule
+\texttt{Oct-O2} (Division Array) & $\Oc^2$ & $\mathcal{O}(d^3)$ SVD & $3.0\,\mathrm{dB}$ & $-6.5\,\mathrm{dB}$ & $0.0\%$ & N/A & $40.6\% \;/\; 97.3\%$ \\
+\texttt{Quat-H4} (Polarimetric) & $\Ha^4$ & $\mathcal{O}(d^3)$ SVD & $10.6\,\mathrm{dB}$ & $-6.6\,\mathrm{dB}$ & $0.0\%$ & N/A & $41.2\% \;/\; 98.4\%$ \\
+\texttt{Dense-R16} (Softmax) & $\R^{16}$ & $\mathcal{O}(d)$ Soft & $35.8\,\mathrm{dB}$ & $-5.4\,\mathrm{dB}$ & $0.0\%$ & N/A & $40.2\% \;/\; 100.0\%$ \\
+\texttt{MVDR-SMI} (Capon STAP) & $\C^8$ & $\mathcal{O}(d^3)$ $\hat{\bm{R}}_{xx}^{-1}$ & $47.9\,\mathrm{dB}$ & $-1.1\,\mathrm{dB}$ & $8.2\%$ & $10.2\%$ ($5.80^\circ$) & N/A \\
+\midrule
+\textbf{\texttt{Sed-PG32-Moreno} (FP32)} & $\Se / V_2(\R^7)$ & $\mathbf{\mathcal{O}(1)}$ \textbf{(0 Inv.)} & $\mathbf{139.1\,\mathrm{dB}}$ & $\mathbf{+21.5\,\mathrm{dB}}$ & $\mathbf{100.0\%}$ & $\mathbf{0.0\%}$ ($\mathbf{0.0000^\circ}$) & $\mathbf{2.8\% \;/\; 0.0\%}$ \\
+\textbf{\texttt{Sed-PG32-Moreno} (FP64)} & $\Se / V_2(\R^7)$ & $\mathbf{\mathcal{O}(1)}$ \textbf{(0 Inv.)} & $\mathbf{312.9\,\mathrm{dB}}$ & $\mathbf{+21.5\,\mathrm{dB}}$ & $\mathbf{100.0\%}$ & $\mathbf{0.0\%}$ ($\mathbf{0.0000^\circ}$) & $\mathbf{2.8\% \;/\; 0.0\%}$ \\
+\bottomrule
+\end{tabular}}
+\vspace{0.3em}
+
+% ==============================================================================
+% PAGE 2: FORMAL ASSURANCE, IMPACT, RISKS, COST/SCHEDULE & EXAMS
+% ==============================================================================
+\textbf{4. High-Assurance Mathematical Verification in Lean~4 (\texttt{0 sorry})}\\
+Unlike heuristic black-box neural beamformers that fail unpredictably under out-of-distribution (OOD) EW attacks, every algebraic and geometric guarantee of \texttt{Sed-PG32-Moreno} is machine-checked in the \textbf{Lean~4 theorem prover} (\texttt{v4.15.0} + Mathlib, $125+$ theorems, zero \texttt{sorry}, zero user axioms), directly supporting DARPA's formal-methods assurance mandate:
+
+\vspace{0.2em}
+\noindent\resizebox{\linewidth}{!}{\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Assured PNT / EW Guarantee} & \textbf{Lean~4 Theorem Identifier} & \textbf{Verification Domain} & \textbf{Proof Tactic} \\
+\midrule
+Exact $\mathcal{O}(1)$ Jammer Annihilation ($u_{\mathrm{jam}} \cdot_{\Se} v_{\mathrm{beam}} = 0$) & \texttt{SedenionReal.nullspace} & Continuous $\R^{16}$ (Mathlib) & \texttt{linear\_combination} \\
+Exact 4D Steering Subspace Rank ($\dim\ker L_{\Se}(u) = 4$) & \texttt{SedenionReal.finrank\_ker\_Lu} & Continuous $\R^{16}$ (Mathlib) & Rank--Nullity + Adjoint \\
+Coherent $+3\,\mathrm{dB}$ Satellite Gain ($\|u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}}\|_2^2 = 8\|c\|_2^2$) & \texttt{SedenionReal.crpa\_antipartner\_gain\_norm} & Continuous $\R^{16}$ (Mathlib) & \texttt{linarith} + \texttt{ring} \\
+Half-Sphere Spoofer Passband/Null Duality & \texttt{SedenionReal.spoofer\_half\_sphere\_passband} & Continuous $\R^{16}$ (Mathlib) & \texttt{linarith} + \texttt{ring} \\
+Zero-Cycle-Slip PLL Hinge ($[X_{\mathrm{carrier}}, u_1, u_2]_{\Se} \equiv 0$) & \texttt{SedenionPG32.gnss\_pll\_hinge\_associative} & All $56$ $\mathcal{F}_{\mathrm{alt}} \times \mathcal{F}_{\mathrm{ZD}}$ Switches & \texttt{decide +kernel} \\
+\bottomrule
+\end{tabular}}
+\vspace{0.3em}
+
+% ==============================================================================
+% HEILMEIER QUESTION 4
+% ==============================================================================
+\textbf{5. Who cares? If we are successful, what difference will it make? (DoD / Operational Payoff)}
+\begin{itemize}
+    \item \textbf{$+91\,\mathrm{dB}$ Deeper Null Depth Without Matrix Inversion:} Eliminates the $\mathcal{O}(d^3)$ complex Cholesky/QR/SVD hardware block in 8-element CRPA receivers, replacing it with an $\mathcal{O}(1)$ octonion cross-product and our $0.0\text{ ULP}$ IEEE-754 sign-bit XOR kernel (\texttt{((i*0x24924924) >> j)}).
+    \item \textbf{Ultra-Low SWaP-C for Attritable UAVs, Precision Munitions, and LEO PNT:} Removing the covariance matrix inversion and cutting neural FFN parameters by $-47.4\%$ (\texttt{sedenion\_noffn}) enables $+80\,\mathrm{dB}$ anti-jam / anti-spoof protection on low-power FPGAs and radiation-tolerant ASICs where full STAP is thermally or power-prohibitive.
+    \item \textbf{Unbroken Centimeter-Level RTK Phase Lock in Contested Environments:} Eliminates PLL cycle slips during rapid mode transitions between benign tracking and active jammer nulling for autonomous carrier landing, artillery/munition guidance, and assured timing.
+\end{itemize}
+
+% ==============================================================================
+% HEILMEIER QUESTION 5
+% ==============================================================================
+\textbf{6. What are the technical risks and mitigation strategies?}
+\begin{enumerate}
+    \item \textbf{Risk 1 — Mutual Coupling and Front-End ADC Saturation / Non-Linearity at $+80\,\mathrm{dB}$ JSR:} Real CRPA antenna elements exhibit mutual impedance coupling and LNA/ADC quantization floor limits that perturb the ideal Moreno cone $V_2(\R^7)$.
+    \emph{Mitigation:} Pre-calibrate the $16\times 16$ mutual coupling matrix $\bm{C}^{-1}$ offline and apply the explicit analytical projection $\Pi_{\mathrm{Moreno}}(\tilde{u}_{\mathrm{jam}}) \in V_2(\R^7)$ after a 14/16-bit high-dynamic-range AGC digital front-end.
+    \item \textbf{Risk 2 — Multipath and >4 Simultaneous Wideband Jammers:} Since $\dim\ker L_{\Se}(u_{\mathrm{jam}}) = 4$ in a single 16D sedenion block, a single Moreno stage provides 4 spatial-polarimetric degrees of freedom in the jammer-free subspace.
+    \emph{Mitigation:} Cascade two space-time sedenion taps ($2 \times \Se \cong \R^{32}$) bridged across the associative $\PG(3,2)$ quaternion hinge $L_{12}$ to null up to 7 independent wideband jammers without phase distortion.
+\end{enumerate}
+
+% ==============================================================================
+% HEILMEIER QUESTION 6 & 7
+% ==============================================================================
+\textbf{7. Cost, Schedule, and Mid-Term / Final Verification Exams (12-Month Seedling Plan)}\\
+We propose a \textbf{12-month, \$450k Seedling effort} (TRL $3 \to$ TRL $5$) structured around two quantitative verification gates:
+
+\vspace{0.2em}
+\noindent\resizebox{\linewidth}{!}{\begin{tabular}{@{}llp{5.6cm}p{7.4cm}@{}}
+\toprule
+\textbf{Phase / Timeline} & \textbf{Budget} & \textbf{Technical Deliverable} & \textbf{Quantitative Verification Exam (``Gate'')} \\
+\midrule
+\textbf{Phase I (Months 1--6)} & \$220k & Fixed-point / FP32 RTL implementation of the $\mathcal{O}(1)$ Sedenion $\PG(3,2)$ Moreno Nuller \& IEEE-754 XOR kernel on Xilinx Zynq UltraScale+ RFSoC. & \textbf{Mid-Term Exam (Month 6):} $\ge 90\,\mathrm{dB}$ hardware-in-the-loop (HIL) jammer suppression at $1.023\,\mathrm{MHz}$ real-time rate with $<50\,\mathrm{ns}$ null-update latency and $0$ matrix inversions. \\
+\addlinespace[3pt]
+\textbf{Phase II (Months 7--12)} & \$230k & 8-element L1/L2 CRPA front-end integration, mutual-coupling calibration, and live-sky + anechoic chamber meaconing/jamming trials. & \textbf{Final Exam (Month 12):} $100\%$ GPS L1 C/A acquisition at $+75\,\mathrm{dB}$ JSR, $<1^\circ$ RTK carrier-phase transient across null switches, and $0.0\%$ false-lock rate against 3-spoofer meaconing. \\
+\bottomrule
+\end{tabular}}
+\vspace{0.3em}
+
+\textbf{8. Immediate Reproducibility (Available Today for DARPA / ONR Evaluators)}\\
+All code, Lean~4 proofs, and benchmarks are open-source and executable in $<2$ minutes on a standard laptop:
+\begin{itemize}
+    \item \textbf{Main Algebraic \& Lean~4 Archive:} Zenodo DOI \href{https://doi.org/10.5281/zenodo.23588274}{\texttt{10.5281/zenodo.23588274}} --- \texttt{Agourakis\_2026\_Sedenion\_PG32.pdf}
+    \item \textbf{GNSS CRPA Companion Paper \& Benchmark:} \texttt{Agourakis\_2026\_Sedenion\_GNSS\_AntiJamming.pdf} and \texttt{python bench/gps\_jamming/run\_gps\_bench.py} (\url{https://github.com/josaum/sedenion-pg32})
+    \item \textbf{Lean~4 Kernel Verification:} \texttt{cd bench/pkg/lean \&\& lake build SedenionPG32} (\texttt{lean Axioms.lean})
+\end{itemize}
+
+\end{document}
