@@ -1,6 +1,8 @@
 # sedenion_pg32
 
-Reference implementation, Lean 4 formalization, and Track A / Track B benchmark suite for *Sedenion PG(3,2) Neural Topologies* (`Agourakis_2026_Sedenion_PG32.pdf`).
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23588274.svg)](https://doi.org/10.5281/zenodo.23588274)
+
+Reference implementation, Lean 4 formalization, and Track A / Track B / External benchmark suite for *Sedenion PG(3,2) Neural Topologies* (`Agourakis_2026_Sedenion_PG32.pdf`, DOI: [`10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274)).
 
 ```bash
 pip install torch pytest onnx onnxruntime
