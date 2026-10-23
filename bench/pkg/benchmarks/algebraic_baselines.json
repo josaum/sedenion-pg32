@@ -1,0 +1,80 @@
+{
+  "B": 1024,
+  "seed": 2026,
+  "fp64": {
+    "Quat-H4": {
+      "CLR_min_mean": 0.30535870106513896,
+      "CLR_min_min": 0.07708313200404825,
+      "CLR_min_per_channel": 1.0,
+      "rank_L_mode": 16,
+      "PSI_mean": 8.639910448990543e-17
+    },
+    "Oct-O2": {
+      "CLR_min_mean": 0.5994165015369086,
+      "CLR_min_min": 0.2462819774549392,
+      "CLR_min_per_channel": 0.9999999999999999,
+      "rank_L_mode": 16,
+      "PSI_mean": 0.5558187352849348
+    },
+    "Sed-Free": {
+      "CLR_min_mean": 0.4736190016614165,
+      "CLR_min_min": 0.08938154413159762,
+      "CLR_min_per_channel": 0.4736190016614165,
+      "rank_L_mode": 16,
+      "PSI_mean": 0.666991047515284
+    },
+    "Sed-Moreno": {
+      "CLR_min_mean": 3.794054717624627e-17,
+      "CLR_min_min": 5.81585806364994e-20,
+      "CLR_min_per_channel": 3.794054717624627e-17,
+      "rank_L_mode": 12,
+      "CLR_constr_mean": 2.371634359422734e-16,
+      "CLR_constr_max": 8.456630159818926e-16,
+      "PSI_mean": 0.9999999999999998
+    },
+    "Dense-R16": {
+      "softmax_bleed_gap2": 0.01896691295706348,
+      "softmax_bleed_gap4": 0.0026096915315758354,
+      "softmax_bleed_gap8": 4.7920936031339896e-05,
+      "PSI_mean": 1.3757036710468057e-16
+    }
+  },
+  "fp32": {
+    "Quat-H4": {
+      "CLR_min_mean": 0.3054666874013064,
+      "CLR_min_min": 0.04652714460658466,
+      "CLR_min_per_channel": 1.0,
+      "rank_L_mode": 16,
+      "PSI_mean": 4.604320835710496e-08
+    },
+    "Oct-O2": {
+      "CLR_min_mean": 0.5941393365254573,
+      "CLR_min_min": 0.1960389862977218,
+      "CLR_min_per_channel": 1.0,
+      "rank_L_mode": 16,
+      "PSI_mean": 0.5634893774986267
+    },
+    "Sed-Free": {
+      "CLR_min_mean": 0.47587669378477404,
+      "CLR_min_min": 0.07462120285030636,
+      "CLR_min_per_channel": 0.47587669378477404,
+      "rank_L_mode": 16,
+      "PSI_mean": 0.6671189069747925
+    },
+    "Sed-Moreno": {
+      "CLR_min_mean": 4.320777976280498e-08,
+      "CLR_min_min": 7.453073248672279e-10,
+      "CLR_min_per_channel": 4.320777976280498e-08,
+      "rank_L_mode": 12,
+      "CLR_constr_mean": 1.3957094324723585e-07,
+      "CLR_constr_max": 1.2420726989148534e-06,
+      "PSI_mean": 0.9999999403953552
+    },
+    "Dense-R16": {
+      "softmax_bleed_gap2": 0.01896691295706348,
+      "softmax_bleed_gap4": 0.0026096915315758354,
+      "softmax_bleed_gap8": 4.7920936031339896e-05,
+      "PSI_mean": 1.3757036710468057e-16
+    }
+  }
+}
