@@ -1,0 +1,37 @@
+{
+  "proofwriter": {
+    "dataset": "tasksource/proofwriter (Tafjord et al., ACL 2021)",
+    "train_split": "AttNeg-OWA validation (d in {0, 1, 2}, N=8660, aux=0.0)",
+    "test_splits": {
+      "ID_d0_2": "AttNeg-OWA test (d in {0, 1, 2}, N=3000)",
+      "OOD_d3_5": "AttNeg-OWA test (d in {3, 4, 5}, N=3504)",
+      "Birds_Electricity": "Birds-Electricity test (zero-shot non-monotonic exception transfer, N=1330)"
+    },
+    "models": {
+      "softmax": {"params": 74049, "acc_id": 0.4997, "fcr_id": 0.0187, "acc_ood": 0.5000, "fcr_ood": 0.0000, "acc_be": 0.5000, "fcr_be": 0.0000},
+      "bilinear": {"params": 74049, "acc_id": 0.8257, "fcr_id": 0.2240, "acc_ood": 0.8054, "fcr_ood": 0.2100, "acc_be": 0.4526, "fcr_be": 0.7910},
+      "octonion": {"params": 74057, "acc_id": 0.9690, "fcr_id": 0.0580, "acc_ood": 0.8838, "fcr_ood": 0.0531, "acc_be": 0.8774, "fcr_be": 0.1489},
+      "clifford": {"params": 74057, "acc_id": 0.9923, "fcr_id": 0.0153, "acc_ood": 0.9917, "fcr_ood": 0.0091, "acc_be": 0.9090, "fcr_be": 0.1489},
+      "sedenion_plain": {"params": 74057, "acc_id": 0.9923, "fcr_id": 0.0153, "acc_ood": 0.9894, "fcr_ood": 0.0108, "acc_be": 0.8579, "fcr_be": 0.1474},
+      "sedenion": {"params": 74057, "acc_id": 1.0000, "fcr_id": 0.0000, "acc_ood": 1.0000, "fcr_ood": 0.0000, "acc_be": 1.0000, "fcr_be": 0.0000},
+      "sedenion_noffn": {"params": 40649, "acc_id": 0.9997, "fcr_id": 0.0007, "acc_ood": 1.0000, "fcr_ood": 0.0000, "acc_be": 1.0000, "fcr_be": 0.0000}
+    }
+  },
+  "listops": {
+    "dataset": "fengyang0317/listops-64 (Nangia & Bowman 2018; Tay et al., ICLR 2021 Long-Range Arena)",
+    "train_split": "ListOps train (tree depth d in {1, 2, 3}, N=4000, 10-way root cross-entropy)",
+    "test_splits": {
+      "ID_d1_3": "ListOps test (tree depth d in {1, 2, 3}, N=1181)",
+      "OOD_d4_8": "ListOps test (tree depth d in {4, 5, 6, 7, 8}, N=819)"
+    },
+    "models": {
+      "softmax": {"params": 72842, "acc_id": 0.5910, "acc_ood": 0.7033},
+      "bilinear": {"params": 72842, "acc_id": 0.5504, "acc_ood": 0.5653},
+      "octonion": {"params": 72850, "acc_id": 0.2472, "acc_ood": 0.2491},
+      "clifford": {"params": 72850, "acc_id": 0.6003, "acc_ood": 0.6361},
+      "sedenion_plain": {"params": 72850, "acc_id": 0.5792, "acc_ood": 0.5824},
+      "sedenion": {"params": 72850, "acc_id": 1.0000, "acc_ood": 1.0000},
+      "sedenion_noffn": {"params": 39442, "acc_id": 1.0000, "acc_ood": 1.0000}
+    }
+  }
+}
