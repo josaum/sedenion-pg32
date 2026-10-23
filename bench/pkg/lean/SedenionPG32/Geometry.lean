@@ -103,4 +103,58 @@ theorem fzd_stratum_bcj_pole_cancellation :
       (assocSign i j k == 0 && assocSign k i j == 0 && (!(i != j && (i ^^^ j) != k) || assocSign j k i != 0))))) = true := by
   decide +kernel
 
+/-! ### 9. GNSS CRPA Quaternion Hinge Carrier-Phase Continuity (Prop. 3.1) -/
+
+/-- Membership in the 4D quaternion hinge subalgebra H_{L₁₂} = {0} ∪ (H_{ω₁} ∩ H_{ω₂}) -/
+def inHinge (ω₁ ω₂ i : Nat) : Bool :=
+  i == 0 || (inH ω₁ i && inH ω₂ i)
+
+/-- Every hyperplane intersection L₁₂ = H_{ω₁} ∩ H_{ω₂} (ω₁ ≠ ω₂) is closed under XOR (⊕),
+    hence forms a projective line in L₃₅ generating an associative 4D quaternion subalgebra. -/
+theorem hinge_is_projective_line :
+    ∀ ω₁, ω₁ < 16 → 0 < ω₁ → ∀ ω₂, ω₂ < 16 → 0 < ω₂ → ω₁ ≠ ω₂ →
+    all16 (fun i => all16 (fun j =>
+      !(inH ω₁ i && inH ω₂ i && inH ω₁ j && inH ω₂ j && i != j) ||
+      (inH ω₁ (i ^^^ j) && inH ω₂ (i ^^^ j)))) = true := by
+  decide +kernel
+
+/-- Proposition 3.1 (Zero-Cycle-Slip Quadrature Phase Lock Across PG(3,2) Hinges):
+    For every benign tracking workspace ω₁ ∈ F_alt (1..8) and every jammer-excision
+    workspace ω₂ ∈ F_ZD (9..15), any carrier reference e_i and cascaded filter stages
+    e_j, e_k supported on the shared quaternion hinge H_{L₁₂} = {0} ∪ (H_{ω₁} ∩ H_{ω₂})
+    have identically zero sedenion associator: [e_i, e_j, e_k]_S = 0. -/
+theorem gnss_pll_hinge_associative :
+    ∀ ω₁, ω₁ < 9 → 0 < ω₁ → ∀ ω₂, ω₂ < 16 → 9 ≤ ω₂ →
+    all16 (fun i => all16 (fun j => all16 (fun k =>
+      !(inHinge ω₁ ω₂ i && inHinge ω₁ ω₂ j && inHinge ω₁ ω₂ k) ||
+      (assocSign i j k == 0)))) = true := by
+  decide +kernel
+
+/-- Euclidean inner product and squared norm on 16D sedenion integer vectors -/
+def vdot (u v : Vec) : Int := sum16 fun k => u k * v k
+def vnormSq (u : Vec) : Int := vdot u u
+
+/-- Anti-partner satellite manifold u_sat = e₁ - e₁₀ = (e₁, -e₂) orthogonal to u_jam = e₁ + e₁₀ -/
+def u_antipartner : Vec := sub (basis 1) (basis 10)
+
+/-- The 4 orthonormal basis beams of ker L_S(u_jam) from Theorem 2.1 -/
+def v_beam1 : Vec := sub (basis 4) (basis 15)
+def v_beam2 : Vec := add (basis 5) (basis 14)
+def v_beam3 : Vec := sub (basis 6) (basis 13)
+def v_beam4 : Vec := add (basis 7) (basis 12)
+
+/-- Theorem 2.1 (Kernel-Checked 4D CRPA Null-Steering & Coherent +3 dB Anti-Partner Gain):
+    (1) ⟨u_jam, u_sat⟩ = 0 with ‖u_jam‖² = ‖u_sat‖² = 2,
+    (2) All 4 orthogonal beams v_beam1..4 annihilate u_jam identically (‖u_jam · v_r‖² = 0), and
+    (3) All 4 orthogonal beams achieve exact +3 dB coherent array gain on u_sat:
+        ‖u_sat · v_r‖² = 8 = 2 · ‖u_sat‖² · ‖v_r‖². -/
+theorem crpa_null_and_antipartner_4 :
+    vdot u_moreno u_antipartner = 0 ∧
+    vnormSq u_moreno = 2 ∧ vnormSq u_antipartner = 2 ∧
+    isZero (mul u_moreno v_beam1) ∧ vnormSq (mul u_antipartner v_beam1) = 8 ∧
+    isZero (mul u_moreno v_beam2) ∧ vnormSq (mul u_antipartner v_beam2) = 8 ∧
+    isZero (mul u_moreno v_beam3) ∧ vnormSq (mul u_antipartner v_beam3) = 8 ∧
+    isZero (mul u_moreno v_beam4) ∧ vnormSq (mul u_antipartner v_beam4) = 8 := by
+  decide +kernel
+
 end SedenionPG32

@@ -17,3 +17,6 @@ open SedenionPG32
 #print axioms associator_census
 #print axioms falt_cyclic_assoc_invariant
 #print axioms fzd_stratum_bcj_pole_cancellation
+#print axioms hinge_is_projective_line
+#print axioms gnss_pll_hinge_associative
+#print axioms crpa_null_and_antipartner_4

@@ -128,11 +128,11 @@ Let $u_{\mathrm{jam}} = (a, b) \in V_2(\R^7) \subset \Se$ be the Moreno-projecte
     \label{eq:jam_zero}
     u_{\mathrm{jam}} \cdot_{\Se} v_{\mathrm{beam}}(c_{\mathrm{sat}}) = 0 \in \Se \quad \text{identically.}
     \end{equation}
-    \item \textbf{Coherent $+3\,\mathrm{dB}$ Anti-Partner Satellite Array Gain:} For any satellite signature aligned with the complementary anti-partner manifold $u_{\mathrm{sat}} = \frac{1}{\sqrt{2}}\big(c_{\mathrm{sat}}, -(a \cdot_{\Oc} c_{\mathrm{sat}}) \cdot_{\Oc} b\big)$ (corresponding to the eigenspace $\lambda = 4$ of $L(u_{\mathrm{jam}})^\top L(u_{\mathrm{jam}})$), the sedenion beamformer preserves coherent array gain $\|u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}}\|_2 = \sqrt{2}$ ($+3.01\,\mathrm{dB}$) while keeping the thermal noise covariance isotropic ($\|v_{\mathrm{beam}}\|_2 = 1$).
+    \item \textbf{Coherent $+3\,\mathrm{dB}$ Anti-Partner Satellite Array Gain:} For any satellite signature aligned with the orthogonal anti-partner manifold $u_{\mathrm{sat}} = \frac{1}{\sqrt{2}}(a, -b)$ ($\langle u_{\mathrm{jam}}, u_{\mathrm{sat}} \rangle = 0$, $\|u_{\mathrm{sat}}\|_2 = 1$, corresponding to the $\lambda = 4$ eigenspace of $L(u_{\mathrm{sat}})^\top L(u_{\mathrm{sat}})$), the sedenion beamformer preserves coherent array gain $\|u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}}\|_2 = \sqrt{2}$ ($+3.01\,\mathrm{dB}$) while keeping the thermal noise covariance isotropic ($\|v_{\mathrm{beam}}\|_2 = 1$).
 \end{enumerate}
 \end{theorem}
 \begin{proof}
-Part 1 follows directly from the Constructive 4D Nullspace Theorem (\texttt{nullspace} and \texttt{finrank\_ker\_Lu = 4}, machine-checked over $\R$ in Lean~4/Mathlib \cite{Agourakis2026PG32}). For Part 2, let $d_{\mathrm{sat}} = (a c_{\mathrm{sat}}) b \in \ImPart(\Oc)$ with $\|d_{\mathrm{sat}}\|_2 = \|c_{\mathrm{sat}}\|_2 = 1$ and $\langle c_{\mathrm{sat}}, d_{\mathrm{sat}} \rangle = 0$. Evaluating the Cayley--Dickson product $u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}} = \frac{1}{2}(c_{\mathrm{sat}}, -d_{\mathrm{sat}}) \cdot (c_{\mathrm{sat}}, d_{\mathrm{sat}})$ yields $\frac{1}{2}(c_{\mathrm{sat}}^2 + d_{\mathrm{sat}}^* d_{\mathrm{sat}}, \; d_{\mathrm{sat}} c_{\mathrm{sat}} - d_{\mathrm{sat}} c_{\mathrm{sat}}^*) = \frac{1}{2}(-1 - 1, \; 2 d_{\mathrm{sat}} c_{\mathrm{sat}}) = (-e_0, \; d_{\mathrm{sat}} c_{\mathrm{sat}})$, which has Euclidean norm $\sqrt{1 + \|d_{\mathrm{sat}} c_{\mathrm{sat}}\|_2^2} = \sqrt{2}$.
+Part 1 follows directly from the Constructive 4D Nullspace Theorem (\texttt{nullspace} and \texttt{finrank\_ker\_Lu = 4}, machine-checked over $\R$ in Lean~4/Mathlib \cite{Agourakis2026PG32}), which gives $a c - d_{\mathrm{sat}}^* b = 0$ and $d_{\mathrm{sat}} a + b c^* = 0$ for $d_{\mathrm{sat}} = (a c_{\mathrm{sat}})b$. For Part 2 (machine-checked over $\R$ in \texttt{SedenionReal.lean} as \texttt{crpa\_antipartner\_product} and \texttt{crpa\_antipartner\_gain\_norm}), evaluating the Cayley--Dickson product on $u_{\mathrm{sat}} = \frac{1}{\sqrt{2}}(a, -b)$ flips the relative twist sign from destructive cancellation to constructive reinforcement: $u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}} = \frac{1}{2}(a c_{\mathrm{sat}} + d_{\mathrm{sat}}^* b, \; d_{\mathrm{sat}} a - b c_{\mathrm{sat}}^*) = (a c_{\mathrm{sat}}, \; d_{\mathrm{sat}} a)$, which by the octonion norm composition law (\texttt{composition}) has Euclidean norm $\sqrt{\|a c_{\mathrm{sat}}\|_2^2 + \|d_{\mathrm{sat}} a\|_2^2} = \sqrt{1 + 1} = \sqrt{2}$.
 \end{proof}
 
 % ==============================================================================
@@ -142,8 +142,7 @@ Part 1 follows directly from the Constructive 4D Nullspace Theorem (\texttt{null
 \centering
 \resizebox{\linewidth}{!}{\begin{tikzpicture}[
     font=\footnotesize,
-    node distance=0.65cm and 0.85cm,
-    box/.style={draw=black!80, thick, rounded corners=4pt, align=center, minimum height=1.05cm, inner sep=6pt},
+    box/.style={draw=black!80, thick, rounded corners=4pt, align=center, minimum height=1.2cm, inner sep=6pt},
     ant/.style={box, fill=blue!10, draw=blue!70!black},
     alt/.style={box, fill=teal!12, draw=teal!70!black},
     zd/.style={box, fill=red!10, draw=red!70!black},
@@ -152,26 +151,36 @@ Part 1 follows directly from the Constructive 4D Nullspace Theorem (\texttt{null
     arrow/.style={-{Stealth[length=2.5mm, width=1.8mm]}, thick, draw=black!75}
 ]
 
-\node[ant, minimum width=3.1cm] (crpa) {\textbf{8-Element GNSS CRPA}\\Baseband $I/Q \in \C^8 \cong \Se$\\$\mathrm{SNR}=-20\,\mathrm{dB}, \; \mathrm{JSR}=+80\,\mathrm{dB}$};
+% Left & Center-Left Nodes with explicit 1.3cm horizontal separation
+\node[ant, minimum width=4.6cm] (crpa) at (0, 0) {\textbf{8-Element GNSS CRPA}\\Baseband $I/Q \in \C^8 \cong \Se$\\$\mathrm{SNR}=-20\,\mathrm{dB}, \; \mathrm{JSR}=+80\,\mathrm{dB}$};
 
-\node[ant, right=0.9cm of crpa, minimum width=3.2cm] (router) {\textbf{$\PG(3,2)$ Parity Router}\\$8+7$ Fano Bifurcation\\J/N Detector \& Spoof Gate $\phi_j$};
+\node[ant, minimum width=4.6cm, right=1.3cm of crpa] (router) {\textbf{$\PG(3,2)$ Parity Router}\\$8+7$ Fano Bifurcation\\J/N Detector \& Spoof Gate $\phi_j$};
 
-\node[alt, above right=0.4cm and 1.0cm of router, minimum width=4.4cm] (falt) {\textbf{Benign Tracking ($\Falt, \omega \le 8$)}\\$\mathcal{A}_\omega \cong \Oc$ (Norm-Preserving)\\Zero Insertion Loss ($\|u \cdot v\| = \|u\|\|v\|$)};
+% Right Stack with identical 6.5cm width and explicit 2.1cm horizontal separation from router
+\node[hinge, minimum width=6.5cm, right=2.1cm of router] (hinge_node) {\textbf{Associative Quaternion Hinge}\\$L_{12} = H_{\omega_1} \cap H_{\omega_2} = \{i, j, i \oplus j\} \cong \Ha$\\Cycle-Slip-Free RTK Phase Lock ($0.0^\circ$)};
 
-\node[zd, below right=0.4cm and 1.0cm of router, minimum width=4.4cm] (fzd) {\textbf{Jammer/Spoofer Excision ($\Fzd, \omega \ge 9$)}\\$\PiMoreno(u_{\mathrm{jam}}) \in V_2(\R^7)$\\$\mathcal{O}(1)$ Nuller $v_{\mathrm{beam}} = \PiNull(u_{\mathrm{jam}}; c_{\mathrm{sat}})$};
+\node[alt, minimum width=6.5cm, above=0.65cm of hinge_node] (falt) {\textbf{Benign Tracking ($\Falt, \omega \le 8$)}\\$\mathcal{A}_\omega \cong \Oc$ (Norm-Preserving)\\Zero Insertion Loss ($\|u \cdot v\| = \|u\|\|v\|$)};
 
-\node[hinge, right=1.0cm of router, minimum width=4.4cm] (hinge_node) {\textbf{Associative Quaternion Hinge}\\$L_{12} = H_{\omega_1} \cap H_{\omega_2} = \{i, j, i \oplus j\} \cong \Ha$\\Cycle-Slip-Free RTK Phase Lock ($0.0^\circ$)};
+\node[zd, minimum width=6.5cm, below=0.65cm of hinge_node] (fzd) {\textbf{Jammer/Spoofer Excision ($\Fzd, \omega \ge 9$)}\\$\PiMoreno(u_{\mathrm{jam}}) \in V_2(\R^7)$\\$\mathcal{O}(1)$ Nuller $v_{\mathrm{beam}} = \PiNull(u_{\mathrm{jam}}; c_{\mathrm{sat}})$};
 
-\node[corr, below=1.75cm of router, minimum width=10.6cm] (despread) {\textbf{1023-Chip GPS L1 C/A Gold-Code FFT Correlator \& Navigation Integrity Head}\\$139.1\,\mathrm{dB}$ (FP32) / $312.9\,\mathrm{dB}$ (FP64) Jammer Suppression $\;\cdot\;$ $+21.5\,\mathrm{dB}$ Post-Correlation SINR $\;\cdot\;$ $0.0\%$ Spoofer False-Lock Rate};
+% Bottom Correlator Bar aligned exactly from crpa.west to fzd.east
+\path let \p1 = (crpa.west), \p2 = (fzd.east), \p3 = (fzd.south) in
+  node[corr, minimum width={\x2-\x1}, anchor=north west] (despread) at (\x1, \y3 - 0.85cm)
+  {\textbf{1023-Chip GPS L1 C/A Gold-Code FFT Correlator \& Navigation Integrity Head}\\$139.1\,\mathrm{dB}$ (FP32) / $312.9\,\mathrm{dB}$ (FP64) Jammer Suppression $\;\cdot\;$ $+21.5\,\mathrm{dB}$ Post-Correlation SINR $\;\cdot\;$ $0.0\%$ Spoofer False-Lock Rate};
 
-\draw[arrow] (crpa) -- (router);
-\draw[arrow, draw=teal!70!black] (router.north east) -- node[above, sloped, font=\scriptsize] {Benign} (falt.west);
-\draw[arrow, draw=red!70!black] (router.south east) -- node[below, sloped, font=\scriptsize] {JSR $> 0\,\mathrm{dB}$} (fzd.west);
+% Connections
+\draw[arrow] (crpa.east) -- (router.west);
+\draw[arrow, draw=teal!70!black] ([yshift=0.25cm]router.east) -- node[above, sloped, font=\scriptsize] {Benign} (falt.west);
+\draw[arrow, draw=red!70!black] ([yshift=-0.25cm]router.east) -- node[below, sloped, font=\scriptsize] {JSR $> 0\,\mathrm{dB}$} (fzd.west);
+
+% Vertical Hinge Bridges
 \draw[arrow, dashed, <->, draw=orange!85!black] (falt.south) -- (hinge_node.north);
-\draw[arrow, dashed, <->, draw=orange!85!black] (fzd.north) -- (hinge_node.south);
-\draw[arrow] (falt.south west) |- ([yshift=0.15cm]despread.east);
-\draw[arrow] (fzd.south) |- ([yshift=-0.15cm]despread.east);
-\draw[arrow] (crpa.south) |- (despread.west);
+\draw[arrow, dashed, <->, draw=orange!85!black] (hinge_node.south) -- (fzd.north);
+
+% Clean External Routing into Correlator Bar (Zero Box Collisions)
+\draw[arrow] (crpa.south) -- node[right, font=\scriptsize] {PRN Ref.\ $c_{\mathrm{PRN}}(t)$} (crpa.south |- despread.north);
+\draw[arrow, draw=red!70!black] (fzd.south) -- (fzd.south |- despread.north);
+\draw[arrow, draw=teal!70!black] (falt.east) -- ++(0.65cm, 0) |- (despread.east);
 
 \end{tikzpicture}}
 \caption{System architecture of the Sedenion $\PG(3,2)$ CRPA anti-jamming and anti-spoofing receiver (\texttt{Sed-PG32-Moreno}). The 8-element complex $I/Q$ array ($\C^8 \cong \Se$) routes benign tracking through the 8 norm-preserving octonion Fano planes ($\Falt$) and switches to the 7 zero-divisor Fano planes ($\Fzd$) under jamming, preserving RTK carrier phase across the 3-node associative quaternion hinge $L_{12} = H_{\omega_1} \cap H_{\omega_2} \cong \Ha$.}
@@ -194,6 +203,9 @@ In centimeter-level RTK positioning, the receiver's Phase-Locked Loop (PLL) trac
 \label{prop:pll_hinge}
 For any benign tracking workspace $H_{\omega_1} \in \Falt$ ($\omega_1 \in \{1, \dots, 8\}$) and any zero-divisor jammer-excision workspace $H_{\omega_2} \in \Fzd$ ($\omega_2 \in \{9, \dots, 15\}$), let $L_{12} = H_{\omega_1} \cap H_{\omega_2} = \{i, j, i \oplus j\} \in \mathcal{L}_{35}$ be their unique 3-point projective line intersection in $\PG(3,2)$. Routing the quadrature carrier reference $X_{\mathrm{carrier}}(t) = \cos\theta(t) \, e_i + \sin\theta(t) \, e_j$ and the local oscillator stages $u_1, u_2$ through the shared quaternion subalgebra $\Ha_{L_{12}} = \mathrm{span}_{\R}(e_0, e_i, e_j, e_{i \oplus j}) = \mathcal{A}_{\omega_1} \cap \mathcal{A}_{\omega_2}$ guarantees $[X_{\mathrm{carrier}}, u_1, u_2]_{\Se} \equiv 0$, yielding zero quadrature carrier-phase jump ($\Delta\phi_{\mathrm{PLL}} = 0.0000^\circ$) across workspace switches.
 \end{proposition}
+\begin{proof}
+Machine-checked in Lean~4 (\texttt{bench/pkg/lean/SedenionPG32/Geometry.lean}) via kernel decision (\texttt{decide +kernel}, zero axioms) as theorems \texttt{hinge\_card}, \texttt{hinge\_is\_projective\_line}, and \texttt{gnss\_pll\_hinge\_associative} across all $8 \times 7 = 56$ workspace transitions $(\omega_1, \omega_2) \in \Falt \times \Fzd$.
+\end{proof}
 
 % ==============================================================================
 % SECTION 4: CONTINUOUS SPOOFER EXCISION VIA HALF-SPHERE KEY MODULATION
@@ -208,7 +220,29 @@ Applying \textbf{Orthogonal Half-Sphere Key Modulation} \cite{Agourakis2026PG32}
 \label{eq:crpa_half_sphere}
 k_j(\phi_j) = \frac{1}{\sqrt{2}}\Big(c_j, \; -\cos\phi_j \, p_j + \sin\phi_j \, p_{\perp, j}\Big), \qquad p_j = (a_j c_j) b_j, \quad p_{\perp, j} = (a_j c_{\perp, j}) b_j,
 \end{equation}
-ensures $\|k_j(\phi_j)\|_2 \equiv 1$ (preventing thermal noise floor amplification across all $\phi_j \in [0, \pi]$) while sweeping the sedenion correlator gain $\|u_j \cdot_{\Se} k_j(\phi_j)\|_2 = \sqrt{1 + \cos\phi_j}$ from $\sqrt{2}$ at $\phi_j = 0$ (authentic satellite passband) to \textbf{exact zero} ($0.0$) at $\phi_j = \pi$ (complete spoofer excision in $\ker L_{\Se}(u_j)$). By contrast, in an octonion division-algebra array ($\Oc^2$), $\|u_j \cdot_{\Oc} k_j(\phi_j)\|_2 \equiv 1$ is strictly constant for all $\phi_j \in [0, \pi]$, leaving the receiver algebraically blind to half-sphere spoofer phase modulation.
+ensures $\|k_j(\phi_j)\|_2 \equiv 1$ (preventing thermal noise floor amplification across all $\phi_j \in [0, \pi]$) while sweeping the sedenion correlator gain $\|u_j \cdot_{\Se} k_j(\phi_j)\|_2 = \sqrt{1 + \cos\phi_j}$ from $\sqrt{2}$ at $\phi_j = 0$ (authentic satellite passband, machine-checked over $\R$ in Lean~4 as \texttt{spoofer\_half\_sphere\_passband}) to \textbf{exact zero} ($0.0$) at $\phi_j = \pi$ (complete spoofer excision in $\ker L_{\Se}(u_j)$, machine-checked over $\R$ as \texttt{nullspace}). By contrast, in an octonion division-algebra array ($\Oc^2$), $\|u_j \cdot_{\Oc} k_j(\phi_j)\|_2 \equiv 1$ is strictly constant for all $\phi_j \in [0, \pi]$ (\texttt{composition}), leaving the receiver algebraically blind to half-sphere spoofer phase modulation.
+
+\begin{table}[t!]
+\centering
+\caption{\textbf{Lean~4 Machine-Checked Formalization Summary:} All algebraic, projective-geometric, and real-analytic CRPA anti-jamming and anti-spoofing theorems are verified in Lean~4 (\texttt{v4.15.0}) with zero \texttt{sorry} and zero user axioms.}
+\label{tab:lean4_gnss}
+\small
+\resizebox{\linewidth}{!}{\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{GNSS CRPA Property} & \textbf{Lean~4 Theorem Identifier} & \textbf{Module} & \textbf{Domain} & \textbf{Proof Engine} \\
+\midrule
+Hurwitz $\Oc$ Obstruction ($\|xy\|_2^2 = \|x\|_2^2 \|y\|_2^2$) & \texttt{SedenionReal.composition} & \texttt{SedenionReal.lean} & $\R^8$ (Mathlib) & \texttt{ring} \\
+Moreno 4D Nuller ($u_{\mathrm{jam}} \cdot_{\Se} v_{\mathrm{beam}} = 0$) & \texttt{SedenionReal.nullspace} & \texttt{SedenionReal.lean} & $\R^{16}$ (Mathlib) & \texttt{linear\_combination} \\
+Exact 4D Nullspace Rank ($\dim\ker L_{\Se}(u) = 4$) & \texttt{SedenionReal.finrank\_ker\_Lu} & \texttt{SedenionDim.lean} & $\R^{16}$ (Mathlib) & Rank--Nullity + Adjoint \\
+Anti-Partner Product ($u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}} = (2ac, 2da)$) & \texttt{SedenionReal.crpa\_antipartner\_product} & \texttt{SedenionReal.lean} & $\R^{16}$ (Mathlib) & \texttt{linarith} + \texttt{nullspace} \\
+Coherent $+3\,\mathrm{dB}$ Array Gain ($\|u_{\mathrm{sat}} \cdot_{\Se} v_{\mathrm{beam}}\|_2^2 = 8\|c\|_2^2$) & \texttt{SedenionReal.crpa\_antipartner\_gain\_norm} & \texttt{SedenionReal.lean} & $\R^{16}$ (Mathlib) & \texttt{composition} + \texttt{ring} \\
+Half-Sphere Passband ($\|u \cdot_{\Se} k(0)\|_2^2 = 8\|c\|_2^2$) & \texttt{SedenionReal.spoofer\_half\_sphere\_passband} & \texttt{SedenionReal.lean} & $\R^{16}$ (Mathlib) & \texttt{linarith} + \texttt{ring} \\
+4-Beam Orthogonal Null \& $+3\,\mathrm{dB}$ Witness & \texttt{SedenionPG32.crpa\_null\_and\_antipartner\_4} & \texttt{Geometry.lean} & $\mathbb{Z}^{16}$ (Kernel) & \texttt{decide +kernel} \\
+3-Node Hinge Line Closure ($L_{12} = H_{\omega_1} \cap H_{\omega_2} \in \mathcal{L}_{35}$) & \texttt{SedenionPG32.hinge\_is\_projective\_line} & \texttt{Geometry.lean} & $\PG(3,2)$ (Kernel) & \texttt{decide +kernel} \\
+Zero-Cycle-Slip PLL Hinge ($[X_{\mathrm{carrier}}, u_1, u_2]_{\Se} \equiv 0$) & \texttt{SedenionPG32.gnss\_pll\_hinge\_associative} & \texttt{Geometry.lean} & $\PG(3,2)$ (Kernel) & \texttt{decide +kernel} \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 % ==============================================================================
 % SECTION 5: EXPERIMENTAL VALIDATION
