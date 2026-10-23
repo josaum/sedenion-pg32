@@ -1,13 +1,16 @@
 # Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23588274.svg)](https://doi.org/10.5281/zenodo.23588274)
+[![DOI: Main Paper](https://zenodo.org/badge/DOI/10.5281/zenodo.23588274.svg)](https://doi.org/10.5281/zenodo.23588274)
+[![DOI: GNSS Anti-Jamming](https://zenodo.org/badge/DOI/10.5281/zenodo.23603006.svg)](https://doi.org/10.5281/zenodo.23603006)
 
-Official repository, Lean 4 formalizations (`121` machine-checked theorems, zero `sorry`), and PyTorch benchmark suite for:
+Official repository, Lean 4 formalizations (`125+` machine-checked theorems, zero `sorry`), and PyTorch benchmark suite for:
 
-> **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. [`https://doi.org/10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274)
+1. **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. [`https://doi.org/10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274)
+2. **Dionisio Chiuratto Agourakis** (2026). *Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming and Anti-Spoofing: Matrix-Inversion-Free Null Steering, Associative Quaternion Phase Hinges, and Neural CRPA Validation*. Zenodo. [`https://doi.org/10.5281/zenodo.23603006`](https://doi.org/10.5281/zenodo.23603006)
 
 - **Main Manuscript PDF:** [`Agourakis_2026_Sedenion_PG32.pdf`](./Agourakis_2026_Sedenion_PG32.pdf) ([LaTeX Source](./Agourakis_2026_Sedenion_PG32.tex))
 - **GNSS Anti-Jamming Companion Paper PDF:** [`Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf`](./Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf) ([LaTeX Source](./Agourakis_2026_Sedenion_GNSS_AntiJamming.tex))
+- **2-Page DARPA / ONR Global BAA White Paper PDF:** [`DARPA_ONR_WhitePaper_Sedenion_GNSS.pdf`](./DARPA_ONR_WhitePaper_Sedenion_GNSS.pdf) ([LaTeX Source](./DARPA_ONR_WhitePaper_Sedenion_GNSS.tex))
 - **Self-Contained Release Archive:** [`bench/sedenion_pg32.zip`](./bench/sedenion_pg32.zip)
 
 ---
@@ -47,5 +50,15 @@ cd bench/pkg/lean-real && lake exe cache get && lake build SedenionDim && lake e
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.23588274},
   url          = {https://doi.org/10.5281/zenodo.23588274}
+}
+
+@misc{agourakis2026gnss,
+  author       = {Agourakis, Dionisio Chiuratto},
+  title        = {{Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming and Anti-Spoofing: Matrix-Inversion-Free Null Steering, Associative Quaternion Phase Hinges, and Neural CRPA Validation}},
+  year         = {2026},
+  month        = oct,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23603006},
+  url          = {https://doi.org/10.5281/zenodo.23603006}
 }
 ```
