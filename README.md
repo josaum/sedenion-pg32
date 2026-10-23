@@ -6,8 +6,8 @@ Official repository, Lean 4 formalizations (`121` machine-checked theorems, zero
 
 > **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. [`https://doi.org/10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274)
 
-- **Manuscript PDF:** [`Agourakis_2026_Sedenion_PG32.pdf`](./Agourakis_2026_Sedenion_PG32.pdf)
-- **LaTeX Source:** [`Agourakis_2026_Sedenion_PG32.tex`](./Agourakis_2026_Sedenion_PG32.tex)
+- **Main Manuscript PDF:** [`Agourakis_2026_Sedenion_PG32.pdf`](./Agourakis_2026_Sedenion_PG32.pdf) ([LaTeX Source](./Agourakis_2026_Sedenion_PG32.tex))
+- **GNSS Anti-Jamming Companion Paper PDF:** [`Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf`](./Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf) ([LaTeX Source](./Agourakis_2026_Sedenion_GNSS_AntiJamming.tex))
 - **Self-Contained Release Archive:** [`bench/sedenion_pg32.zip`](./bench/sedenion_pg32.zip)
 
 ---
@@ -21,6 +21,7 @@ python bench/track_a/train.py                                # Table 2: Track A 
 python bench/gate3/train.py                                  # Table 3: Track B multi-hop contradiction pruning & No-FFN ablation
 python bench/ext/proofwriter.py                              # Table 4: AllenAI ProofWriter (ACL 2021) OOD depth & Birds-Electricity
 python bench/ext/listops.py                                  # Table 4: Long-Range Arena ListOps (ICLR 2021) OOD tree reduction
+python bench/gps_jamming/run_gps_bench.py                    # Companion Paper: +80 dB JSR GPS L1 C/A CRPA null-steering, RTK phase hinges & neural anti-spoofing
 ```
 
 ### Lean 4 Formal Verification (`bench/pkg/lean/` & `bench/pkg/lean-real/`)

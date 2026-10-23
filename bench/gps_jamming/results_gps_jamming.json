@@ -1,0 +1,131 @@
+{
+  "scenario_1_jsr80db": {
+    "Dense-R16 (Softmax)": {
+      "supp_db": 35.8,
+      "sinr_post_db": -5.4,
+      "p_det": 0.0,
+      "par_ratio": 0.23
+    },
+    "MVDR-SMI (O(d^3) Capon)": {
+      "supp_db": 47.9,
+      "sinr_post_db": -1.1,
+      "p_det": 0.082,
+      "par_ratio": 0.47
+    },
+    "Quat-H4": {
+      "supp_db": 10.6,
+      "sinr_post_db": -6.6,
+      "p_det": 0.0,
+      "par_ratio": 0.22
+    },
+    "Oct-O2": {
+      "supp_db": 3.0,
+      "sinr_post_db": -6.5,
+      "p_det": 0.0,
+      "par_ratio": 0.22
+    },
+    "Clifford-Cl04": {
+      "supp_db": 8.6,
+      "sinr_post_db": -6.4,
+      "p_det": 0.0,
+      "par_ratio": 0.22
+    },
+    "Sed-Free": {
+      "supp_db": 7.2,
+      "sinr_post_db": -6.5,
+      "p_det": 0.0,
+      "par_ratio": 0.22
+    },
+    "Sed-PG32-Moreno (FP32)": {
+      "supp_db": 139.1,
+      "sinr_post_db": 21.5,
+      "p_det": 1.0,
+      "par_ratio": 3.54
+    },
+    "Sed-PG32-Moreno (FP64)": {
+      "supp_db": 312.9,
+      "sinr_post_db": 21.5,
+      "p_det": 1.0,
+      "par_ratio": 3.54
+    }
+  },
+  "scenario_2_hinge_phase": {
+    "MVDR-Unconstrained": {
+      "mean_phase_err_deg": 5.8026,
+      "cycle_slip_rate": 0.1016
+    },
+    "Sed-Unrouted (No Hinge)": {
+      "mean_phase_err_deg": 57.9727,
+      "cycle_slip_rate": 0.7793
+    },
+    "Sed-PG32-Hinge (Theorem 3.2)": {
+      "mean_phase_err_deg": 0.0,
+      "cycle_slip_rate": 0.0
+    }
+  },
+  "scenario_3_neural_crpa": {
+    "softmax": {
+      "params": 70529,
+      "acc_id": 0.858,
+      "flr_id": 0.1918,
+      "leak_id": 2.819256,
+      "acc_ood": 0.598,
+      "flr_ood": 0.402,
+      "leak_ood": 3.553757
+    },
+    "bilinear": {
+      "params": 70529,
+      "acc_id": 0.8565,
+      "flr_id": 0.1974,
+      "leak_id": 2.210412,
+      "acc_ood": 0.588,
+      "flr_ood": 0.412,
+      "leak_ood": 2.418805
+    },
+    "octonion": {
+      "params": 70537,
+      "acc_id": 0.856,
+      "flr_id": 0.196,
+      "leak_id": 3.481024,
+      "acc_ood": 0.5945,
+      "flr_ood": 0.4055,
+      "leak_ood": 3.61294
+    },
+    "clifford": {
+      "params": 70537,
+      "acc_id": 0.8845,
+      "flr_id": 0.0907,
+      "leak_id": 1.142018,
+      "acc_ood": 0.6115,
+      "flr_ood": 0.3885,
+      "leak_ood": 1.532158
+    },
+    "sedenion_plain": {
+      "params": 70537,
+      "acc_id": 0.897,
+      "flr_id": 0.0683,
+      "leak_id": 1.352104,
+      "acc_ood": 0.617,
+      "flr_ood": 0.383,
+      "leak_ood": 1.24774
+    },
+    "sedenion": {
+      "params": 70537,
+      "acc_id": 0.9875,
+      "flr_id": 0.0042,
+      "leak_id": 0.000412,
+      "acc_ood": 0.972,
+      "flr_ood": 0.028,
+      "leak_ood": 0.00184
+    },
+    "sedenion_noffn": {
+      "params": 37129,
+      "acc_id": 0.916,
+      "flr_id": 0.0544,
+      "leak_id": 0.01241,
+      "acc_ood": 0.7615,
+      "flr_ood": 0.2385,
+      "leak_ood": 0.04128
+    }
+  }
+}
