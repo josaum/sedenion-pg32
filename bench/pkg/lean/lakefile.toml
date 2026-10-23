@@ -1,0 +1,8 @@
+name = "sedenion_pg32"
+defaultTargets = ["SedenionPG32"]
+
+[[lean_lib]]
+name = "SedenionPG32"
+
+[[lean_lib]]
+name = "Axioms"
