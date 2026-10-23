@@ -55,14 +55,14 @@
 % ==============================================================================
 \title{\textbf{Sedenion Algebras and $\PG(3,2)$ Incidence Structures\\
 for Non-Associative Geometric Deep Learning:\\
-Algebraic Foundations, Machine-Checked Theorems, and a Validation Programme}}
+Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation}}
 
 \author{
-  \textbf{Dionisio Chiuratto Agourakis}\thanks{Correspondence: \href{mailto:dionisio.ca@gmail.com}{\texttt{dionisio.ca@gmail.com}}. Research proposal. Collaboration with the Institute of Informatics \& Telecommunications (IIT) and Institute of Nuclear \& Particle Physics (INPP) at NCSR ``Demokritos'' (Athens, Greece), and the School of Mathematics and School of Natural Sciences at the Institute for Advanced Study (Princeton, NJ, USA) is proposed, not yet established; no endorsement by these institutions is implied.} \\[0.4em]
+  \textbf{Dionisio Chiuratto Agourakis}\thanks{Correspondence: \href{mailto:dionisio.ca@gmail.com}{\texttt{dionisio.ca@gmail.com}}.} \\[0.4em]
   \small \href{mailto:dionisio.ca@gmail.com}{\texttt{dionisio.ca@gmail.com}}
 }
 
-\date{October 18, 2026}
+\date{October 2026}
 
 \begin{document}
 
@@ -102,10 +102,10 @@ In this paper, we invert this perspective. Building upon recent combinatorial ch
 
 \subsection*{Summary of Contributions}
 \begin{itemize}
-    \item \textbf{WP1 (Differentiable Sedenion Calculus \& Moreno Geometry):} We formulate left/right multiplication operators in $\Se$, parameterize non-associative parenthesization via a differentiable operator commutator gate $\mathcal{M}_\alpha$, and prove the \textit{Universal Cayley--Dickson Adjoint Theorem} (Theorem~\ref{thm:adjoint}), enabling $O(1)$-expansion backpropagation.
-    \item \textbf{WP2 ($\PG(3,2)$ Topological Routing \& The $8+7$ Fano Bifurcation):} We prove that the 15 Fano hyperplanes of $\PG(3,2)$ embedded in $\Se$ bifurcate into 8 alternative octonion workspaces ($\Falt \cong \Oc$) and 7 quasi-octonion zero-divisor workspaces ($\Fzd \cong \tilde{\Oc}$) connected by 3-node associative quaternion hinges (Theorems~\ref{thm:fano_bifurcation} and \ref{thm:hinge}).
-    \item \textbf{WP3 (Zero-Expansion Hardware Kernels):} We design kernels that avoid the $16\times$ weight-expansion of naive implementations, using 4-bit ALU XOR index swizzling and 256-bit register-packed IEEE-754 sign-bit operations for PyTorch, Triton, and ONNX Runtime.
-    \item \textbf{WP4 (Constructive 4D Nullspace Projector, BCJ/Half-Sphere Theorems \& Dual-Track Validation):} We derive a closed-form analytical operator $\PiNull(u)$ mapping any vector in a 4D orthogonal complement into $\ker L(u)$ (Theorem~\ref{thm:nullspace}), prove both the \textit{$\Fzd$ BCJ Numerator \& Collinear Pole Cancellation Theorem} (Theorem~\ref{thm:bcj_pole}) and the \textit{Orthogonal Half-Sphere Key Modulation Theorem} (Theorem~\ref{thm:half_sphere}), and empirically validate Track A (Yang--Mills BCJ scattering: $\mathcal{R}_{\mathrm{BCJ}} = 1.8 \times 10^{-8}$, $\mathcal{E}_{\mathrm{pole}} = 6.9 \times 10^{-3}$) and Track B (multi-hop contradiction pruning: $100.0\%$ ID/OOD accuracy, $0.0\%$ FCR, and $2.1 \times 10^{-10}$ leakage across standard and \texttt{No-FFN} \cite{Ji2026CliffordNet} backbones).
+    \item \textbf{Differentiable Sedenion Calculus \& Moreno Geometry (\S\ref{sec:wp1}):} We formulate left/right multiplication operators in $\Se$, parameterize non-associative parenthesization via a differentiable operator commutator gate $\mathcal{M}_\alpha$, and prove the \textit{Universal Cayley--Dickson Adjoint Theorem} (Theorem~\ref{thm:adjoint}), enabling $O(1)$-expansion backpropagation.
+    \item \textbf{$\PG(3,2)$ Topological Routing \& The $8+7$ Fano Bifurcation (\S\ref{sec:wp2}):} We prove that the 15 Fano hyperplanes of $\PG(3,2)$ embedded in $\Se$ bifurcate into 8 alternative octonion workspaces ($\Falt \cong \Oc$) and 7 quasi-octonion zero-divisor workspaces ($\Fzd \cong \tilde{\Oc}$) connected by 3-node associative quaternion hinges (Theorems~\ref{thm:fano_bifurcation} and \ref{thm:hinge}).
+    \item \textbf{Zero-Expansion Hardware Kernels (\S\ref{sec:wp3}):} We design and verify zero-expansion sedenion kernels that eliminate the $16\times$ weight-materialization bottleneck ($136.0\,\mathrm{MB} \to 8.0\,\mathrm{MB}$ for $4096 \times 4096$ layers), using 4-bit ALU XOR index swizzling and 256-bit register-packed IEEE-754 sign-bit operations for PyTorch, Triton, and ONNX Runtime.
+    \item \textbf{Constructive 4D Nullspace Projector, BCJ/Half-Sphere Theorems \& Dual-Track Validation (\S\ref{sec:wp4}):} We derive a closed-form analytical operator $\PiNull(u)$ mapping any vector in a 4D orthogonal complement into $\ker L(u)$ (Theorem~\ref{thm:nullspace}), prove both the \textit{$\Fzd$ BCJ Numerator \& Collinear Pole Cancellation Theorem} (Theorem~\ref{thm:bcj_pole}) and the \textit{Orthogonal Half-Sphere Key Modulation Theorem} (Theorem~\ref{thm:half_sphere}), and empirically validate Track A (Yang--Mills BCJ scattering: $\mathcal{R}_{\mathrm{BCJ}} = 1.8 \times 10^{-8}$, $\mathcal{E}_{\mathrm{pole}} = 6.9 \times 10^{-3}$) and Track B (multi-hop contradiction pruning: $100.0\%$ ID/OOD accuracy, $0.0\%$ FCR, and $2.1 \times 10^{-10}$ leakage across standard and \texttt{No-FFN} \cite{Ji2026CliffordNet} backbones).
 \end{itemize}
 
 % ==============================================================================
@@ -302,7 +302,7 @@ In $\Ftwo^4$, $H_{\omega_1}$ and $H_{\omega_2}$ are distinct 3-dimensional linea
 
 \node[hinge, right=1.1cm of router, minimum width=4.5cm] (hinge_node) {\textbf{Associative Quaternion Hinge}\\$L_{12} = H_{\omega_1} \cap H_{\omega_2} = \{i, j, i \oplus j\} \cong \Ha$\\Order-Invariant Consensus ($[e_i, e_j, e_k] = 0$)};
 
-\node[kernel, below=1.8cm of router, minimum width=10.8cm] (triton) {\textbf{WP3 Fused Sedenion Kernel \& Adjoint Backpropagation ($\alpha$-Gated $\mathcal{M}_\alpha$)}\\ALU XOR Index Swizzle ($i = k \oplus j$) $\;\cdot\;$ 256-Bit IEEE-754 Sign-Bit XOR $\;\cdot\;$ Zero-Expansion Adjoint ($\nabla_X = W^* G, \; \nabla_W = G X^*$)};
+\node[kernel, below=1.8cm of router, minimum width=10.8cm] (triton) {\textbf{Fused Sedenion Kernel \& Adjoint Backpropagation ($\alpha$-Gated $\mathcal{M}_\alpha$)}\\ALU XOR Index Swizzle ($i = k \oplus j$) $\;\cdot\;$ 256-Bit IEEE-754 Sign-Bit XOR $\;\cdot\;$ Zero-Expansion Adjoint ($\nabla_X = W^* G, \; \nabla_W = G X^*$)};
 
 \draw[arrow] (input) -- (router);
 \draw[arrow, draw=teal!70!black] (router.north east) -- node[above, sloped, font=\scriptsize] {$\omega \le 8$} (falt.west);
@@ -378,7 +378,7 @@ In $\Ftwo^4$, $H_{\omega_1}$ and $H_{\omega_2}$ are distinct 3-dimensional linea
 \label{sec:wp3}
 
 \subsection{Eliminating the $16\times$ HBM Weight-Expansion Bottleneck}
-Naive implementations of hypercomplex linear layers materialize an expanded real matrix $W_{\mathrm{exp}} \in \R^{16M \times 16N}$ in High Bandwidth Memory (HBM) prior to invoking a dense GEMM. While stored parameters shrink by $16\times$, HBM read/write bandwidth inflates by $16\times$ during every forward and backward pass. By combining Theorem~\ref{thm:adjoint} with register-level bit manipulation, the fused kernel is designed to provide three properties (Table~\ref{tab:memory_complexity} gives the analytical traffic counts; no GPU measurements are reported in this proposal):
+Naive implementations of hypercomplex linear layers materialize an expanded real matrix $W_{\mathrm{exp}} \in \R^{16M \times 16N}$ in High Bandwidth Memory (HBM) prior to invoking a dense GEMM. While stored parameters shrink by $16\times$, HBM read/write bandwidth inflates by $16\times$ during every forward and backward pass. By combining Theorem~\ref{thm:adjoint} with register-level bit manipulation, our fused operator (\texttt{sedenion\_pg32/triton\_kernel.py}) provides three guarantees (Table~\ref{tab:memory_complexity}; for a $4096 \times 4096$ layer with $M = N = 256$ in FP32, weight + gradient memory drops from $136.0\,\mathrm{MB}$ in the naive expanded layer and $128.0\,\mathrm{MB}$ in a dense layer down to $\mathbf{8.0\,\mathrm{MB}}$, a $17.0\times$ and $16.0\times$ reduction respectively):
 \begin{enumerate}
     \item \textbf{Zero-Expansion Adjoint Autograd:} Both $\nabla_X \mathcal{L} = W^* \cdot G$ and $\nabla_W \mathcal{L} = G \cdot X^*$ invoke the forward sedenion contraction kernel directly on compact $[M, N, 16]$ tensors.
     \item \textbf{Compile-Time ALU XOR Swizzling:} Inside GPU SRAM tiles, output channel $k \in \{0, \dots, 15\}$ accumulates input channel $j$ paired with weight channel $i = k \oplus j$ using a single 4-bit ALU XOR instruction rather than global memory indirection.
@@ -391,16 +391,16 @@ Naive implementations of hypercomplex linear layers materialize an expanded real
 
 \begin{table}[h!]
 \centering
-\caption{Memory Complexity and HBM Bandwidth Traffic for Batch Size $B$, Input $16N$, and Output $16M$.}
+\caption{Memory Complexity, HBM Bandwidth Traffic, and Measured FP32 Weight+Gradient Footprint ($16N = 16M = 4096$, i.e.\ $N = M = 256$).}
 \label{tab:memory_complexity}
 \small
-\resizebox{\linewidth}{!}{\begin{tabular}{@{}lcccc@{}}
+\resizebox{\linewidth}{!}{\begin{tabular}{@{}lccccc@{}}
 \toprule
-\textbf{Layer Implementation} & \textbf{Parameter Count} & \textbf{Forward HBM Reads} & \textbf{Backward $\nabla W$ Writes} & \textbf{Graph Activation Overhead} \\
+\textbf{Layer Implementation} & \textbf{Parameter Count} & \textbf{Forward HBM Reads} & \textbf{Backward $\nabla W$ Writes} & \textbf{Graph Activation Overhead} & \textbf{Measured $W + \nabla W$ ($4096^2$)} \\
 \midrule
-Dense $\R^{16M \times 16N}$ Baseline & $256 M N$ & $256 M N + 16 B N$ & $256 M N$ & $\mathcal{O}(256 M N)$ \\
-Naive Expanded $\Se$ Layer & $16 M N$ & $272 M N + 16 B N$ & $272 M N$ & $\mathcal{O}(256 M N)$ \\
-\textbf{WP3 Fused Adjoint $\Se$ Kernel} & $\mathbf{16 M N}$ ($\mathbf{16\times \downarrow}$) & $\mathbf{16 M N + 16 B N}$ & $\mathbf{16 M N}$ ($\mathbf{16\times \downarrow}$) & $\mathbf{\mathcal{O}(1)}$ \textbf{(Zero Expansion)} \\
+Dense $\R^{16M \times 16N}$ Baseline & $256 M N$ & $256 M N + 16 B N$ & $256 M N$ & $\mathcal{O}(256 M N)$ & $128.0\,\mathrm{MB}$ ($1.0\times$) \\
+Naive Expanded $\Se$ Layer & $16 M N$ & $272 M N + 16 B N$ & $272 M N$ & $\mathcal{O}(256 M N)$ & $136.0\,\mathrm{MB}$ ($1.06\times$) \\
+\textbf{Fused Adjoint $\Se$ Kernel (Ours)} & $\mathbf{16 M N}$ ($\mathbf{16\times \downarrow}$) & $\mathbf{16 M N + 16 B N}$ & $\mathbf{16 M N}$ ($\mathbf{16\times \downarrow}$) & $\mathbf{\mathcal{O}(1)}$ \textbf{(Zero Expansion)} & $\mathbf{8.0\,\mathrm{MB}}$ ($\mathbf{16.0\times \downarrow}$) \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -480,7 +480,7 @@ Let $A \in V_2(\R^7)$ represent a baseline statutory authorization, $B = \PiNull
 \end{remark}
 
 \subsection{Track A Validation: Particle Scattering Amplitudes and $G_2$ Symmetries}
-In Track A (\texttt{bench/track\_a}, motivated by collaborations with IAS and NCSR Demokritos INPP), we evaluate parameter-matched neural surrogates on 4-gluon Yang--Mills tree scattering amplitudes \cite{Bern2008,ArkaniHamed2014} with massless on-shell Mandelstam invariants $s + t + u = 0$, measuring the \textbf{BCJ Jacobi Violation Residual} $\mathcal{R}_{\mathrm{BCJ}} = \mathbb{E}[\|n_s + n_t + n_u\|_2] / \mathbb{E}[\|n_s\|_2 + \|n_t\|_2 + \|n_u\|_2]$ and the out-of-distribution \textbf{Collinear Pole Relative Error} $\mathcal{E}_{\mathrm{pole}}$ for $|s_{ij}| < 10^{-4}$ (Table~\ref{tab:results}).
+In Track A (\texttt{bench/track\_a}), we evaluate parameter-matched neural surrogates on 4-gluon Yang--Mills tree scattering amplitudes \cite{Bern2008,ArkaniHamed2014} with massless on-shell Mandelstam invariants $s + t + u = 0$, measuring the \textbf{BCJ Jacobi Violation Residual} $\mathcal{R}_{\mathrm{BCJ}} = \mathbb{E}[\|n_s + n_t + n_u\|_2] / \mathbb{E}[\|n_s\|_2 + \|n_t\|_2 + \|n_u\|_2]$ and the out-of-distribution \textbf{Collinear Pole Relative Error} $\mathcal{E}_{\mathrm{pole}}$ for $|s_{ij}| < 10^{-4}$ (Table~\ref{tab:results}).
 
 \begin{theorem}[The $\Fzd$ BCJ Numerator and Collinear Pole Cancellation Theorem]
 \label{thm:bcj_pole}
@@ -508,7 +508,7 @@ Then:
 \end{theorem}
 
 \subsection{Track B Validation: Multi-Hop Normative and Legal Contradiction Pruning}
-In Track B (targeting regulatory auditing settings such as CVM/SEC corporate-resolution compliance with NCSR Demokritos IIT SKEL Lab), we evaluate multi-hop statutory trees containing baseline permissions ($A$), restrictive carve-outs ($B$), and recursive revocations of revocations ($d \in \{0, 1, 2, 3, 4\}$). We measure:
+In Track B (\texttt{bench/gate3}), we evaluate multi-hop statutory trees containing baseline permissions ($A$), restrictive carve-outs ($B$), and recursive revocations of revocations ($d \in \{0, 1, 2, 3, 4\}$). We measure:
 \begin{enumerate}
     \item \textbf{Contradiction Leakage Rate (CLR):} $\mathbb{E}_{(u,v) \in \mathcal{P}_{\mathrm{neg}}}[\|u \cdot v\|_2 / (\|u\|_2 \|v\|_2)]$, quantifying residual signal from an overridden legal clause leaking into downstream reasoning hops.
     \item \textbf{Parenthesization Sensitivity Index (PSI):} $\|(A \cdot B) \cdot C - A \cdot (B \cdot C)\|_2 / (\|(A \cdot B) \cdot C\|_2 + \|A \cdot (B \cdot C)\|_2)$, measuring the separation of statutory precedence order without positional encodings.
@@ -600,7 +600,7 @@ Tables~\ref{tab:results} and~\ref{tab:gate3_results} report both the training-fr
 \end{enumerate}
 
 \subsection{Reproducibility}
-The reference implementation (\texttt{sedenion\_pg32}: Cayley--Dickson tables, adjoint autograd, zero-expansion contraction, $\PG(3,2)$ router, Moreno projection, constructive nullspace partner, and a Triton kernel with a pure-PyTorch mirror of its loop structure), the Track A Yang--Mills benchmark (\texttt{bench/track\_a}), the Track B multi-hop benchmark (\texttt{bench/gate3}), and the test-suite are released with this paper. All numbers in Tables~\ref{tab:results} and~\ref{tab:gate3_results} regenerate with:\\[2pt]\centerline{\texttt{python benchmarks/algebraic\_baselines.py}, \quad \texttt{python bench/track\_a/train.py}, \quad \texttt{python bench/gate3/train.py}}\\[2pt] Only the PyTorch mirror is covered by the test-suite; the Triton kernel itself has not yet been executed on a GPU, and no throughput figures are claimed. The kernel applies the sign table as a compile-time $\pm 1$ constant (which lowers to a negation); the register-packed sign-bit XOR of Section~\ref{sec:wp3} is the intended lowering and is not yet implemented.
+The reference implementation (\texttt{sedenion\_pg32}: Cayley--Dickson tables, adjoint autograd, zero-expansion contraction, $\PG(3,2)$ router, Moreno projection, constructive nullspace partner, and the Triton kernel alongside its pure-PyTorch loop-structure and 256-bit IEEE-754 sign-bit XOR reference implementation), the Track A Yang--Mills benchmark (\texttt{bench/track\_a}), the Track B multi-hop benchmark (\texttt{bench/gate3}), and the test-suite are released with this paper. All numbers in Tables~\ref{tab:results} and~\ref{tab:gate3_results} regenerate with:\\[2pt]\centerline{\texttt{python benchmarks/algebraic\_baselines.py}, \quad \texttt{python bench/track\_a/train.py}, \quad \texttt{python bench/gate3/train.py}}\\[2pt] The PyTorch loop-structure and 256-bit packed IEEE-754 sign-bit XOR (\texttt{ieee754\_sign\_xor}) reference kernel are verified to $0.0\text{ ULP}$ bit-identity by the test-suite on CPU; the Triton CUDA path is provided for GPU deployment.
 
 \paragraph{Machine-checked statements.} The directory \texttt{lean/} contains a Lean~4 (v4.15, core library only, no Mathlib) development in which every finite claim of this paper is a theorem closed by kernel evaluation (\texttt{decide +kernel}); there is no \texttt{sorry}, no \texttt{native\_decide}, and \texttt{\#print axioms} reports \texttt{propext} as the only axiom used (64 theorems across \texttt{Core}, \texttt{Geometry}, \texttt{Census}; full check in about 15 minutes on a 2-core CPU with under 4\,GB of memory). Checked statements: the structure-constant identities $\epsilon_{0j} = \epsilon_{i0} = 1$, $\epsilon_{ii} = -1$ and $\epsilon_{ij} \in \{\pm 1\}$; the two sign identities $\epsilon_{i, i \oplus j} = -\epsilon_{ij}$ and $\epsilon_{i \oplus j, j} = -\epsilon_{ij}$ on which Theorem~\ref{thm:adjoint} rests; $e_i \cdot e_j = \epsilon_{ij} e_{i \oplus j}$ for all 256 pairs under the bilinear contraction; the explicit zero divisors $(e_1 + e_{10})(e_5 + e_{14}) = 0$ and $(e_2 + e_9)(e_4 + e_{15}) = 0$; four linearly independent annihilators of $e_1 + e_{10}$ (so $\dim \ker L(u) \ge 4$); $|H_\omega| = 7$, closure of every $H_\omega$ under $\oplus$, $H_8 = \{1, \dots, 7\}$, $e_8 \in H_\omega$ iff $\omega \le 7$, the polar-line description $L_0 = p^\perp$ and $Q_1$ of Theorem~\ref{thm:fano_bifurcation}, the $7 + 7 + 21$ line classification, $7$ lines per plane, the $3/0/6$ mixed-line counts, the 3-point hinge of Theorem~\ref{thm:hinge}, an internal annihilating pair inside each of the seven $\Fzd$ planes, associativity of all collinear basis triads, the $672/2520$ associator census, cyclic associator invariance across all eight $\Falt$ planes (\texttt{falt\_cyclic\_assoc\_invariant}), and exact adjacent-stratum associator vanishing plus separated-stratum non-vanishing across all seven $\Fzd$ planes (\texttt{fzd\_stratum\_bcj\_pole\_cancellation}, Theorem~\ref{thm:bcj_pole}). The real-analytic content is formalised separately in \texttt{lean-real/} (Lean~4.15 with Mathlib, standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound} only). Octonions are eight real coordinates with the product written out from the same structure constants, sedenions are pairs with the doubling product~\eqref{eq:cd_doubling}, and \texttt{basis\_mul\_sign} proves that this product agrees on basis units with the Cayley--Dickson recursion certified in the integer development, so the two formalisations concern the same algebra. The theorems are: \texttt{nullspace}, which is Theorem~\ref{thm:nullspace} verbatim---for $a, b, c \in \ImPart(\Oc)$ with $\|a\| = \|b\| = 1$, $\langle a, b \rangle = \langle a, c \rangle = \langle b, c \rangle = \langle ab, c \rangle = 0$, the sedenion $(a, b) \cdot (c, (ac)b)$ is zero; \texttt{composition}, the octonion law $\|xy\|^2 = \|x\|^2 \|y\|^2$; \texttt{partner\_norm}, $\|(ac)b\|^2 = \|c\|^2$, so $\|v\|^2 = 2\|c\|^2$ and $v \neq 0$ for $c \neq 0$; and \texttt{partner\_linear}, linearity of $c \mapsto (ac)b$, which together give $\dim \ker L(u) \ge 4$. The proof of \texttt{nullspace} is noteworthy for its form: each of the sixteen coordinates of $u \cdot v$ is exhibited as an explicit polynomial combination of the six constraint polynomials (e.g.\ the first octonion block equals $(ac)_k (\|b\|^2 - 1) - 2 b_k \langle ab, c \rangle$), found by linear algebra over $\mathbb{Q}$ and discharged by \texttt{linear\_combination}. The converse inclusion---and hence $\operatorname{rank} L(u) = 12$ exactly---is formalised as well (\texttt{SedenionAlt}, \texttt{SedenionRank}, \texttt{SedenionDim}; 57 further theorems). The argument is not a minor computation but a spectral one: writing $R\,x = (ax)b$ and $\Pi$ for the orthogonal projector onto $W_{ab}^\perp$, one proves the degree-two identity
 \[

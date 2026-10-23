@@ -27,6 +27,35 @@ def _sign_table_as_constexpr():
     return tuple(tuple(int(v) for v in row) for row in k_signs.tolist())
 
 
+def build_packed_sign_masks_256bit():
+    """
+    Pack the 16x16 Cayley-Dickson sign table eps_{k^j, j} into 16 uint16 bitmasks (256 bits total),
+    where bit j of MASK[k] is 1 iff eps_{k^j, j} == -1 (Equation (11) of the paper).
+    """
+    from .core import build_cayley_dickson_tables
+    _, k_signs, _ = build_cayley_dickson_tables(16)
+    masks = torch.zeros(16, dtype=torch.int32)
+    for k in range(16):
+        m = 0
+        for j in range(16):
+            if int(k_signs[k, j].item()) == -1:
+                m |= (1 << j)
+        masks[k] = m
+    return masks
+
+
+def ieee754_sign_xor(x_fp32: torch.Tensor, mask_k: int, j: int) -> torch.Tensor:
+    """
+    Multiply an FP32 tensor by eps_{k^j, j} in {-1, +1} via a single bitwise XOR on IEEE-754 bit 31:
+      float_bits(x * eps) = float_bits(x) ^ (((MASK[k] >> j) & 1) << 31)
+    """
+    sign_bit = ((int(mask_k) >> j) & 1) << 31
+    # In signed 32-bit two's complement, 1 << 31 is -2147483648 (0x80000000)
+    sign_i32 = -2147483648 if sign_bit else 0
+    bits = x_fp32.contiguous().view(torch.int32) ^ sign_i32
+    return bits.view(torch.float32)
+
+
 if HAS_TRITON:
     KSIGNS = _sign_table_as_constexpr()
 
@@ -103,10 +132,11 @@ if HAS_TRITON:
 
 
 def fused_sedenion_linear_reference(x, w, bias=None):
-    """Pure-torch mirror of the kernel's loop structure (n -> j -> k), for CPU tests."""
+    """Pure-torch mirror of the kernel's loop structure (n -> j -> k) using the 256-bit packed IEEE-754 sign masks."""
     from .core import build_cayley_dickson_tables
     _, k_signs, _ = build_cayley_dickson_tables(16)
     k_signs = k_signs.to(x.dtype)
+    masks = build_packed_sign_masks_256bit()
     B, N, _ = x.shape
     M = w.shape[0]
     accs = [torch.zeros(B, M, dtype=x.dtype) for _ in range(16)]
@@ -114,6 +144,10 @@ def fused_sedenion_linear_reference(x, w, bias=None):
         xj = x[:, :, j]                                  # [B, N]
         for k in range(16):
             i = k ^ j
-            accs[k] = accs[k] + k_signs[k, j] * (xj @ w[:, :, i].T)
+            if w.dtype == torch.float32:
+                w_signed = ieee754_sign_xor(w[:, :, i], int(masks[k].item()), j)
+                accs[k] = accs[k] + (xj @ w_signed.T)
+            else:
+                accs[k] = accs[k] + k_signs[k, j] * (xj @ w[:, :, i].T)
     y = torch.stack(accs, dim=-1)
     return y + bias if bias is not None else y
