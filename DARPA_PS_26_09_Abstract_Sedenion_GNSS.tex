@@ -25,132 +25,110 @@
 \begin{document}
 
 % ============================================================================
-% TITLE PAGE (1 Page -- Does NOT count against the 3-page written limit)
+% TITLE PAGE (does not count against the 3-page written limit)
 % ============================================================================
 \thispagestyle{empty}
 \begin{center}
     {\large \textbf{DARPA-PS-26-09: Strategic Technology Office (STO) Office-Wide ISO}}\\[2pt]
     {\normalsize \textbf{PROPOSAL ABSTRACT --- TITLE PAGE}}\\[6pt]
-    {\Large \textbf{Matrix-Inversion-Free O(1) Sedenion PG(3,2) Zero-Divisor Beamforming for Assured PNT, +80 dB GNSS Anti-Jamming, and Anti-Spoofing}}\\[8pt]
+    {\Large \textbf{Inversion-Free, Machine-Verified Algebraic Null Steering for CRPA Anti-Jamming: Provable Leakage Bounds, Phase-Continuous Null Switching, and Fixed-Point RFSoC Validation}}\\[8pt]
 \end{center}
 
 \begin{tabular}{@{}p{2.1in}p{4.2in}@{}}
 \toprule
-\textbf{Proposer / Organization:} & jai \\
-\textbf{Abstract Title:} & Matrix-Inversion-Free O(1) Sedenion PG(3,2) Zero-Divisor Beamforming for Assured PNT, +80 dB GNSS Anti-Jamming, and Anti-Spoofing \\
-\textbf{Solicitation / PM:} & DARPA-PS-26-09 (STO) / ATTN: Dr.\ Frank Robey \\
+\textbf{Proposer / Organization:} & J Quant Inform\'atica Ltda.\ (Get JAI), S\~ao Paulo, Brazil \\
+\textbf{Solicitation / PM:} & DARPA-PS-26-09 (STO) \\
 \textbf{Date:} & October 24, 2026 \\
 \textbf{Point of Contact (PI):} & Dionisio Chiuratto Agourakis \\
-\textbf{E-Mail \& Phone:} & \href{mailto:dionisio.ca@gmail.com}{dionisio.ca@gmail.com} \quad | \quad +55 11 98787-4110 \\
-\textbf{Mailing Address:} & Rua Joaquim Floriano 1125, apt 102, S\~ao Paulo, SP 04534-002, Brazil \\
-\textbf{CAGE / NCAGE Code:} & N/A (Foreign Entity -- NCAGE Registration Pending) \\
-\textbf{Proposed ROM \& Period:} & \$450,000.00 USD (12 Months) \\
+\textbf{E-Mail \& Phone:} & \href{mailto:dionisio@getjai.com}{dionisio@getjai.com} \quad | \quad +55 11 98787-4110 \\
+\textbf{Mailing Address:} & Rua Igarapava 63, Itaim Bibi, S\~ao Paulo/SP 04531-100, Brazil \\
+\textbf{CAGE / NCAGE Code:} & Foreign entity --- NCAGE registration pending \\
+\textbf{Proposed ROM \& Period:} & \$450,000 USD (12 months) \\
 \bottomrule
 \end{tabular}
 
 \vspace{6pt}
-\textbf{Mandatory SETA / A\&AS Non-Conflict Statement (DARPA-PS-26-09 Section 1.2):}\\
-The proposer (\textit{jai} and Principal Investigator Dionisio Chiuratto Agourakis) truthfully states and certifies that \textbf{no people on the proposer's team are also working for DARPA as Systems Engineering Technical Assistance (SETA), Advisory and Assistance Services (A\&AS), or similar support services}, in compliance with DARPA policy prohibiting such personnel from working as a technical performer.
+\textbf{SETA / A\&AS Non-Conflict Statement:} No member of the proposing team works for DARPA as SETA, A\&AS, or similar support-services personnel.
 
 \vspace{4pt}
-\textbf{Mandatory DARPA-PS-26-09 Section 1.2 Applicability Statements:}
+\textbf{Applicability Statements:}
 \begin{enumerate}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
-    \item \textbf{Applicable to STO Technical Areas:} Directly addresses Resilient Positioning, Navigation, and Timing (Assured PNT), Electromagnetic Warfare (EW), and Next-Generation Phased-Array Signal Processing.
-    \item \textbf{Important to STO's Current Investment Portfolio:} Enables SWaP-constrained tactical platforms (attritable UAVs, guided munitions, dismounted systems) to survive dense multi-jammer and repeater-spoofing EW environments without covariance-inversion processors.
-    \item \textbf{Revolutionary Advances Over State of Practice:} Replaces classical $\mathcal{O}(N^3)$ Sample Matrix Inversion (MVDR/STAP) with exact $\mathcal{O}(1)$ non-associative sedenion zero-divisor annihilation ($x\cdot y = 0$ in $\mathbb{S}\cong\mathbb{C}^8$), eliminating sample-starvation under rapid platform dynamics.
-    \item \textbf{Work Not Already Completed:} Foundational algebraic theorems (Lean~4 verified) and numerical simulations are established; the proposed 12-month R\&D effort funds fixed-point RTL/FPGA synthesis, mutual-coupling calibration over $\mathrm{PG}(3,2)$, and live RF hardware-in-the-loop (HIL) validation.
-    \item \textbf{No Prior Government Funding:} The proposer has \textbf{not} already received government funding or a positive funding decision for the proposed concept (whether from DARPA or another Government agency).
+    \item \textbf{STO technical areas:} Resilient PNT in contested electromagnetic environments; low-SWaP phased-array signal processing for attritable platforms.
+    \item \textbf{Portfolio relevance:} A CRPA null-steering stage with no matrix inversion, no DSP48 multipliers, single-cycle latency, and formally verified behavior, suited to platforms that cannot host a floating-point STAP processor.
+    \item \textbf{Advance over state of practice:} Replaces iterative/inverse-based weight computation with a closed-form algebraic construction whose two key guarantees---bounded leakage under signature error and zero carrier-phase discontinuity across null switches---are theorems checked in Lean~4, not simulation claims.
+    \item \textbf{Work not yet completed:} The algebra, the leakage bound, and the simulation regime map exist. Fixed-point RTL, calibration under mutual coupling, and live-RF validation do not.
+    \item \textbf{No prior government funding} for this concept.
 \end{enumerate}
 
 \newpage
-% ============================================================================
-% WRITTEN ABSTRACT BODY (Strictly <= 3 Pages: Pages 1, 2, 3)
-% ============================================================================
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-\section{Applicability to STO Technical Areas and Portfolio Relevance}
-Assured Positioning, Navigation, and Timing (PNT) and electromagnetic spectrum dominance under severe Electronic Attack (EA) are core priorities of the DARPA Strategic Technology Office (STO). Modern tactical platforms rely on 8-element Controlled Reception Pattern Antennas (CRPAs) to null high-power broadband noise jammers, swept-frequency chirps, and Meaconing, Intrusion, Jamming, and Interference (MIJI) repeaters.
+\section{Problem and What We Claim}
+Controlled Reception Pattern Antennas (CRPAs) on tactical GNSS receivers null jammers with MVDR/STAP weights $\mathbf{w}\propto\hat{\mathbf{R}}_{xx}^{-1}\mathbf{a}_{\mathrm{sat}}$, which require a covariance estimate over $K$ snapshots and an $\mathcal{O}(N^3)$ inversion. This is the right tool when snapshots are plentiful: with $K\ge$ (number of interferers), our simulations show MVDR reaching 85--95~dB null depth against a $+60$~dB JNR jammer and \emph{outperforming every signature-driven nuller}, including ours. We do not claim otherwise.
 
-Currently, operational CRPA digital beamformers rely on Minimum Variance Distortionless Response (MVDR / Capon) or Space-Time Adaptive Processing (STAP). These architectures must estimate an $N\times N$ spatial covariance matrix $\hat{\mathbf{R}}_{xx} = \frac{1}{K}\sum_{k=1}^K \mathbf{x}[k]\mathbf{x}^H[k]$ over $K \ge 2N$ snapshots and compute its matrix inverse $\hat{\mathbf{R}}_{xx}^{-1}$ at $\mathcal{O}(N^3)$ computational cost. In high-dynamic tactical theaters, this paradigm suffers from three critical failure modes:
+What MVDR does not provide is (i) a weight update that is closed-form, inversion-free and representable in 16-bit fixed point with no multipliers; (ii) any guarantee about carrier-phase continuity when nulls are re-steered; (iii) adequate null depth when $K$ falls below the interferer count (at $K=2$ against 3 and 6 jammers we measure 21~dB and 10~dB respectively, versus 68~dB and 65~dB for a signature-driven nuller). The proposed effort delivers a null-steering stage that provides (i)--(iii), with its limits stated and proven rather than hidden.
+
+\section{Technical Approach}
+\subsection{Algebraic construction}
+An 8-element complex baseband snapshot ($\mathbb{C}^8\cong\mathbb{R}^{16}$) is treated as an element of the 16-dimensional Cayley--Dickson sedenion algebra $\mathbb{S}$. Unlike $\mathbb{C},\mathbb{H},\mathbb{O}$, $\mathbb{S}$ has zero divisors: for a jammer signature $u$ mapped onto the Moreno cone, the left-multiplication operator $L(u)$ has an exact 4-dimensional kernel with a \emph{closed-form} basis $v=(c,\,(ac)b)$ (Theorem 5.1 of [1], machine-checked in Lean~4/Mathlib). The nulling weight is obtained by a handful of octonion products---no covariance, no inversion, no iteration. Two structural properties follow and are both machine-checked:
 \begin{itemize}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
-    \item \textbf{Sample Starvation \& Null Shallowing:} High-G platform maneuvers, rapid roll rates, or agile blinking jammers shift the interference angle-of-arrival faster than the $K$-snapshot integration window, smearing $\hat{\mathbf{R}}_{xx}$ and degrading null depth by $25\text{--}35\text{ dB}$.
-    \item \textbf{Ill-Conditioned Matrix Inversion:} At Jammer-to-Signal ratios ($\mathrm{JSR}$) exceeding $60\text{ dB}$, eigenvalue spread ($\kappa(\hat{\mathbf{R}}_{xx}) > 10^8$) triggers fixed-point overflow in low-SWaP FPGAs.
-    \item \textbf{Coherent Repeater Spoofing Vulnerability:} Conventional power-minimization beamformers either fail to null low-power coherent GNSS spoofers near the noise floor or inadvertently null the authentic satellite signal alongside the spoofer.
+    \item \textbf{Anti-partner gain:} any satellite signature in the orthogonal anti-partner direction is passed with exactly $+3.01$~dB coherent gain (measured $\sigma=0$ over 256 trials).
+    \item \textbf{Phase-continuous null switching:} the 15 Fano hyperplanes of $\mathrm{PG}(3,2)$ pairwise intersect in a quaternion subalgebra $\mathbb{H}_{L_{12}}$ on which the associator vanishes identically (\texttt{gnss\_pll\_hinge\_associative}, checked over all 56 workspace transitions). Routing the carrier reference through the hinge gives $0.0000^\circ$ phase jump at a null switch; the unrouted sedenion filter gives $58^\circ$ and MVDR re-estimation $5.8^\circ$ with a 10\% cycle-slip rate.
 \end{itemize}
 
-\section{Revolutionary Technical Approach: Sedenion PG(3,2) Beamforming}
-We propose a revolutionary algebraic architecture that eliminates covariance accumulation and matrix inversion entirely. Notice that an 8-element complex baseband CRPA snapshot $\mathbf{x}[k] \in \mathbb{C}^8 \cong \mathbb{R}^{16}$ is isometrically isomorphic to a single element $X[k] = \iota(\mathbf{x}[k])$ of the 16-dimensional Cayley--Dickson \textbf{sedenion algebra} $\mathbb{S}$. Unlike real, complex, quaternion, and octonion division algebras, $\mathbb{S}$ possesses an exact, algebraically rigid submanifold of \textbf{zero divisors}: non-zero vectors $x, y \in \mathbb{S}\setminus\{0\}$ whose bilinear sedenion product vanishes identically ($x \cdot y = 0$).
-
-The zero divisors of $\mathbb{S}$ are governed by the 15-point, 35-line finite projective geometry $\mathrm{PG}(3,2)$, partitioning into 84 primitive zero-divisor assessment blades $Z_m = (e_a \pm e_b)/\sqrt{2}$ arranged across 7 octahedral assessment contexts $\mathcal{C}_1,\dots,\mathcal{C}_7$. Our architecture exploits three machine-checked algebraic theorems (formally verified in Lean~4 with zero axioms/sorry; DOI \texttt{10.5281/zenodo.23603006}):
-
-\subsection{Instantaneous O(1) Algebraic Jammer Annihilation (+80.0 dB Nulling)}
-Given an estimated jammer spatial state $X_J = \iota(\mathbf{a}(\theta_J,\phi_J)) \in \mathbb{S}$ (extracted in a single snapshot via rank-1 phase differences or direct $\mathrm{PG}(3,2)$ context probing), the left-multiplication operator $L_{X_J}(Y) = X_J \cdot Y$ exhibits a 4-dimensional exact zero-divisor kernel $\ker(L_{X_J}) \subset \mathbb{S}$ spanned by complementary primitive partner blades $W_J \in \mathcal{C}_u$. Routing the incoming CRPA snapshot $X[k]$ through $W_J$ executes \textbf{single-snapshot $\mathcal{O}(1)$ algebraic jammer annihilation}:
+\subsection{The leakage bound: what null depth is actually achievable}
+A nuller built from an estimated signature $\hat u$ sees the true signature $u=\hat u+\delta$. We prove (Lean~4, theorem \texttt{leakage\_bound}, standard Mathlib axioms only):
 \[
-    Z_{\mathrm{out}}[k] = X[k] \cdot W_J = \bigl(X_{\mathrm{sat}}[k] + X_J[k] + \eta[k]\bigr) \cdot W_J = X_{\mathrm{sat}}[k] \cdot W_J + 0 + \eta[k] \cdot W_J.
+    \hat u\cdot v = 0 \;\Longrightarrow\; \|(\hat u+\delta)\cdot v\|_2^2 \;\le\; 2\,\|\delta\|_2^2\,\|v\|_2^2 .
 \]
-\textbf{Baseline Feasibility Proof:} In 8-element ULA CRPA simulations against a $+50\text{ dB}$ JSR jammer at $\theta_J = 30^\circ$ during rapid platform maneuver ($K=4$ snapshots), classical MVDR degrades to $39.69\text{ dB}$ jammer suppression ($-4.56\text{ dB}$ output SINR, losing lock), whereas our $\mathrm{PG}(3,2)$ zero-divisor beamformer achieves \textbf{$80.00\text{ dB}$ jammer suppression} and \textbf{$+11.96\text{ dB}$ output SINR} ($+16.52\text{ dB}$ SINR gain over MVDR) in \textbf{1 snapshot} with \textbf{zero matrix inversions} and only 64 fixed-point additions / 16 shifts per snapshot (vs.\ $\sim 4{,}096$ FLOPs for MVDR).
-
-\subsection{Associative Quaternion Hinge for Uncorrupted Carrier-Phase PLL Tracking}
-Full 16D sedenion multiplication is non-associative ($[x,y,z] \neq 0$), which would distort carrier-phase Tracking Loops (PLLs) if applied naively. However, we proved in Lean~4 (theorems \texttt{hinge\_is\_projective\_line} and \texttt{gnss\_pll\_hinge\_associative}) that each of the 35 projective lines $\ell_m = \{e_a, e_b, e_c = e_a e_b\}$ of $\mathrm{PG}(3,2)$ generates a strictly associative 4D quaternion subalgebra $\mathbb{H}_{\ell_m} \subset \mathbb{S}$. Projecting the post-nulling residual onto the active quaternion hinge $\mathbb{H}_{\ell^*}$ containing the satellite line-of-sight forces the associator to vanish identically ($\|[x,y,z]\|_2 = 0$), reducing carrier-phase RMSE from $28.76^\circ$ (MVDR) to \textbf{$1.75^\circ$}---matching the AWGN bound ($1.71^\circ$).
-
-\subsection{Coherent Repeater Anti-Spoofing via Zero-Divisor Antipartner Norm}
-For every primitive zero-divisor blade $Z = (e_a + e_b)/\sqrt{2}$ annihilating a spoofer spatial signature, its orthogonal antipartner $\tilde{Z} = (e_a - e_b)/\sqrt{2}$ satisfies $\|Z \cdot \tilde{Z}\|_2^2 = 2$ (Lean~4 theorem \texttt{crpa\_antipartner\_gain\_norm}) and induces the dual passband gain $G(\Delta\theta) = \sin^2(\frac{\pi}{2}\Delta\psi)$. Even when a coherent repeater spoofer closely tracks the authentic satellite angle ($\Delta\theta = 15^\circ$), the zero-divisor filter suppresses the spoofer by $>65\text{ dB}$ while preserving $+10.45\text{ dB}$ authentic C/A-code correlation peak margin ($7.8\sigma$ lock vs.\ $1.1\sigma$ failure under MVDR).
+Null depth is therefore governed by signature-estimation error, $\approx 20\log_{10}(1/\|\delta\|)-3$~dB, and \emph{no algebraic structure can beat this}. The measured sedenion residual sits within $1.4\times$ of the bound at every tested $\|\delta\|$ (Table~1); per output beam it matches an orthogonal-projection nuller built from the same $\hat u$ to within 2~dB. Figures such as ``139~dB'' or ``312~dB'' reported in our earlier simulations are the $\delta=0$ floating-point floor and are not performance claims.
 
 \begin{table}[h!]
-\centering
-\small
-\caption{Baseline Verification on 8-Element CRPA ($\mathrm{JSR}=+50\text{ dB}$, High-Dynamic $K=4$ Snapshots)}
+\centering\small
+\caption{Measured null depth vs.\ signature error $\|\delta\|$ (8-element $\lambda/2$ ULA, 256 trials each; \texttt{bench/gps\_jamming/run\_robustness.py}).}
 \vspace{2pt}
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lccccc@{}}
 \toprule
-\textbf{CRPA Architecture} & \textbf{Null Depth} & \textbf{Out SINR} & \textbf{PLL RMSE} & \textbf{Matrix Inv.\ / Ops} \\
+$\|\delta\|$ & Lean bound & Sedenion (16-vector) & Sedenion (per beam) & Orth.\ projection & Bound violations \\
 \midrule
-Delay-and-Sum (CBF) & $13.20\text{ dB}$ & $-31.05\text{ dB}$ & $81.42^\circ$ & None / $\mathcal{O}(N)$ \\
-Sample-Starved MVDR ($K=4$) & $39.69\text{ dB}$ & $-4.56\text{ dB}$ & $28.76^\circ$ & $\hat{\mathbf{R}}_{xx}^{-1}$ / $\sim 4096$ FLOPs \\
-\textbf{Sedenion $\mathrm{PG}(3,2)$ (Ours)} & \textbf{80.00 dB} & \textbf{+11.96 dB} & \textbf{1.75$^\circ$} & \textbf{None / 64 adds (1 snap)} \\
+$10^{-3}$ & 57.0 dB & 60.1 dB & 75.6 dB & 77.8 dB & 0/256 \\
+$10^{-2}$ & 37.0 dB & 40.1 dB & 55.2 dB & 57.1 dB & 0/256 \\
+$10^{-1}$ & 17.0 dB & 20.1 dB & --- & 37.4 dB & 0/256 \\
 \bottomrule
 \end{tabular}
-\vspace{-4pt}
 \end{table}
 
-\section{12-Month Technical Plan, Deliverables, Risk Mitigation, and Transition}
-\textbf{Why Proposed Research Is Not Yet Completed:} While the Lean~4 algebraic theorems and floating-point baseband simulations are established, transitioning $\mathrm{PG}(3,2)$ sedenion beamforming to tactical RF hardware requires solving three uncompleted R\&D tasks over 12 months:
-\begin{enumerate}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
-    \item \textbf{Task 1 (Mos.\ 1--4): Mutual-Coupling \& Array Manifold Calibration in $\mathbb{S}$.} Real 8-element tactical CRPAs exhibit mutual electromagnetic coupling $\mathbf{C} \in \mathbb{C}^{8\times 8}$ and airframe scattering that perturb ideal Vandermonde steering vectors out of canonical Cayley--Dickson coordinates. \textit{Deliverable D1:} Real-time symplectomorphic gauge transformation $T_{\mathbf{C}}: \mathbb{C}^8 \to \mathbb{S}$ maintaining $>55\text{ dB}$ hardware null depth across GPS L1/L2 bands.
-    \item \textbf{Task 2 (Mos.\ 5--8): Ultra-Low-Latency Fixed-Point SystemVerilog/FPGA Core.} Design and synthesize a multiplier-free 16-bit fixed-point RTL IP core implementing the 7 octahedral $\mathrm{PG}(3,2)$ contexts and 35 quaternion hinge projections on a Xilinx Zynq UltraScale+ RFSoC at $<10\text{ ns}$ pipeline latency ($<5\%$ LUT utilization). \textit{Deliverable D2:} Open-architecture SystemVerilog IP core and bit-true verification suite.
-    \item \textbf{Task 3 (Mos.\ 9--12): Multi-Jammer \& Spoofer Hardware-in-the-Loop (HIL) RF Validation.} Integrate the RFSoC bitstream with an 8-channel phase-coherent SDR testbed and GNSS simulator under simultaneous broadband jamming, swept-chirp EA, and repeater spoofing. \textit{Deliverable D3:} Final Technical Report and live HIL data package.
-\end{enumerate}
-\textbf{Risks \& Mitigation:} Channel phase/amplitude mismatch across the 8 RF front-ends can perturb algebraic orthogonality ($X_J \cdot W_J = \epsilon \neq 0$); we mitigate this via a closed-loop pilot-tone / blind $\mathrm{PG}(3,2)$ calibration LUT updated continuously in background FPGA fabric.
+\subsection{Operating regime}
+Per-channel gain/phase mismatch of $(1\%,1^\circ)$ yields $\|\delta\|\approx0.02$ and a $\sim$34~dB (16-vector) / $\sim$50~dB (per-beam) null; $(0.1\%,0.1^\circ)$ yields $\sim$54 / $\sim$70~dB. Hence the method is calibration-limited, like all signature-driven nullers, and the proposed work is correspondingly centered on calibration and fixed-point realization rather than on depth claims. The regime where it is the right choice: fast interferer dynamics or dense multi-jammer scenes where $K<J$, SWaP budgets that exclude a floating-point inversion, and RTK/carrier-phase receivers where null re-steering must not slip the PLL.
 
-\textbf{Contribution to U.S.\ National Security \& Transition:} All developed RTL IP cores, calibration algorithms, and Government Purpose Rights (GPR) deliverables will transition directly to U.S.\ DoD programs of record and U.S.\ defense prime integrators (GPS M-Code CRPA retrofits and attritable autonomous systems), with zero foreign government technology transfer.
+\section{12-Month Plan and Deliverables}
+\begin{enumerate}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
+    \item \textbf{Task 1 (Mo.\ 1--4) --- Calibration to the leakage bound.} Closed-loop pilot-tone and blind calibration of the $\mathbb{C}^8\!\to\!\mathbb{S}$ map under measured mutual coupling; target $\|\delta\|\le 3\times10^{-3}$ ($\ge$50~dB per-beam null) across L1/L2. \textit{D1:} calibration algorithm and error budget tied to the proven bound.
+    \item \textbf{Task 2 (Mo.\ 3--8) --- Fixed-point RTL.} 16-bit Q14 pipeline on Zynq UltraScale+ RFSoC implementing the cone projection, nullspace partner, and 35 hinge projections; our Q14 model shows 0/256 sign-table mismatches and $\sim$75~dB quantization-limited depth with no DSP48 usage. \textit{D2:} SystemVerilog IP, bit-true test suite, and a Lean-to-RTL conformance check of the sign table.
+    \item \textbf{Task 3 (Mo.\ 7--12) --- Live-RF HIL.} 8-channel phase-coherent SDR testbed with a GNSS constellation simulator under wideband, chirp and repeater interference; MVDR/LSMI run side-by-side on the same captures. \textit{D3:} data package, final report, and a published regime map (null depth vs.\ $K$, $J$, $\|\delta\|$) for both methods.
+\end{enumerate}
+\textbf{Risk:} the principal risk is that achievable $\|\delta\|$ on real hardware is $>10^{-2}$, capping per-beam depth near 50~dB. This is a known, bounded outcome, not a failure mode; the Task~3 regime map is the deliverable either way. \textbf{Transition:} GPR on all RTL and calibration code; integration path via a U.S.\ prime for M-code CRPA retrofits. The proposer is a foreign entity and will team with a U.S.\ organization as required for any follow-on involving controlled technical data.
+
+\textbf{References:} [1] D.\ C.\ Agourakis, ``Sedenion Algebras and PG(3,2) Incidence Structures\ldots,'' Zenodo 10.5281/zenodo.23588274 (Lean~4 sources: \texttt{github.com/josaum/sedenion-pg32}). [2] D.\ C.\ Agourakis, ``Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming,'' Zenodo 10.5281/zenodo.23603006.
 
 \newpage
-% ============================================================================
-% PRICE REALISM / ROUGH ORDER OF MAGNITUDE (ROM) (<= 1/2 Page, Excluded from Limit)
-% ============================================================================
 \thispagestyle{empty}
 \section*{Price Realism / Rough Order of Magnitude (ROM)}
-\textit{(Per DARPA-PS-26-09 Section 1.2, the Price/ROM section is $\le \frac{1}{2}$ page and does not count against the 3-page written abstract limit.)}
-
-The total Rough Order of Magnitude (ROM) for the 12-month technical effort is \textbf{\$450,000.00 USD} (range: \$420,000--\$475,000 depending on RF testbed rental options). Prior foundational algebraic research and Lean~4 formal verification (DOI \texttt{10.5281/zenodo.23603006}) are leveraged at zero cost to the U.S.\ Government.
+Total ROM for the 12-month effort: \textbf{\$450,000 USD} (range \$420k--\$475k depending on RF testbed rental). Prior algebraic research and Lean~4 verification are leveraged at no cost to the Government.
 
 \vspace{4pt}
 \begin{tabular}{@{}p{2.9in}p{1.75in}r@{}}
 \toprule
-\textbf{Resource Category / Labor \& Materials} & \textbf{Basis of Estimate (12 Mos)} & \textbf{Cost (USD)} \\
+\textbf{Category} & \textbf{Basis (12 mo.)} & \textbf{USD} \\
 \midrule
-\textbf{Senior Principal Investigator / DSP Architect} \newline (Sedenion $\mathrm{PG}(3,2)$ mutual-coupling gauge calibration, multi-jammer projection, HIL integration) & 1,200 Direct Labor Hours @ \$150/hr (loaded) & \$180,000.00 \\
-\addlinespace[3pt]
-\textbf{Senior FPGA / RFSoC RTL Engineer} \newline (SystemVerilog multiplier-free $\mathrm{PG}(3,2)$ pipeline synthesis, $<10\text{ ns}$ timing closure, AXI4-Stream DMA) & 960 Direct Labor Hours @ \$135/hr (loaded) & \$129,600.00 \\
-\addlinespace[3pt]
-\textbf{RF / GNSS Hardware Test Engineer} \newline (8-channel phase-coherent calibration, GNSS RF constellation + jammer/spoofer HIL execution) & 500 Direct Labor Hours @ \$110/hr (loaded) & \$55,000.00 \\
-\addlinespace[3pt]
-\textbf{Materials, Equipment \& RF Instrumentation} \newline (1$\times$ AMD/Xilinx Zynq UltraScale+ RFSoC 8-ch dev kit, phase-matched L1/L2 cabling, 8-element CRPA fixture, GNSS/EW signal generator rental) & Hardware \& Lab Rental Quotes & \$65,400.00 \\
-\addlinespace[3pt]
-\textbf{Travel, Reporting \& DoD Transition Reviews} \newline (2$\times$ technical review trips to DARPA STO, Arlington, VA) & 2 Trips + Data Package & \$20,000.00 \\
+Principal Investigator / algorithm \& calibration lead & 1,200 h @ \$150/h loaded & 180,000 \\
+Senior FPGA/RFSoC RTL engineer & 960 h @ \$135/h loaded & 129,600 \\
+RF / GNSS test engineer (HIL execution) & 500 h @ \$110/h loaded & 55,000 \\
+RFSoC dev kit, phase-matched cabling, 8-element fixture, GNSS/EW generator rental & quotes & 65,400 \\
+Travel and DoD reviews (2 trips, Arlington VA) & & 20,000 \\
 \midrule
-\textbf{Total Proposed Rough Order of Magnitude (ROM)} & \textbf{2,660 Hrs + Materials} & \textbf{\$450,000.00} \\
+\textbf{Total} & \textbf{2,660 h + materials} & \textbf{450,000} \\
 \bottomrule
 \end{tabular}
 
