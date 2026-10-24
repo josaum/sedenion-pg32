@@ -1,0 +1,53 @@
+{
+ "T1_fast_update": [
+  {
+   "K_sub": 1,
+   "drift_per_update_deg": 0.0078,
+   "sed_null_db": 57.5,
+   "proj_null_db": 59.3,
+   "mvdr_K64_block_null_db": 87.5
+  },
+  {
+   "K_sub": 2,
+   "drift_per_update_deg": 0.0156,
+   "sed_null_db": 62.9,
+   "proj_null_db": 66.5,
+   "mvdr_K64_block_null_db": 87.2
+  },
+  {
+   "K_sub": 4,
+   "drift_per_update_deg": 0.0312,
+   "sed_null_db": 59.5,
+   "proj_null_db": 63.5,
+   "mvdr_K64_block_null_db": 87.3
+  },
+  {
+   "K_sub": 8,
+   "drift_per_update_deg": 0.0625,
+   "sed_null_db": 54.4,
+   "proj_null_db": 58.5,
+   "mvdr_K64_block_null_db": 87.9
+  },
+  {
+   "K_sub": 64,
+   "drift_per_update_deg": 0.5,
+   "sed_null_db": 47.8,
+   "proj_null_db": 51.9,
+   "mvdr_K64_block_null_db": 87.2
+  }
+ ],
+ "T2_T3_two_jammers": {
+  "single_stage_two_jammers_db": 20.0,
+  "cascade_two_stage_db": 69.2,
+  "cascade_sat_gain_db": -0.85,
+  "single_stage_4D_steering_db": 22.1,
+  "steering_sat_gain_db": 1.12,
+  "projection_rank2_db": 71.5,
+  "lean_bound_db": 57.0
+ },
+ "T4_phase": {
+  "generic_weight_update_phase_jump_deg_mean": 87.52,
+  "generic_weight_update_phase_jump_deg_max": 160.0,
+  "hinge_assoc_vs_nonassoc_phase_deg_max": 2.5444437451708134e-14
+ }
+}
