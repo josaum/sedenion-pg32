@@ -287,4 +287,39 @@ theorem basis_mul_sign (i j : Nat) (hi : i < 8) (hj : j < 8) :
   rw [← signTab_eq i hi j hj]
   interval_cases i <;> interval_cases j <;> simp [omul, e, scale, signTab]
 
+/-- Sedenion addition and real scalar multiplication on O × O -/
+def sadd (u v : O × O) : O × O := (oadd u.1 v.1, oadd u.2 v.2)
+def sscale (r : ℝ) (u : O × O) : O × O := (scale r u.1, scale r u.2)
+
+/-- Right-distributivity and scalar bilinearity of sedenion multiplication:
+    if u₁ · w = 0 and u₂ · w = 0, then for any real amplitudes α, β ∈ ℝ,
+    the simultaneous multi-jammer superposition (α u₁ + β u₂) · w = 0 identically. -/
+theorem crpa_multi_jammer_superposition_null
+    (u1 u2 w : O × O) (α β : ℝ)
+    (h1 : smul u1 w = (ozero, ozero))
+    (h2 : smul u2 w = (ozero, ozero)) :
+    smul (sadd (sscale α u1) (sscale β u2)) w = (ozero, ozero) := by
+  obtain ⟨a1, b1⟩ := u1
+  obtain ⟨a2, b2⟩ := u2
+  obtain ⟨c, d⟩ := w
+  simp only [smul, sadd, sscale, oadd, osub, ozero, scale, conj, omul, Prod.mk.injEq, O.mk.injEq] at h1 h2 ⊢
+  obtain ⟨⟨h110, h111, h112, h113, h114, h115, h116, h117⟩, ⟨h120, h121, h122, h123, h124, h125, h126, h127⟩⟩ := h1
+  obtain ⟨⟨h210, h211, h212, h213, h214, h215, h216, h217⟩, ⟨h220, h221, h222, h223, h224, h225, h226, h227⟩⟩ := h2
+  refine ⟨⟨by linear_combination α * h110 + β * h210,
+           by linear_combination α * h111 + β * h211,
+           by linear_combination α * h112 + β * h212,
+           by linear_combination α * h113 + β * h213,
+           by linear_combination α * h114 + β * h214,
+           by linear_combination α * h115 + β * h215,
+           by linear_combination α * h116 + β * h216,
+           by linear_combination α * h117 + β * h217⟩,
+          ⟨by linear_combination α * h120 + β * h220,
+           by linear_combination α * h121 + β * h221,
+           by linear_combination α * h122 + β * h222,
+           by linear_combination α * h123 + β * h223,
+           by linear_combination α * h124 + β * h224,
+           by linear_combination α * h125 + β * h225,
+           by linear_combination α * h126 + β * h226,
+           by linear_combination α * h127 + β * h227⟩⟩
+
 end SedenionReal

@@ -157,4 +157,22 @@ theorem crpa_null_and_antipartner_4 :
     isZero (mul u_moreno v_beam4) ∧ vnormSq (mul u_antipartner v_beam4) = 8 := by
   decide +kernel
 
+/-- Second simultaneous jammer blade u_jam2 = e_2 - e_9 in the same PG(3,2) octahedral context,
+    and its orthogonal anti-partner satellite signature u_sat2 = e_2 + e_9. -/
+def u_moreno2 : Vec := sub (basis 2) (basis 9)
+def u_antipartner2 : Vec := add (basis 2) (basis 9)
+
+/-- Theorem 2.2 (Simultaneous Multi-Jammer Annihilation in Shared PG(3,2) Assessment Context):
+    Two orthogonal primitive jammers u_moreno = e_1 + e_10 and u_moreno2 = e_2 - e_9
+    (⟨u_moreno, u_moreno2⟩ = 0) are simultaneously annihilated by the shared zero-divisor
+    steering beams while preserving +3 dB coherent array gain (‖u_sat2 · v_r‖² = 8). -/
+theorem crpa_multi_jammer_simultaneous_null :
+    vdot u_moreno u_moreno2 = 0 ∧
+    vdot u_moreno2 u_antipartner2 = 0 ∧
+    isZero (mul u_moreno v_beam1) ∧ isZero (mul u_moreno2 v_beam1) ∧
+    isZero (mul (add u_moreno u_moreno2) v_beam1) ∧
+    vnormSq (mul u_antipartner v_beam1) = 8 ∧
+    vnormSq (mul u_antipartner2 v_beam1) = 8 := by
+  decide +kernel
+
 end SedenionPG32

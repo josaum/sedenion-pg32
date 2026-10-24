@@ -1,0 +1,93 @@
+{
+  "task1_mutual_coupling_gauge": {
+    "Uncalibrated-Vandermonde (No Gauge)": {
+      "mean_null_depth_db": -0.03,
+      "mean_sat_gain_db": 0.0
+    },
+    "Gauge-Calibrated (2% RF Mismatch)": {
+      "mean_null_depth_db": 22.2,
+      "mean_sat_gain_db": 0.29
+    },
+    "Gauge-Calibrated (0.5% Pilot LUT)": {
+      "mean_null_depth_db": 34.21,
+      "mean_sat_gain_db": 0.29
+    },
+    "Gauge-Calibrated (0.1% Closed-Loop)": {
+      "mean_null_depth_db": 48.43,
+      "mean_sat_gain_db": 0.29
+    },
+    "Gauge-Calibrated (Exact T_C^-1)": {
+      "mean_null_depth_db": 315.27,
+      "mean_sat_gain_db": 0.29
+    }
+  },
+  "referee2_lsmi_comparison": {
+    "Sample-Starved MVDR (K=4, No Load)": {
+      "supp_db": 74.87,
+      "post_corr_sinr_db": 6.48,
+      "p_det": 0.3633
+    },
+    "LSMI Diagonal-Loaded (K=4, delta=1e-2)": {
+      "supp_db": 76.93,
+      "post_corr_sinr_db": 5.27,
+      "p_det": 0.3047
+    },
+    "LSMI Diagonal-Loaded (K=16, delta=1e-2)": {
+      "supp_db": 83.04,
+      "post_corr_sinr_db": 8.18,
+      "p_det": 0.5117
+    },
+    "LSMI Diagonal-Loaded (K=64, delta=1e-2)": {
+      "supp_db": 89.25,
+      "post_corr_sinr_db": 19.96,
+      "p_det": 1.0
+    },
+    "Eigen-Subspace Projection (K=4)": {
+      "supp_db": 57.49,
+      "post_corr_sinr_db": 5.31,
+      "p_det": 0.3164
+    },
+    "Sedenion PG(3,2) Zero-Divisor (K=1 Snapshot)": {
+      "supp_db": 312.82,
+      "post_corr_sinr_db": 21.55,
+      "p_det": 1.0
+    }
+  },
+  "referee2_multi_jammer_superposition": {
+    "M=1_simultaneous_jammers": {
+      "mean_null_depth_db": 310.46,
+      "mean_sat_gain_db": 3.01,
+      "matrix_inversions": 0
+    },
+    "M=2_simultaneous_jammers": {
+      "mean_null_depth_db": 312.74,
+      "mean_sat_gain_db": 3.01,
+      "matrix_inversions": 0
+    },
+    "M=3_simultaneous_jammers": {
+      "mean_null_depth_db": 312.6,
+      "mean_sat_gain_db": 3.01,
+      "matrix_inversions": 0
+    },
+    "M=4_simultaneous_jammers": {
+      "mean_null_depth_db": 313.31,
+      "mean_sat_gain_db": 3.01,
+      "matrix_inversions": 0
+    }
+  },
+  "task2_rtl_q14_verification": {
+    "sv_sign_table_mismatches_of_256": 0,
+    "primitive_blade_q14_jammer_lsb_residual": 0,
+    "primitive_blade_q14_null_depth_db": 320.0,
+    "primitive_blade_q14_sat_gain_db": 3.01,
+    "continuous_moreno_q14_mean_null_depth_db": 75.14,
+    "rfsoc_xczu28dr_estimates": {
+      "sedenion_pg32_primitive_lut": 512,
+      "sedenion_pg32_dsp48": 0,
+      "sedenion_pg32_latency_cycles": 1,
+      "mvdr_qr_smi_lut": 18400,
+      "mvdr_qr_smi_dsp48": 64,
+      "mvdr_qr_smi_latency_cycles": 140
+    }
+  }
+}
