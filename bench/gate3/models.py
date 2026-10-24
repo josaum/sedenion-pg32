@@ -68,7 +68,7 @@ KS_CL16, XOR_CL16, CONJ_CL16 = _build_clifford16_tables(torch.float32)
 
 def alg_tables(kind):
     base = kind[:-6] if kind.endswith("_noffn") else kind
-    if base in ("sedenion", "sedenion_plain"):
+    if base in ("sedenion", "sedenion_plain", "linear_gate", "linear_gate_moreno"):
         conj = torch.ones(16)
         conj[1:] = -1.0
         return KS16, XOR16, 16, conj
@@ -106,7 +106,7 @@ class ProductAttention(nn.Module):
         self.qkv = nn.Linear(d, 3 * d)
         self.out = nn.Linear(d, d)
         self.alpha = nn.Parameter(torch.zeros(n_heads))
-        self.moreno = MorenoConeProjection(normalize_unit_sphere=True) if base == "sedenion" else None
+        self.moreno = MorenoConeProjection(normalize_unit_sphere=True) if base in ("sedenion", "linear_gate_moreno") else None
 
     def mul(self, u, v):
         return (u[..., self.xor] * v.unsqueeze(-2) * self.ks).sum(-1)
@@ -204,16 +204,24 @@ class ProductAttention(nn.Module):
         phi_j = math.pi * tau_j
         k_j = torch.cat([c_j, -torch.cos(phi_j) * p_j + torch.sin(phi_j) * p_perp_j], dim=-1) / math.sqrt(2.0)
 
-        # Pure O(N) zero-divisor product z_j = u_j * k_j(phi_j)
-        z_j = self.mul(u, k_j)
-        prod_norm_j = F.relu(z_j.norm(dim=-1) - 1e-6)
-        w_raw = self.mul(r_j_conj, z_j)
-        w_j = w_raw * self.mask_e0
+        if self.kind in ("linear_gate", "linear_gate_moreno"):
+            # LINEAR BASELINE: the closed-form scalar gate the sedenion path computes,
+            # g(phi) = (1 + cos phi)/sqrt(2) on the message, sqrt(1 + cos phi) on the score.
+            # No hypercomplex products anywhere.
+            cosphi = torch.cos(phi_j)
+            prod_norm_j = F.relu((1.0 + cosphi).clamp_min(0.0).sqrt().squeeze(-1) - 1e-6)
+            msg_j = (1.0 + cosphi) / math.sqrt(2.0) * v_stat
+        else:
+            # Pure O(N) zero-divisor product z_j = u_j * k_j(phi_j)
+            z_j = self.mul(u, k_j)
+            prod_norm_j = F.relu(z_j.norm(dim=-1) - 1e-6)
+            w_raw = self.mul(r_j_conj, z_j)
+            w_j = w_raw * self.mask_e0
 
-        left_j = self.mul(w_j, v_stat)
-        right_j = self.mul(v_stat, w_j)
-        a_op = torch.sigmoid(self.alpha).view(1, 1, self.h, 1, 1)
-        msg_j = a_op * left_j + (1.0 - a_op) * right_j
+            left_j = self.mul(w_j, v_stat)
+            right_j = self.mul(v_stat, w_j)
+            a_op = torch.sigmoid(self.alpha).view(1, 1, self.h, 1, 1)
+            msg_j = a_op * left_j + (1.0 - a_op) * right_j
 
         scores_blk = w_addr * prod_norm_j.unsqueeze(1)
         scores_norm = scores_blk.mean(-1)

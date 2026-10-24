@@ -1,0 +1,50 @@
+{
+ "sedenion": {
+  "params": 70537,
+  "acc_id": 0.992,
+  "flr_id": 0.0028,
+  "acc_ood": 0.9765,
+  "flr_ood": 0.0235,
+  "train_s": 530
+ },
+ "linear_gate": {
+  "params": 70537,
+  "acc_id": 0.9815,
+  "flr_id": 0.0077,
+  "acc_ood": 0.95,
+  "flr_ood": 0.05,
+  "train_s": 154
+ },
+ "linear_gate_moreno": {
+  "params": 70537,
+  "acc_id": 0.988,
+  "flr_id": 0.0042,
+  "acc_ood": 0.9615,
+  "flr_ood": 0.0385,
+  "train_s": 171
+ },
+ "sedenion_noffn": {
+  "params": 37129,
+  "acc_id": 0.931,
+  "flr_id": 0.0384,
+  "acc_ood": 0.8125,
+  "flr_ood": 0.1875,
+  "train_s": 463
+ },
+ "linear_gate_noffn": {
+  "params": 37129,
+  "acc_id": 0.973,
+  "flr_id": 0.0153,
+  "acc_ood": 0.9285,
+  "flr_ood": 0.0715,
+  "train_s": 95
+ },
+ "linear_gate_moreno_noffn": {
+  "params": 37129,
+  "acc_id": 0.9845,
+  "flr_id": 0.0084,
+  "acc_ood": 0.94,
+  "flr_ood": 0.06,
+  "train_s": 108
+ }
+}
