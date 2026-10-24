@@ -230,6 +230,37 @@ theorem dot_scale (r : ℝ) (x : O) : dot (scale r x) (scale r x) = r ^ 2 * dot 
   obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
   simp only [dot, scale]; ring
 
+@[simp] theorem omul_scale_left (r : ℝ) (x y : O) : omul (scale r x) y = scale r (omul x y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [omul, scale, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
+@[simp] theorem omul_scale_right (r : ℝ) (x y : O) : omul x (scale r y) = scale r (omul x y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [omul, scale, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
+@[simp] theorem conj_scale (r : ℝ) (x : O) : conj (scale r x) = scale r (conj x) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  simp only [conj, scale, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
+@[simp] theorem omul_add_left (x y z : O) : omul (oadd x y) z = oadd (omul x z) (omul y z) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  obtain ⟨z0, z1, z2, z3, z4, z5, z6, z7⟩ := z
+  simp only [omul, oadd, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
+@[simp] theorem omul_add_right (x y z : O) : omul x (oadd y z) = oadd (omul x y) (omul x z) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  obtain ⟨z0, z1, z2, z3, z4, z5, z6, z7⟩ := z
+  simp only [omul, oadd, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
 /-- **Theorem 2.1 Part 2 (GNSS CRPA Anti-Partner Coherent Array Gain — Product Formula).**
     While the jammer u_jam = (a, b) is annihilated identically by v_beam = (c, (ac)b),
     the orthogonal anti-partner satellite manifold u_sat = (a, -b) experiences constructive
@@ -242,7 +273,8 @@ theorem crpa_antipartner_product
     smul (a, scale (-1) b) (c, partner a b c) =
       (scale 2 (omul a c), scale 2 (omul (partner a b c) a)) := by
   have h := nullspace a b c ha0 hb0 hc0 hab hac hbc habc haa hbb
-  simp only [smul, osub, oadd, ozero, scale, conj, Prod.mk.injEq, O.mk.injEq] at h ⊢
+  simp only [smul, omul_scale_left, omul_scale_right, conj_scale]
+  simp only [smul, osub, oadd, ozero, scale, Prod.mk.injEq, O.mk.injEq] at h ⊢
   obtain ⟨⟨h10, h11, h12, h13, h14, h15, h16, h17⟩, ⟨h20, h21, h22, h23, h24, h25, h26, h27⟩⟩ := h
   refine ⟨⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩,
           ⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩⟩
@@ -272,7 +304,8 @@ theorem spoofer_half_sphere_passband
   have h := nullspace a b c ha0 hb0 hc0 hab hac hbc habc haa hbb
   have hprod : smul (a, b) (c, scale (-1) (partner a b c)) =
       (scale 2 (omul a c), scale (-2) (omul (partner a b c) a)) := by
-    simp only [smul, osub, oadd, ozero, scale, conj, Prod.mk.injEq, O.mk.injEq] at h ⊢
+    simp only [smul, omul_scale_left, omul_scale_right, conj_scale]
+    simp only [smul, osub, oadd, ozero, scale, Prod.mk.injEq, O.mk.injEq] at h ⊢
     obtain ⟨⟨h10, h11, h12, h13, h14, h15, h16, h17⟩, ⟨h20, h21, h22, h23, h24, h25, h26, h27⟩⟩ := h
     refine ⟨⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩,
             ⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩⟩
@@ -291,6 +324,19 @@ theorem basis_mul_sign (i j : Nat) (hi : i < 8) (hj : j < 8) :
 def sadd (u v : O × O) : O × O := (oadd u.1 v.1, oadd u.2 v.2)
 def sscale (r : ℝ) (u : O × O) : O × O := (scale r u.1, scale r u.2)
 
+/-- Left-linearity of sedenion multiplication:
+    (α u₁ + β u₂) · w = α (u₁ · w) + β (u₂ · w). -/
+theorem smul_linear_left (u1 u2 w : O × O) (α β : ℝ) :
+    smul (sadd (sscale α u1) (sscale β u2)) w =
+      sadd (sscale α (smul u1 w)) (sscale β (smul u2 w)) := by
+  obtain ⟨a1, b1⟩ := u1
+  obtain ⟨a2, b2⟩ := u2
+  obtain ⟨c, d⟩ := w
+  simp only [smul, sadd, sscale, omul_add_left, omul_add_right, omul_scale_left, omul_scale_right]
+  simp only [oadd, osub, scale, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
 /-- Right-distributivity and scalar bilinearity of sedenion multiplication:
     if u₁ · w = 0 and u₂ · w = 0, then for any real amplitudes α, β ∈ ℝ,
     the simultaneous multi-jammer superposition (α u₁ + β u₂) · w = 0 identically. -/
@@ -299,27 +345,9 @@ theorem crpa_multi_jammer_superposition_null
     (h1 : smul u1 w = (ozero, ozero))
     (h2 : smul u2 w = (ozero, ozero)) :
     smul (sadd (sscale α u1) (sscale β u2)) w = (ozero, ozero) := by
-  obtain ⟨a1, b1⟩ := u1
-  obtain ⟨a2, b2⟩ := u2
-  obtain ⟨c, d⟩ := w
-  simp only [smul, sadd, sscale, oadd, osub, ozero, scale, conj, omul, Prod.mk.injEq, O.mk.injEq] at h1 h2 ⊢
-  obtain ⟨⟨h110, h111, h112, h113, h114, h115, h116, h117⟩, ⟨h120, h121, h122, h123, h124, h125, h126, h127⟩⟩ := h1
-  obtain ⟨⟨h210, h211, h212, h213, h214, h215, h216, h217⟩, ⟨h220, h221, h222, h223, h224, h225, h226, h227⟩⟩ := h2
-  refine ⟨⟨by linear_combination α * h110 + β * h210,
-           by linear_combination α * h111 + β * h211,
-           by linear_combination α * h112 + β * h212,
-           by linear_combination α * h113 + β * h213,
-           by linear_combination α * h114 + β * h214,
-           by linear_combination α * h115 + β * h215,
-           by linear_combination α * h116 + β * h216,
-           by linear_combination α * h117 + β * h217⟩,
-          ⟨by linear_combination α * h120 + β * h220,
-           by linear_combination α * h121 + β * h221,
-           by linear_combination α * h122 + β * h222,
-           by linear_combination α * h123 + β * h223,
-           by linear_combination α * h124 + β * h224,
-           by linear_combination α * h125 + β * h225,
-           by linear_combination α * h126 + β * h226,
-           by linear_combination α * h127 + β * h227⟩⟩
+  rw [smul_linear_left, h1, h2]
+  simp only [sadd, sscale, oadd, scale, ozero, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
 
 end SedenionReal
