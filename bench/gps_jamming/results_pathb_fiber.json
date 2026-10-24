@@ -1,0 +1,35 @@
+{
+ "U1a_phase_locked": {
+  "sed_fiber_phase_jump_deg_mean": 0.0,
+  "sed_fiber_phase_jump_deg_max": 0.0,
+  "lin_lcmv_phase_jump_deg_mean": 0.0,
+  "lin_lcmv_phase_jump_deg_max": 0.0,
+  "sed_I_amplitude_mean": 0.4705
+ },
+ "U1b_dual_null": {
+  "sed_jam1_16D_null_db": 60.2,
+  "sed_jam2_IQ_null_db": 54.1,
+  "sed_sat_phase_err_deg": 0.0,
+  "lin_jam1_null_db": 69.0,
+  "lin_jam2_null_db": 68.8,
+  "lin_sat_phase_err_deg": 0.0,
+  "lean_bound_db": 57.0
+ },
+ "U2_codelayed": [
+  {
+   "eps": 0.0001,
+   "sed_spoofer_residual_rel_sat_db": 66.0,
+   "projector16_spoofer_residual_rel_sat_db": 67.7
+  },
+  {
+   "eps": 0.001,
+   "sed_spoofer_residual_rel_sat_db": 45.0,
+   "projector16_spoofer_residual_rel_sat_db": 46.5
+  },
+  {
+   "eps": 0.01,
+   "sed_spoofer_residual_rel_sat_db": 24.6,
+   "projector16_spoofer_residual_rel_sat_db": 27.2
+  }
+ ]
+}
