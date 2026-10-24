@@ -54,17 +54,23 @@ def make_scene(corr_lo=0.1, corr_hi=0.3):
 
 
 def sed_phase_locked(u1_hat, u_sat, i=1, j=2, extra=None):
-    """c in R^4 with Q-component of satellite output = 0 (and optional extra homogeneous constraints),
-       maximising the I component.  Returns (T, v)."""
-    uzd = moreno_project(u1_hat + 1e-3 * rng.standard_normal(16)); T = householder(unit(u1_hat), uzd)
+    """Canonical Moreno cone uzd=(e3,e4)/sqrt(2), anti-partner uanti=(e3,-e4)/sqrt(2).
+       T1 maps u1_hat -> uzd; T2 (fixing uzd) maps u_sat^perp -> uanti so (e1,e2) sits
+       directly in the anti-partner passband a*W_ab^perp."""
+    u1u = unit(u1_hat)
+    uzd = np.zeros(16); uzd[3] = 1/math.sqrt(2); uzd[8+4] = 1/math.sqrt(2)
+    uanti = np.zeros(16); uanti[3] = 1/math.sqrt(2); uanti[8+4] = -1/math.sqrt(2)
+    T1 = householder(u1u, uzd)
+    us_perp = u_sat - (u1u @ u_sat) * u1u
+    T2 = householder(unit(T1 @ us_perp), uanti)
+    T = T2 @ T1
     V = fiber_basis(uzd)
-    ys = np.stack([cd_mul(T @ u_sat, Vk) for Vk in V])          # 4 x 16 satellite outputs per basis vec
+    ys = np.stack([cd_mul(T @ u_sat, Vk) for Vk in V])          # 4 x 16 satellite outputs
     rows = [ys[:, j]]                                           # phase lock: Q = 0
     if extra is not None:
         for x in extra:
             yx = np.stack([cd_mul(T @ x, Vk) for Vk in V]); rows += [yx[:, i], yx[:, j]]
-    Lc = np.stack(rows)                                         # m x 4
-    # null space of Lc in R^4, then maximise I-amplitude inside it
+    Lc = np.stack(rows)
     _, s, Vt = np.linalg.svd(Lc); null = Vt[len(rows):] if len(rows) < 4 else Vt[-1:]
     gI = ys[:, i]
     alpha = null.T @ (null @ gI)
