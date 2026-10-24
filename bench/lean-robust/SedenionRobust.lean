@@ -140,4 +140,21 @@ theorem leakage_bound_unit (u δ v : O × O) (h : smul u v = (ozero, ozero))
   rw [hv] at this
   linarith
 
+theorem snorm2_nonneg (u : O × O) : 0 ≤ snorm2 u := by
+  simp only [snorm2, onorm2]
+  have := dot_nonneg u.1; have := dot_nonneg u.2; linarith
+
+/-- **Cascade leakage bound.**  Two-stage nuller: if the estimated signature u is annihilated by the
+    cascade, ((u·v₁)·v₂) = 0, then for the true signature u + δ
+        ‖((u+δ)·v₁)·v₂‖² ≤ 4 ‖δ‖² ‖v₁‖² ‖v₂‖².
+    (The hypothesis covers both a stage-1 null and a stage-2 null of the stage-1 residual.) -/
+theorem cascade_leakage_bound (u δ v₁ v₂ : O × O)
+    (h : smul (smul u v₁) v₂ = (ozero, ozero)) :
+    snorm2 (smul (smul (sadd u δ) v₁) v₂) ≤ 4 * snorm2 δ * snorm2 v₁ * snorm2 v₂ := by
+  rw [smul_add_left, smul_add_left, h, sadd_zero_left]
+  have h1 := snorm_smul_le (smul δ v₁) v₂
+  have h2 := snorm_smul_le δ v₁
+  have hv2 := snorm2_nonneg v₂
+  nlinarith [mul_le_mul_of_nonneg_right h2 hv2]
+
 end SedenionRobust

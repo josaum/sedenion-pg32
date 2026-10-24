@@ -1,0 +1,22 @@
+{
+ "sed_1stage": {
+  "p_d": 0.1016,
+  "post_corr_sinr_db": -0.3,
+  "null_rel_sat_db": 49.2
+ },
+ "sed_2stage_cascade": {
+  "p_d": 1.0,
+  "post_corr_sinr_db": 20.2,
+  "null_rel_sat_db": 81.5
+ },
+ "proj_rank2": {
+  "p_d": 1.0,
+  "post_corr_sinr_db": 21.0,
+  "null_rel_sat_db": 83.2
+ },
+ "mvdr_lsmi": {
+  "p_d": 1.0,
+  "post_corr_sinr_db": 20.1,
+  "null_rel_sat_db": 86.2
+ }
+}

@@ -1,0 +1,103 @@
+% Revised manuscript, Section 1 (2026-10-24)
+\section{Introduction}
+
+GNSS signals reach terrestrial receivers roughly 20~dB below the thermal noise floor, so a
+1~W jammer at a few kilometres produces jammer-to-signal ratios (JSR) of $+60$ to $+80$~dB,
+and coherent repeaters can capture the code and carrier tracking loops outright
+\cite{borio2012,psiaki2016}. Controlled Reception Pattern Antennas (CRPAs) counter this with
+spatial nulls, computed either by inverting a $d\times d$ sample covariance matrix
+($\mathcal{O}(d^3)$ MVDR/STAP, LSMI) or directly from an estimate of the interferer's spatial
+signature (orthogonal projection, LCMV) \cite{vantrees2002,compton1988}.
+
+\textbf{The algebraic question.} In parallel with classical linear array processing,
+hypercomplex array processors represent a multi-channel snapshot as a single algebra element
+and filter by native multiplication: complex arrays in $\mathbb{C}$, polarimetric vector-sensor
+arrays in $\mathbb{H}$ \cite{lebihan2004}, and octonion or Clifford-algebra networks
+\cite{ji2026}. When the underlying algebra is a normed division algebra
+($\mathbb{C},\mathbb{H},\mathbb{O}$), Hurwitz's composition identity
+$\|u\cdot w\|_2 = \|u\|_2\,\|w\|_2$ forbids any non-zero filter weight $w\neq 0$ from
+annihilating a non-zero interferer $u\neq 0$ by multiplication within a single algebraic
+channel. While conventional $\mathbb{C}^8$ linear inner-product beamformers ($w^H x$) form
+nulls across additive array sums without difficulty, a spatial null cannot be expressed as a
+native bilinear product inside a normed division algebra. We ask whether passing to the next
+Cayley--Dickson algebra—the 16-dimensional sedenions
+$\mathbb{S}=\mathbb{O}\oplus\mathbb{O}e_8$, whose multiplication contains an 11-dimensional
+Stiefel cone of exact zero divisors—closes this structural gap: \emph{can an 8-element complex
+CRPA ($\mathbb{C}^8\cong\mathbb{R}^{16}$) null jammers and co-delayed spoofers
+multiplicatively inside $\mathbb{S}$ without sample-covariance inversion, how closely does
+this match constrained linear beamforming under identical snapshot support, and what formal
+error guarantees govern its operation?}
+
+\textbf{Summary of findings.} We show that multiplicative zero-divisor beamforming in
+$\mathbb{S}$ breaks the Hurwitz barrier of division-algebra arrays and reaches parity with
+signature-driven linear projection and LCMV beamformers, backed by a machine-checked
+perturbation error budget and exact associative phase-routing guarantees:
+
+\subsection*{Contributions}
+
+\begin{enumerate}
+\item \textbf{Multiplicative nulling, anti-partner gauge, and 4D kernel fibre (\S2).}
+Projecting an interferer signature onto the Moreno zero-divisor cone
+$V_2(\mathbb{R}^7)\subset\mathbb{S}$ yields a closed-form, 4-dimensional right-annihilator
+fibre $v(c)=\frac{1}{\sqrt{2}}(c,(ac)b)$ for $c\in W_{ab}^\perp\cong\mathbb{R}^4$
+\cite{moreno1998,agourakis2026pg32}. We introduce a two-stage orthogonal gauge $T=T_2T_1$ that
+maps the interferer onto a canonical cone point and aligns the orthogonal satellite component
+with the resonant anti-partner manifold $u_{\mathrm{anti}}=\frac{1}{\sqrt{2}}(a,-b)$, placing
+the satellite directly in the fibre's passband without covariance inversion. Within the fibre,
+carrier phase locking and secondary interferer nulling reduce to homogeneous linear
+constraints on $c\in\mathbb{R}^4$.
+Cascading two multiplicative stages, $(X\cdot_{\mathbb{S}} v_1)\cdot_{\mathbb{S}} v_2$, nulls
+a second wideband interferer or the angular drift tangent of a non-stationary jammer.
+
+\item \textbf{Machine-checked Lean~4 perturbation leakage bound (\S2.3).}
+While exact signature knowledge ($\delta=0$) annihilates the interferer to the IEEE-754
+floating-point floor ($139.1$~dB in FP32, $312.9$~dB in FP64), practical null depth is
+governed by signature estimation error $\delta$. We prove and formally verify in the Lean~4
+theorem prover (v4.15.0 Mathlib, zero \texttt{sorry}, zero user axioms) that if
+$\hat u\cdot_{\mathbb{S}} v=0$ and the true interferer signature is $\hat u+\delta$, then
+$\|(\hat u+\delta)\cdot_{\mathbb{S}} v\|_2^2 \le 2\|\delta\|_2^2\|v\|_2^2$. Across all tested
+noise and estimation regimes, empirical sedenion residuals sit within a factor of $1.4$ of
+this formal bound with zero violations.
+
+\item \textbf{Phase continuity across $\mathrm{PG}(3,2)$ hinges and weight updates (\S3).}
+Under the $8+7$ Fano hyperplane bifurcation of $\mathrm{PG}(3,2)$, any benign octonion tracking
+workspace and any zero-divisor excision workspace intersect in a 3-node associative quaternion
+hinge $L_{12}=H_{\omega_1}\cap H_{\omega_2}\cong\mathbb{H}$ on which the sedenion associator
+vanishes identically (kernel-checked across all 56 workspace transitions), eliminating the
+$57.97^\circ$ non-associative phase jump across routed filter stages ($0.0000^\circ$). For
+dynamic re-estimation of the nulling weight $v(c)$ itself, enforcing a single linear
+phase-lock constraint inside the 4D fibre $W_{ab}^\perp$ eliminates the $87.0^\circ$
+unconstrained gauge jump and matches the $0.000^\circ$ phase continuity of distortionless LCMV.
+
+\item \textbf{Co-delayed spoofer excision and matched regime map (\S4--\S5).}
+When a coherent spoofer overlaps the authentic satellite within the same correlator tap
+($X_{\tau_0}=u_{\mathrm{sat}}+\beta u_{\mathrm{spoof}}$, $+30$~dB spoofer-to-signal ratio), a
+scalar gate scales both signals identically, and by Hurwitz's identity a single-channel
+division-algebra product preserves their norm ratio; neither can separate them. Sedenion
+zero-divisor multiplication suppresses the spoofer to within $1.0$--$1.6$~dB of a 16-parameter
+spatial projector across three decades of estimation error
+($\varepsilon\in\{10^{-4},10^{-3},10^{-2}\}$). Across matched anti-jamming benchmarks (\S5), the
+anti-partner gauge achieves the theoretical passband limit
+$\mathbb{E}\sqrt{1-\langle u_1,u_{\mathrm{sat}}\rangle^2}$ ($0.9895$ measured vs.\ $0.9899$
+theoretical). Two-stage cascaded nulling of a $0.5^\circ$ drifting $+80$~dB jammer over a
+64-snapshot window reaches $81.5$~dB relative to the satellite and $100\%$ GPS L1 C/A
+acquisition ($P_d=1.000$, post-correlation SINR $20.2$~dB, 256 trials), against $83.2$~dB /
+$P_d=1.000$ for rank-2 orthogonal projection and $86.2$~dB / $P_d=1.000$ for LSMI-MVDR; a single
+stage reaches $49.2$~dB and $P_d=0.102$. Single-stage dual-jammer fibre nulling reaches
+$64.8$~dB on jammer~1 and $65.2$~dB on jammer~2 (matched I/Q readout), $4$~dB behind LCMV at
+$69.0$~dB, and covariance-based MVDR leads whenever stationary snapshot support satisfies
+$K\ge J$.
+
+The neural experiments of our earlier preprint \cite{agourakis2026gnss} are withdrawn from this
+paper: on the task used there, the sedenion attention layer reduces exactly to the scalar gate
+$g(\phi)=(1+\cos\phi)/\sqrt{2}$, and a linear model with that gate and no hypercomplex products
+matches its results.
+\end{enumerate}
+
+\subsection*{Organisation}
+\S2 develops the sedenion CRPA model, the anti-partner gauge $T=T_2T_1$, the 4D fibre
+constraints, the two-stage cascade, and the Lean~4 perturbation leakage bound. \S3 establishes
+carrier-phase continuity across $\mathrm{PG}(3,2)$ quaternion hinges and fibre-locked weight
+updates. \S4 analyses co-delayed spoofer excision and the fixed-point hardware realisation. \S5 reports
+the matched experimental benchmarks and operational regime map, and \S6 concludes with
+calibration limits and cascading extensions.

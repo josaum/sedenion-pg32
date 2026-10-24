@@ -1,0 +1,136 @@
+% Revised manuscript, Section 2 -- draft for review (2026-10-24)
+\section{Multiplicative Nulling in the Sedenion Algebra}
+
+\subsection{Array model and algebra}
+An 8-element CRPA sampled at baseband produces, at chip index $t$, a snapshot
+$z(t)\in\mathbb{C}^8$. Writing $I_m,Q_m$ for the in-phase and quadrature outputs of element
+$m$, we identify the snapshot with a sedenion
+\begin{equation}
+X(t)=\sum_{m=0}^{7}\bigl(I_m(t)\,e_m+Q_m(t)\,e_{m+8}\bigr)=\bigl(a(t),b(t)\bigr)\in
+\mathbb{O}\oplus\mathbb{O}e_8=\mathbb{S},
+\label{eq:embed}
+\end{equation}
+an isometry $\mathbb{C}^8\to\mathbb{R}^{16}\cong\mathbb{S}$. The received snapshot is
+$X(t)=\sqrt{P_s}\,c(t-\tau_0)\,u_{\mathrm{sat}}+\sum_r\sqrt{P_r}\,j_r(t)\,u_r+N(t)$, with
+$u_{\mathrm{sat}},u_r$ unit spatial signatures, $c(\cdot)$ the C/A code and $N$ white noise.
+Sedenion multiplication is the Cayley--Dickson doubling
+\begin{equation}
+(a,b)\cdot(c,d)=\bigl(ac-d^{*}b,\;da+bc^{*}\bigr),
+\label{eq:cd}
+\end{equation}
+bilinear over $\mathbb{R}$, so for fixed $v$ the map $X\mapsto X\cdot v$ is a real-linear
+filter $L_v$ on $\mathbb{R}^{16}$. The embedding~\eqref{eq:embed} is a coordinate choice: it
+does not by itself give the product a physical meaning, and the results below hold for any
+fixed isometric embedding composed with the gauge of \S\ref{sec:gauge}.
+
+\subsection{Zero divisors and the closed-form annihilator fibre}
+For $u=(a,b)$ with $a,b\in\mathrm{Im}(\mathbb{O})$, $\|a\|=\|b\|=1$, $\langle a,b\rangle=0$
+(the Moreno cone, diffeomorphic to the Stiefel manifold $V_2(\mathbb{R}^7)$
+\cite{moreno1998}), let $W_{ab}=\mathrm{span}\{a,b,ab\}\subset\mathrm{Im}(\mathbb{O})$.
+
+\begin{theorem}[Annihilator fibre \cite{agourakis2026pg32}]\label{thm:fibre}
+For every $c\in W_{ab}^\perp$ (a 4-dimensional subspace),
+\begin{equation}
+v(c)=\tfrac{1}{\sqrt2}\bigl(c,\,(ac)b\bigr)\quad\text{satisfies}\quad u\cdot v(c)=0,
+\label{eq:fibre}
+\end{equation}
+the map $c\mapsto v(c)$ is linear and norm-preserving ($\|v(c)\|=\|c\|$), and
+$\dim\ker L(u)=4$.
+\end{theorem}
+The identity $u\cdot v(c)=0$ is formalised in Lean~4/Mathlib as \texttt{nullspace} and the
+dimension count as \texttt{finrank\_ker\_Lu}. Computing $v(c)$ costs two octonion products.
+
+\subsection{Anti-partner gauge}\label{sec:gauge}
+A physical interferer signature does not lie on the Moreno cone, and the satellite signature
+bears no particular relation to the fibre. Both are fixed by an orthogonal change of
+coordinates. Let $u_{\mathrm{zd}}=\tfrac{1}{\sqrt2}(e_3+e_{12})$ be a canonical cone point and
+$u_{\mathrm{anti}}=\tfrac{1}{\sqrt2}(e_3-e_{12})$ its anti-partner. Given an estimate
+$\hat u_1$ of the interferer signature,
+\begin{align}
+T_1&=H(\hat u_1\mapsto u_{\mathrm{zd}}),\\
+T_2&=H\bigl(\mathrm{unit}(T_1u_{\mathrm{sat}}^{\perp})\mapsto u_{\mathrm{anti}}\bigr),\qquad
+u_{\mathrm{sat}}^{\perp}=u_{\mathrm{sat}}-\langle\hat u_1,u_{\mathrm{sat}}\rangle\hat u_1,
+\end{align}
+where $H(x\mapsto y)$ is the Householder reflection exchanging unit vectors $x,y$, and
+$T=T_2T_1$. Because $T_1u_{\mathrm{sat}}^\perp\perp u_{\mathrm{zd}}$ and
+$u_{\mathrm{anti}}\perp u_{\mathrm{zd}}$, the reflection $T_2$ fixes $u_{\mathrm{zd}}$, so
+$T\hat u_1=u_{\mathrm{zd}}$ exactly while the satellite's interferer-orthogonal component is
+carried onto $u_{\mathrm{anti}}$. The filter applied to the array is
+\begin{equation}
+y(X)=(TX)\cdot v(c),\qquad c\in W_{\mathrm{zd}}^\perp ,
+\label{eq:filter}
+\end{equation}
+which annihilates $\hat u_1$ for every $c$ and passes the satellite with amplitude equal to
+$\|u_{\mathrm{sat}}^\perp\|=\sqrt{1-\langle\hat u_1,u_{\mathrm{sat}}\rangle^2}$, the same
+passband limit as any linear beamformer constrained to null $\hat u_1$ (\S5: $0.9895$
+measured vs.\ $0.9899$ theoretical).
+
+We stress what the gauge is: an orthogonal $16\times16$ map built from two outer products,
+of the same form and cost as a rank-1 projector. It is the step that makes the algebraic
+construction usable on physical signatures; it is not a source of advantage over linear
+beamforming, and we do not claim one.
+
+\subsection{Constraints inside the fibre}\label{sec:fibreconstraints}
+Let $\{c_1,\dots,c_4\}$ be an orthonormal basis of $W_{\mathrm{zd}}^\perp$ and write
+$c=\sum_k\alpha_kc_k$. Every readout of~\eqref{eq:filter} is linear in
+$\alpha\in\mathbb{R}^4$. Choosing the quadrature pair $(e_i,e_j)$ of the downstream
+correlator as I/Q, we impose:
+\begin{itemize}
+\item \emph{Phase lock}: $\langle e_j,\,y(u_{\mathrm{sat}})\rangle=0$, so the satellite enters
+the correlator with zero carrier phase regardless of how $\hat u_1$ was re-estimated;
+\item \emph{Second interferer}: $\langle e_i,y(\hat u_2)\rangle=\langle e_j,y(\hat u_2)\rangle=0$.
+\end{itemize}
+Stacking $m\le3$ such rows gives $L\alpha=0$ with $L\in\mathbb{R}^{m\times4}$; we take the unit
+$\alpha$ in $\ker L$ maximising the in-phase satellite amplitude
+$\langle e_i,y(u_{\mathrm{sat}})\rangle$. The solve is a $3\times4$ null-space computation,
+comparable in cost to the $3\times3$ Gram solve of an LCMV beamformer with the same
+constraints. The fibre offers four real degrees of freedom against roughly fifteen for an
+LCMV weight in $\mathbb{C}^8$, which is consistent with the 4~dB dual-nulling gap reported
+in \S5.
+
+\subsection{Two-stage cascade}
+To null a second interferer (or the tangent direction of a drifting one) across all output
+components rather than only the I/Q readout, a second stage is applied to the residual:
+\begin{equation}
+y^{(2)}(X)=\bigl(T^{(2)}y^{(1)}(X)\bigr)\cdot v_2,\qquad
+T^{(2)}\,\mathrm{unit}\bigl(y^{(1)}(\hat u_2)\bigr)=u_{\mathrm{zd}},
+\label{eq:cascade}
+\end{equation}
+so that $y^{(2)}(\hat u_1)=y^{(2)}(\hat u_2)=0$ exactly. With $\hat u_1,\hat u_2$ the two
+leading eigenvectors of the same sample covariance used by the baselines, the cascade is the
+multiplicative counterpart of rank-2 orthogonal projection and performs at its level (\S5).
+
+\subsection{Leakage bounds}\label{sec:bound}
+\begin{theorem}[Single-stage leakage]\label{thm:leak}
+If $\hat u\cdot v=0$, then for any perturbation $\delta\in\mathbb{S}$,
+\begin{equation}
+\|(\hat u+\delta)\cdot v\|^2\le 2\,\|\delta\|^2\|v\|^2 .
+\end{equation}
+\end{theorem}
+\begin{proof}[Proof sketch]
+By bilinearity, $(\hat u+\delta)\cdot v=\delta\cdot v$. Writing $\delta=(p,q)$, $v=(c,d)$ and
+applying~\eqref{eq:cd}, each octonion component is a difference or sum of two octonion
+products; the parallelogram inequality and the octonion composition law
+$\|xy\|=\|x\|\|y\|$ give $\|\delta\cdot v\|^2\le 2(\|p\|^2+\|q\|^2)(\|c\|^2+\|d\|^2)$.
+\end{proof}
+
+\begin{theorem}[Cascade leakage]\label{thm:cascade}
+If $(\hat u\cdot v_1)\cdot v_2=0$, then
+$\|((\hat u+\delta)\cdot v_1)\cdot v_2\|^2\le 4\,\|\delta\|^2\|v_1\|^2\|v_2\|^2$.
+\end{theorem}
+
+Both theorems are formalised in Lean~4 (v4.15.0, Mathlib) as \texttt{leakage\_bound} and
+\texttt{cascade\_leakage\_bound}, with no \texttt{sorry} and only the standard axioms
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. Since $T$ is orthogonal, the
+bounds apply unchanged to the gauged filter~\eqref{eq:filter}, with $\|\delta\|$ the
+signature-estimation error.
+
+For unit $v$, Theorem~\ref{thm:leak} gives a guaranteed null depth of at least
+$-20\log_{10}\|\delta\|-3$~dB. This is the operational content of the result: null depth is
+set by how well the interferer signature is known, through calibration and estimation, and not
+by the algebra. It is the same dependence a linear signature-driven nuller has; what the
+theorem adds is that for the multiplicative construction it is proven rather than assumed.
+Exact signature knowledge ($\delta=0$) yields annihilation to the floating-point floor
+(139~dB in FP32, 313~dB in FP64), which is the limit case of the bound and not a performance
+figure. In \S5 the measured single-stage residual lies within a factor $1.4$ of the bound at
+every tested $\|\delta\|$, with no violations in 1{,}792 trials.
