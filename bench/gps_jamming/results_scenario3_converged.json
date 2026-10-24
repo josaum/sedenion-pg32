@@ -1,0 +1,34 @@
+{
+ "linear_gate_moreno": {
+  "params": 70537,
+  "acc_id": 0.923,
+  "flr_id": 0.0746,
+  "acc_ood": 0.7045,
+  "flr_ood": 0.2955,
+  "train_s": 997
+ },
+ "sedenion": {
+  "params": 70537,
+  "acc_id": 0.875,
+  "flr_id": 0.1513,
+  "acc_ood": 0.6275,
+  "flr_ood": 0.3725,
+  "train_s": 3136
+ },
+ "linear_gate_moreno_noffn": {
+  "params": 37129,
+  "acc_id": 1.0,
+  "flr_id": 0.0,
+  "acc_ood": 1.0,
+  "flr_ood": 0.0,
+  "train_s": 687
+ },
+ "sedenion_noffn": {
+  "params": 37129,
+  "acc_id": 1.0,
+  "flr_id": 0.0,
+  "acc_ood": 1.0,
+  "flr_ood": 0.0,
+  "train_s": 4155
+ }
+}
