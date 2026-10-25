@@ -230,6 +230,51 @@ theorem dot_scale (r : ℝ) (x : O) : dot (scale r x) (scale r x) = r ^ 2 * dot 
   obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
   simp only [dot, scale]; ring
 
+/-! Bilinearity of the octonion product in the scalar `scale`, and two one-line consequences of a
+    vanishing sum/difference. These let the CRPA theorems below follow from `nullspace` at the
+    octonion level, without re-expanding any degree-4 coordinate polynomial. -/
+
+theorem omul_scale_left (r : ℝ) (x y : O) : omul (scale r x) y = scale r (omul x y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [omul, scale, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+theorem omul_scale_right (r : ℝ) (x y : O) : omul x (scale r y) = scale r (omul x y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [omul, scale, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+theorem conj_scale (r : ℝ) (x : O) : conj (scale r x) = scale r (conj x) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  simp only [conj, scale, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+/-- `x − y = 0 ⇒ x − (−1)·y = 2x` -/
+theorem osub_neg_of_osub_zero (x y : O) (h : osub x y = ozero) : osub x (scale (-1) y) = scale 2 x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [osub, ozero, scale, O.mk.injEq] at h ⊢
+  obtain ⟨h0, h1, h2, h3, h4, h5, h6, h7⟩ := h
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> linarith
+
+/-- `x + y = 0 ⇒ x + (−1)·y = 2x` -/
+theorem oadd_neg_of_oadd_zero (x y : O) (h : oadd x y = ozero) : oadd x (scale (-1) y) = scale 2 x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [oadd, ozero, scale, O.mk.injEq] at h ⊢
+  obtain ⟨h0, h1, h2, h3, h4, h5, h6, h7⟩ := h
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> linarith
+
+/-- `x + y = 0 ⇒ (−1)·x + y = (−2)·x` -/
+theorem neg_oadd_of_oadd_zero (x y : O) (h : oadd x y = ozero) : oadd (scale (-1) x) y = scale (-2) x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [oadd, ozero, scale, O.mk.injEq] at h ⊢
+  obtain ⟨h0, h1, h2, h3, h4, h5, h6, h7⟩ := h
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> linarith
+
 /-- **Theorem 2.1 Part 2 (GNSS CRPA Anti-Partner Coherent Array Gain — Product Formula).**
     While the jammer u_jam = (a, b) is annihilated identically by v_beam = (c, (ac)b),
     the orthogonal anti-partner satellite manifold u_sat = (a, -b) experiences constructive
@@ -242,10 +287,11 @@ theorem crpa_antipartner_product
     smul (a, scale (-1) b) (c, partner a b c) =
       (scale 2 (omul a c), scale 2 (omul (partner a b c) a)) := by
   have h := nullspace a b c ha0 hb0 hc0 hab hac hbc habc haa hbb
-  simp only [smul, osub, oadd, ozero, scale, conj, Prod.mk.injEq, O.mk.injEq] at h ⊢
-  obtain ⟨⟨h10, h11, h12, h13, h14, h15, h16, h17⟩, ⟨h20, h21, h22, h23, h24, h25, h26, h27⟩⟩ := h
-  refine ⟨⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩,
-          ⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩⟩
+  simp only [smul, Prod.mk.injEq] at h ⊢
+  obtain ⟨h1, h2⟩ := h
+  refine ⟨?_, ?_⟩
+  · rw [omul_scale_right]; exact osub_neg_of_osub_zero _ _ h1
+  · rw [omul_scale_left]; exact oadd_neg_of_oadd_zero _ _ h2
 
 /-- **Theorem 2.1 Part 2 (GNSS CRPA Coherent +3 dB Array Gain Norm Identity).**
     ‖(a, -b) · (c, (ac)b)‖² = 8 ‖c‖² = 2 ‖(a, -b)‖² ‖(c, (ac)b)‖². -/
@@ -272,10 +318,11 @@ theorem spoofer_half_sphere_passband
   have h := nullspace a b c ha0 hb0 hc0 hab hac hbc habc haa hbb
   have hprod : smul (a, b) (c, scale (-1) (partner a b c)) =
       (scale 2 (omul a c), scale (-2) (omul (partner a b c) a)) := by
-    simp only [smul, osub, oadd, ozero, scale, conj, Prod.mk.injEq, O.mk.injEq] at h ⊢
-    obtain ⟨⟨h10, h11, h12, h13, h14, h15, h16, h17⟩, ⟨h20, h21, h22, h23, h24, h25, h26, h27⟩⟩ := h
-    refine ⟨⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩,
-            ⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith, by linarith⟩⟩
+    simp only [smul, Prod.mk.injEq] at h ⊢
+    obtain ⟨h1, h2⟩ := h
+    refine ⟨?_, ?_⟩
+    · rw [conj_scale, omul_scale_left]; exact osub_neg_of_osub_zero _ _ h1
+    · rw [omul_scale_left]; exact neg_oadd_of_oadd_zero _ _ h2
   rw [hprod]
   unfold snormSq
   simp only [dot_scale, composition, partner_norm a b c haa hbb, haa]

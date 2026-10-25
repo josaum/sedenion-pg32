@@ -7,4 +7,7 @@ scope = "leanprover-community"
 rev = "v4.15.0"
 
 [[lean_lib]]
+name = "SedenionReal"
+
+[[lean_lib]]
 name = "SedenionRobust"

@@ -4,8 +4,8 @@ import SedenionRobust
 #print axioms SedenionRobust.snorm_smul_le
 #print axioms SedenionRobust.cascade_leakage_bound
 #print axioms SedenionRobust.right_mul_adjoint
-#print axioms SedenionRobust.moreno_cone_annihilation
-#print axioms SedenionRobust.moreno_annihilator_norm
+#print axioms SedenionReal.nullspace
+#print axioms SedenionReal.partner_norm
 #print axioms SedenionRobust.dualpol_colinear_preservation
 #print axioms SedenionRobust.dualpol_passive_rf_stage
 #print axioms SedenionRobust.jam_linear_on_cone
@@ -13,3 +13,6 @@ import SedenionRobust
 #print axioms SedenionRobust.v_tilt_norm
 #print axioms SedenionRobust.dualpol_tilt_colinear_preservation
 #print axioms SedenionRobust.dualpol_tilt_passive_rf_stage
+#print axioms SedenionReal.crpa_antipartner_product
+#print axioms SedenionReal.crpa_antipartner_gain_norm
+#print axioms SedenionReal.spoofer_half_sphere_passband
