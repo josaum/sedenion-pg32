@@ -1,4 +1,5 @@
 import SedenionRobust
+import SedenionDim
 #print axioms SedenionRobust.leakage_bound
 #print axioms SedenionRobust.leakage_bound_unit
 #print axioms SedenionRobust.snorm_smul_le
@@ -20,12 +21,9 @@ import SedenionRobust
 #print axioms SedenionReal.partner_linear
 #print axioms SedenionReal.basis_mul_sign
 
-/- The following theorems are described in §5.5 of the PG(3,2) paper (modules SedenionAlt,
-   SedenionRank, SedenionDim) but those modules are not in this repository yet; re-enable once
-   they are committed. -/
--- #print axioms SedenionReal.square_identity
--- #print axioms SedenionReal.adjoint_identity
--- #print axioms SedenionReal.kernel_char
--- #print axioms SedenionReal.ker_Lu_eq
--- #print axioms SedenionReal.finrank_ker_Lu
--- #print axioms SedenionReal.finrank_range_Lu
+#print axioms SedenionReal.square_identity
+#print axioms SedenionReal.adjoint_identity
+#print axioms SedenionReal.kernel_char
+#print axioms SedenionReal.ker_Lu_eq
+#print axioms SedenionReal.finrank_ker_Lu
+#print axioms SedenionReal.finrank_range_Lu

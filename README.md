@@ -20,7 +20,8 @@ benchmarks/        algebraic_baselines.py (Table 2), track_a/ (Yang–Mills BCJ)
                    (CRPA null steering, phase-2 defences, dual-pol excision, Q1.14 RTL)
 lean/pg32/         finite development: Lean 4.15 core only, every theorem by decide +kernel, no axioms
 lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0
-                   SedenionReal.lean  — Theorem 5.1 nullspace, Hurwitz composition, CRPA theorems
+                   SedenionReal.lean   — Theorem 5.1 nullspace, Hurwitz composition, CRPA theorems
+                   SedenionAlt/Rank/Dim — alternativity, kernel characterisation, rank L(u) = 12 (rank–nullity)
                    SedenionRobust.lean — leakage bounds, 8⊕4⊕4 transceiver, dual-pol RHCP/LHCP excision
 reports/           analysis notes that back numbers in the papers
 zenodo/            deposit metadata, package and upload script for the dual-pol supplement
@@ -61,10 +62,9 @@ cd lean/pg32 && lake build SedenionPG32 && LEAN_PATH=.lake/build/lib lean Axioms
 cd lean/real && lake exe cache get && lake build && lake env lean Axioms.lean            # propext, Classical.choice, Quot.sound only
 ```
 
-`lean/real/Axioms.lean` lists every theorem the papers cite from the real development. The rank–nullity
-theorems of §5.5 of the main paper (`SedenionAlt`, `SedenionRank`, `SedenionDim`: `square_identity`,
-`adjoint_identity`, `kernel_char`, `ker_Lu_eq`, `finrank_ker_Lu`, `finrank_range_Lu`) are **not yet in this
-repository**; their `#print axioms` lines are commented out until the modules are committed.
+`lean/real/Axioms.lean` audits every theorem the papers cite from the real development, including the
+§5.5 rank–nullity chain (`SedenionAlt` → `SedenionRank` → `SedenionDim`: `square_identity`,
+`adjoint_identity`, `kernel_char`, `ker_Lu_eq`, `finrank_ker_Lu = 4`, `finrank_range_Lu = 12`).
 
 ## Citation
 
