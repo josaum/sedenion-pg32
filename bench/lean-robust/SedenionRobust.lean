@@ -292,4 +292,32 @@ theorem nullspace_J
   · rw [dot_oneg_oneg]; exact hbb
   · exact haa
 
+/-! ## The scalar readout of the sedenion product is the complex inner product
+
+For q = (a, b), x = (c, d) ∈ S = O ⊕ O e₈, the e₀ and e₈ components of q·x are
+    (q·x)₀ = Re⟨w, x⟩_ℂ,   (q·x)₈ = Im⟨w, x⟩_ℂ
+for the complex weight w = (a₀, −a₁..−a₇) + i(−b₀, −b₁..−b₇) and x read as c + i d ∈ ℂ⁸.
+So the 16-parameter family of scalar beamformers {pᵀL_q : q ∈ S} with p = (e₀, e₈) is exactly the
+conventional complex-linear family {wᴴx}: the sedenion structure adds no widely-linear behaviour
+at this readout.  (Direction 1, Experiment 7.) -/
+
+def reW (a : O) : O := ⟨a.c0, -a.c1, -a.c2, -a.c3, -a.c4, -a.c5, -a.c6, -a.c7⟩
+def imW (b : O) : O := ⟨-b.c0, -b.c1, -b.c2, -b.c3, -b.c4, -b.c5, -b.c6, -b.c7⟩
+
+theorem readout_e0 (a b c d : O) :
+    (smul (a, b) (c, d)).1.c0 = dot (reW a) c + dot (imW b) d := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
+  obtain ⟨d0, d1, d2, d3, d4, d5, d6, d7⟩ := d
+  simp only [smul, omul, conj, osub, oadd, dot, reW, imW]; ring
+
+theorem readout_e8 (a b c d : O) :
+    (smul (a, b) (c, d)).2.c0 = dot (reW a) d - dot (imW b) c := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
+  obtain ⟨d0, d1, d2, d3, d4, d5, d6, d7⟩ := d
+  simp only [smul, omul, conj, osub, oadd, dot, reW, imW]; ring
+
 end SedenionRobust

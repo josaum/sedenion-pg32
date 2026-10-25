@@ -1,0 +1,299 @@
+{
+ "J=1 rectilinear (known phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.015,
+   "noise_gain_db": 0.13,
+   "null_db": 70.4,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 1.698,
+   "noise_gain_db": 4.6,
+   "null_db": 66.4,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.007,
+   "noise_gain_db": 0.06,
+   "null_db": 70.3,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 3.32,
+   "noise_gain_db": 10.42,
+   "null_db": 65.9,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 1.673,
+   "noise_gain_db": 4.47,
+   "null_db": 66.5,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.015,
+   "noise_gain_db": 0.13,
+   "null_db": 70.4,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 1.625,
+   "noise_gain_db": 4.22,
+   "null_db": 66.6,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "noise_gain": 2.138,
+   "noise_gain_db": 6.6,
+   "null_db": 64.6,
+   "infeasible": 0
+  }
+ },
+ "J=2 rectilinear (known phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.082,
+   "noise_gain_db": 0.68,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 1.809,
+   "noise_gain_db": 5.15,
+   "null_db": 65.0,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.037,
+   "noise_gain_db": 0.32,
+   "null_db": 69.6,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 2.879,
+   "noise_gain_db": 9.18,
+   "null_db": 64.6,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 1.865,
+   "noise_gain_db": 5.41,
+   "null_db": 64.8,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.082,
+   "noise_gain_db": 0.68,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 1.842,
+   "noise_gain_db": 5.31,
+   "null_db": 64.6,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "noise_gain": 2.413,
+   "noise_gain_db": 7.65,
+   "null_db": 62.2,
+   "infeasible": 0
+  }
+ },
+ "J=3 rectilinear (known phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.107,
+   "noise_gain_db": 0.88,
+   "null_db": 69.0,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 2.102,
+   "noise_gain_db": 6.45,
+   "null_db": 64.1,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.044,
+   "noise_gain_db": 0.38,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 2.645,
+   "noise_gain_db": 8.45,
+   "null_db": 63.3,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 2.179,
+   "noise_gain_db": 6.77,
+   "null_db": 63.5,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.107,
+   "noise_gain_db": 0.88,
+   "null_db": 69.0,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 2.178,
+   "noise_gain_db": 6.76,
+   "null_db": 63.1,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "noise_gain": 2.625,
+   "noise_gain_db": 8.38,
+   "null_db": 61.1,
+   "infeasible": 0
+  }
+ },
+ "J=5 rectilinear (known phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.341,
+   "noise_gain_db": 2.55,
+   "null_db": 67.2,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 3.65,
+   "noise_gain_db": 11.25,
+   "null_db": 59.4,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.115,
+   "noise_gain_db": 0.95,
+   "null_db": 68.6,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 7.019,
+   "noise_gain_db": 16.93,
+   "null_db": 58.3,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 3.52,
+   "noise_gain_db": 10.93,
+   "null_db": 59.6,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.341,
+   "noise_gain_db": 2.55,
+   "null_db": 67.2,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 3.895,
+   "noise_gain_db": 11.81,
+   "null_db": 59.3,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "noise_gain": 4.181,
+   "noise_gain_db": 12.43,
+   "null_db": 57.7,
+   "infeasible": 0
+  }
+ },
+ "J=1 circular (unknown phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.017,
+   "noise_gain_db": 0.15,
+   "null_db": 70.8,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 1.847,
+   "noise_gain_db": 5.33,
+   "null_db": 64.9,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.017,
+   "noise_gain_db": 0.15,
+   "null_db": 70.8,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 2.838,
+   "noise_gain_db": 9.06,
+   "null_db": 65.3,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 1.779,
+   "noise_gain_db": 5.01,
+   "null_db": 65.4,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.017,
+   "noise_gain_db": 0.15,
+   "null_db": 70.8,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 1.938,
+   "noise_gain_db": 5.75,
+   "null_db": 64.6,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "noise_gain": 3.453,
+   "noise_gain_db": 10.76,
+   "null_db": 61.9,
+   "infeasible": 0
+  }
+ },
+ "J=2 circular (unknown phase)": {
+  "sed_q (p=e0,e8)": {
+   "noise_gain": 1.065,
+   "noise_gain_db": 0.55,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "random_16 #1": {
+   "noise_gain": 2.644,
+   "noise_gain_db": 8.45,
+   "null_db": 61.8,
+   "infeasible": 0
+  },
+  "full_WL": {
+   "noise_gain": 1.065,
+   "noise_gain_db": 0.55,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e2)": {
+   "noise_gain": 8.17,
+   "noise_gain_db": 18.24,
+   "null_db": 60.0,
+   "infeasible": 0
+  },
+  "random_16 #2": {
+   "noise_gain": 2.458,
+   "noise_gain_db": 7.81,
+   "null_db": 62.4,
+   "infeasible": 0
+  },
+  "complex_linear": {
+   "noise_gain": 1.065,
+   "noise_gain_db": 0.55,
+   "null_db": 69.4,
+   "infeasible": 0
+  },
+  "random_16 #0": {
+   "noise_gain": 2.393,
+   "noise_gain_db": 7.58,
+   "null_db": 62.2,
+   "infeasible": 0
+  },
+  "sed_q (p=e1,e9)": {
+   "infeasible": 128
+  }
+ }
+}

@@ -5,3 +5,5 @@ import SedenionRobust
 #print axioms SedenionRobust.cascade_leakage_bound
 #print axioms SedenionRobust.nullspace_J
 #print axioms SedenionRobust.partner_swap
+#print axioms SedenionRobust.readout_e0
+#print axioms SedenionRobust.readout_e8
