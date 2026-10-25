@@ -19,7 +19,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "bench" / "pkg"))
+sys.path.insert(0, str(ROOT))
 from sedenion_pg32 import tables
 from tasks import FANO_MASK_16
 

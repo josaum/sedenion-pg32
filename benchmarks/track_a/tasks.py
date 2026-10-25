@@ -25,7 +25,7 @@ import pathlib
 import torch
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "bench" / "pkg"))
+sys.path.insert(0, str(ROOT))
 from sedenion_pg32 import tables, sed_mul, build_pg32_fano_tables
 
 _, K_SIGNS, XOR_IDX = tables(torch.float32)

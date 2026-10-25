@@ -31,8 +31,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 HERE = pathlib.Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "pkg"))
-sys.path.insert(0, "/home/claude/bench/pkg")
+sys.path.insert(0, str(HERE.parents[1]))
 sys.path.insert(0, str(HERE))
 from sedenion_pg32 import tables, MorenoConeProjection
 from tasks import VOCAB_TYPE, VOCAB_ARG, VOCAB_ID, T

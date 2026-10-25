@@ -22,7 +22,7 @@ import Mathlib.Tactic
 import SedenionReal
 
 /-! The octonion/sedenion carrier, product, inner product and the constructive nullspace theorem
-    live in `SedenionReal` (bench/lean-real, symlinked here); this file only adds the robustness
+    live in `SedenionReal` (same directory); this file only adds the robustness
     and dual-polarisation results on top of them. -/
 
 namespace SedenionRobust

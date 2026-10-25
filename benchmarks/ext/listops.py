@@ -12,8 +12,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "bench" / "pkg"))
-sys.path.insert(0, str(ROOT / "bench" / "gate3"))
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "benchmarks" / "track_b"))
 from models import Block
 
 DATA_DIR = pathlib.Path(os.environ.get(

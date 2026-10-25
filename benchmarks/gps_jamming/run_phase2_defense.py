@@ -25,9 +25,9 @@ import torch
 import torch.nn.functional as F
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "bench" / "pkg"))
-sys.path.insert(0, str(ROOT / "bench" / "gate3"))
-sys.path.insert(0, str(ROOT / "bench" / "gps_jamming"))
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "benchmarks" / "track_b"))
+sys.path.insert(0, str(ROOT / "benchmarks" / "gps_jamming"))
 
 from sedenion_pg32 import (
     MorenoConeProjection,

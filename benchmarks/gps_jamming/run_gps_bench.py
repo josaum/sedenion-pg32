@@ -17,8 +17,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "bench" / "pkg"))
-sys.path.insert(0, str(ROOT / "bench" / "gate3"))
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "benchmarks" / "track_b"))
 
 from sedenion_pg32 import (
     build_cayley_dickson_tables,
@@ -331,8 +331,8 @@ def make_crpa_dataset(n_samples: int, j_counts, seed: int, max_slots: int = 16):
       - Each jammer/spoofer override token flags a spoofed/jammed peak ID (recursive meaconing chains of depth d in j_counts)
       - Final slot: Navigation Integrity Query for the target satellite PRN (1 = Clean Authentic Lock, 0 = Spoofed/Jammed)
     """
-    from tasks import dataset as make_gate3_dataset
-    return make_gate3_dataset(n_samples, j_counts, seed=seed, max_len=max_slots)
+    from tasks import dataset as make_track_b_dataset
+    return make_track_b_dataset(n_samples, j_counts, seed=seed, max_len=max_slots)
 
 
 def run_scenario_3():
