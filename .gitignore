@@ -1,1 +1,5 @@
-lean/.lake/
+
+# build artifacts
+lean/**/.lake/
+__pycache__/
+*.pyc
