@@ -1,11 +1,11 @@
 # Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning
 
-[![DOI: Main Paper](https://zenodo.org/badge/DOI/10.5281/zenodo.23588274.svg)](https://doi.org/10.5281/zenodo.23588274)
+[![DOI: Main Paper (latest)](https://zenodo.org/badge/DOI/10.5281/zenodo.23588273.svg)](https://doi.org/10.5281/zenodo.23588273)
 [![DOI: GNSS Anti-Jamming](https://zenodo.org/badge/DOI/10.5281/zenodo.23603006.svg)](https://doi.org/10.5281/zenodo.23603006)
 
 Reference implementation, Lean 4 formalisations (zero `sorry`), and benchmark suite for:
 
-1. **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. [`10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274)
+1. **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. Concept DOI [`10.5281/zenodo.23588273`](https://doi.org/10.5281/zenodo.23588273) (v2026.10.25: [`10.5281/zenodo.23652148`](https://doi.org/10.5281/zenodo.23652148); v1: [`10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274))
 2. **Dionisio Chiuratto Agourakis** (2026). *Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming and Anti-Spoofing: Matrix-Inversion-Free Null Steering, Associative Quaternion Phase Hinges, and Neural CRPA Validation*. Zenodo. [`10.5281/zenodo.23603006`](https://doi.org/10.5281/zenodo.23603006)
 
 ## Layout
