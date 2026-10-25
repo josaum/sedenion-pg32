@@ -1,0 +1,128 @@
+{
+ "bits=8 JSR=60 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 7.949,
+  "hit": 0.375,
+  "n_channels": 16.0
+ },
+ "bits=8 JSR=60 difference": {
+  "pre_adc_supp_db": 22.491,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 8.538,
+  "hit": 0.469,
+  "n_channels": 14.0
+ },
+ "bits=8 JSR=60 sed_dense": {
+  "pre_adc_supp_db": 25.656,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 6.388,
+  "hit": 0.219,
+  "n_channels": 16.0
+ },
+ "bits=8 JSR=80 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": -1.793,
+  "hit": 0.016,
+  "n_channels": 16.0
+ },
+ "bits=8 JSR=80 difference": {
+  "pre_adc_supp_db": 22.898,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 6.801,
+  "hit": 0.297,
+  "n_channels": 14.0
+ },
+ "bits=8 JSR=80 sed_dense": {
+  "pre_adc_supp_db": 25.722,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 5.722,
+  "hit": 0.219,
+  "n_channels": 16.0
+ },
+ "bits=8 JSR=100 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": -3.467,
+  "hit": 0.0,
+  "n_channels": 16.0
+ },
+ "bits=8 JSR=100 difference": {
+  "pre_adc_supp_db": 23.22,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": -1.945,
+  "hit": 0.0,
+  "n_channels": 14.0
+ },
+ "bits=8 JSR=100 sed_dense": {
+  "pre_adc_supp_db": 26.005,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": -1.281,
+  "hit": 0.016,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=60 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 9.392,
+  "hit": 0.688,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=60 difference": {
+  "pre_adc_supp_db": 21.926,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 7.903,
+  "hit": 0.453,
+  "n_channels": 14.0
+ },
+ "bits=12 JSR=60 sed_dense": {
+  "pre_adc_supp_db": 26.287,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 6.451,
+  "hit": 0.25,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=80 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 8.802,
+  "hit": 0.578,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=80 difference": {
+  "pre_adc_supp_db": 22.23,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 8.193,
+  "hit": 0.438,
+  "n_channels": 14.0
+ },
+ "bits=12 JSR=80 sed_dense": {
+  "pre_adc_supp_db": 25.539,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 6.615,
+  "hit": 0.266,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=100 none": {
+  "pre_adc_supp_db": -0.0,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 0.398,
+  "hit": 0.016,
+  "n_channels": 16.0
+ },
+ "bits=12 JSR=100 difference": {
+  "pre_adc_supp_db": 22.921,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 7.114,
+  "hit": 0.297,
+  "n_channels": 14.0
+ },
+ "bits=12 JSR=100 sed_dense": {
+  "pre_adc_supp_db": 26.365,
+  "clip_frac": 0.0,
+  "peak_to_offpeak_db": 6.146,
+  "hit": 0.172,
+  "n_channels": 16.0
+ }
+}
