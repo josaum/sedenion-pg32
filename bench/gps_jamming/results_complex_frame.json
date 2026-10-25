@@ -1,0 +1,59 @@
+{
+ "controlled_single_jammer": {
+  "sed_complex_iq (report)": {
+   "null1_db": 67.701,
+   "carrier_relative_error": 0.815,
+   "noise_gain": 1.0,
+   "sat_amplitude": 0.791,
+   "sat_over_noise": 0.791
+  },
+  "sed_frame (ours)": {
+   "null1_db": 70.985,
+   "carrier_relative_error": 0.0,
+   "noise_gain": 1.065,
+   "sat_amplitude": 1.0,
+   "sat_over_noise": 0.939
+  },
+  "lcmv_complex": {
+   "null1_db": 71.541,
+   "carrier_relative_error": 0.0,
+   "noise_gain": 1.013,
+   "sat_amplitude": 1.0,
+   "sat_over_noise": 0.987
+  }
+ },
+ "heldout_dual_jammer": {
+  "sed_2stage (report)": {
+   "null1_db": 13.888,
+   "null2_db": 28.006,
+   "carrier_relative_error": 0.724,
+   "noise_gain": 1.18,
+   "detection_hit": 0.008,
+   "postcorr_sinr_db": -33.29
+  },
+  "sed_frame_cascade (ours)": {
+   "null1_db": 78.856,
+   "null2_db": 75.384,
+   "carrier_relative_error": 0.0,
+   "noise_gain": 1.144,
+   "detection_hit": 0.531,
+   "postcorr_sinr_db": 8.828
+  },
+  "lcmv_complex": {
+   "null1_db": 79.806,
+   "null2_db": 76.074,
+   "carrier_relative_error": 0.0,
+   "noise_gain": 1.028,
+   "detection_hit": 0.688,
+   "postcorr_sinr_db": 9.738
+  },
+  "mvdr_complex": {
+   "null1_db": 79.413,
+   "null2_db": 75.848,
+   "carrier_relative_error": 0.0,
+   "noise_gain": 0.012,
+   "detection_hit": 0.641,
+   "postcorr_sinr_db": 9.373
+  }
+ }
+}

@@ -1,0 +1,6 @@
+Scaling (48 scenes each, 8 phases, estimation eps):
+J=1 eps=1e-3: sed cascade 73.2 dB ng 1.078 | LCMV 73.1 dB ng 1.023
+J=2 eps=1e-3: sed cascade 70.9 dB ng 1.122 | LCMV 72.2 dB ng 1.021
+J=3 eps=1e-3: sed cascade 69.8 dB ng 1.190 | LCMV 71.0 dB ng 1.047
+J=4 eps=1e-3: sed cascade 69.2 dB ng 1.263 | LCMV 70.0 dB ng 1.109
+eps=0: all >316 dB (floating-point floor), both methods.

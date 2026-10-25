@@ -157,4 +157,139 @@ theorem cascade_leakage_bound (u δ v₁ v₂ : O × O)
   have hv2 := snorm2_nonneg v₂
   nlinarith [mul_le_mul_of_nonneg_right h2 hv2]
 
+/-! ## Phase invariance of the annihilator fibre
+
+For a cone point u = (a, b), multiplication by i in the C^8 ≅ R^16 embedding is
+J(a, b) = (−b, a).  We show ker L(u) ⊆ ker L(J u): every fibre vector v(c) = (c, (ac)b) that
+annihilates u also annihilates J u, hence annihilates u·e^{iφ} for every carrier phase φ.
+The key octonion identity is (ac)b = −(bc)a for mutually orthogonal imaginary a, b, c. -/
+
+def oneg (x : O) : O := ⟨-x.c0, -x.c1, -x.c2, -x.c3, -x.c4, -x.c5, -x.c6, -x.c7⟩
+
+/-- the constructive partner d = (a c) b of Theorem 5.1 -/
+def partner (a b c : O) : O := omul (omul a c) b
+
+/-- J (a, b) = (−b, a): multiplication by i on C^8 ≅ R^16 -/
+def Jc (u : O × O) : O × O := (oneg u.2, u.1)
+
+/-- (ac)b + (bc)a = 2⟨a,b⟩c − 2⟨a,c⟩b − 2⟨b,c⟩a for imaginary octonions; hence
+    (ac)b = −(bc)a when a, b, c are mutually orthogonal. -/
+theorem partner_swap (a b c : O)
+    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0)
+    (hab : dot a b = 0) (hac : dot a c = 0) (hbc : dot b c = 0) :
+    omul (omul a c) b = oneg (omul (omul b c) a) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
+  simp only at ha0 hb0 hc0
+  subst ha0 hb0 hc0
+  simp only [dot] at hab hac hbc
+  simp only [omul, oneg, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · ring
+  · linear_combination (2*c1) * hab + (-2*b1) * hac + (-2*a1) * hbc
+  · linear_combination (2*c2) * hab + (-2*b2) * hac + (-2*a2) * hbc
+  · linear_combination (2*c3) * hab + (-2*b3) * hac + (-2*a3) * hbc
+  · linear_combination (2*c4) * hab + (-2*b4) * hac + (-2*a4) * hbc
+  · linear_combination (2*c5) * hab + (-2*b5) * hac + (-2*a5) * hbc
+  · linear_combination (2*c6) * hab + (-2*b6) * hac + (-2*a6) * hbc
+  · linear_combination (2*c7) * hab + (-2*b7) * hac + (-2*a7) * hbc
+
+theorem omul_oneg_left (x y : O) : omul (oneg x) y = oneg (omul x y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [omul, oneg, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+theorem oneg_oneg (x : O) : oneg (oneg x) = x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  simp only [oneg, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+/-- partner (−b) a c = partner a b c under orthogonality -/
+theorem partner_J (a b c : O)
+    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0)
+    (hab : dot a b = 0) (hac : dot a c = 0) (hbc : dot b c = 0) :
+    partner (oneg b) a c = partner a b c := by
+  unfold partner
+  rw [omul_oneg_left, omul_oneg_left, partner_swap a b c ha0 hb0 hc0 hab hac hbc]
+
+theorem dot_omul_J (a b c : O) (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0) :
+    dot (omul (oneg b) a) c = dot (omul a b) c := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
+  simp only at ha0 hb0 hc0; subst ha0 hb0 hc0
+  simp only [dot, omul, oneg]; ring
+
+theorem dot_oneg_left (x y : O) : dot (oneg x) y = - dot x y := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [dot, oneg]; ring
+
+theorem dot_oneg_oneg (x : O) : dot (oneg x) (oneg x) = dot x x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  simp only [dot, oneg]; ring
+
+theorem dot_comm (x y : O) : dot x y = dot y x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [dot]; ring
+
+/-- **Theorem 5.1 (Constructive 4D Zero-Divisor Nullspace Operator).**
+    Let a, b, c be purely imaginary octonions with ‖a‖ = ‖b‖ = 1, ⟨a,b⟩ = 0 and
+    c ⊥ span{a, b, ab}.  Then the sedenion u = (a, b) annihilates v = (c, (ac)b):  u·v = 0. -/
+theorem nullspace
+    (a b c : O)
+    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0)
+    (hab : dot a b = 0) (hac : dot a c = 0) (hbc : dot b c = 0) (habc : dot (omul a b) c = 0)
+    (haa : dot a a = 1) (hbb : dot b b = 1) :
+    smul (a, b) (c, partner a b c) = (ozero, ozero) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
+  simp only at ha0 hb0 hc0
+  subst ha0 hb0 hc0
+  simp only [dot, omul] at hab hac hbc habc haa hbb
+  simp only [smul, partner, omul, conj, osub, oadd, ozero, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
+  · linear_combination (b1^2 + b2^2 + b3^2 + b4^2 + b5^2 + b6^2 + b7^2 - 1) * hac
+  · linear_combination (-2*b1) * habc + (-a2*c3 + a3*c2 - a4*c5 + a5*c4 + a6*c7 - a7*c6) * hbb
+  · linear_combination (-2*b2) * habc + (a1*c3 - a3*c1 - a4*c6 - a5*c7 + a6*c4 + a7*c5) * hbb
+  · linear_combination (-2*b3) * habc + (-a1*c2 + a2*c1 - a4*c7 + a5*c6 - a6*c5 + a7*c4) * hbb
+  · linear_combination (-2*b4) * habc + (a1*c5 + a2*c6 + a3*c7 - a5*c1 - a6*c2 - a7*c3) * hbb
+  · linear_combination (-2*b5) * habc + (-a1*c4 + a2*c7 - a3*c6 + a4*c1 + a6*c3 - a7*c2) * hbb
+  · linear_combination (-2*b6) * habc + (-a1*c7 - a2*c4 + a3*c5 + a4*c2 - a5*c3 + a7*c1) * hbb
+  · linear_combination (-2*b7) * habc + (a1*c6 - a2*c5 - a3*c4 + a4*c3 + a5*c2 - a6*c1) * hbb
+  · linear_combination (a1^2 + a2^2 + a3^2 + a4^2 + a5^2 + a6^2 + a7^2 + 1) * hbc
+  · linear_combination (-2*a2*c3 + 2*a3*c2 - 2*a4*c5 + 2*a5*c4 + 2*a6*c7 - 2*a7*c6) * hab + (2*a2*b3 - 2*a3*b2 + 2*a4*b5 - 2*a5*b4 - 2*a6*b7 + 2*a7*b6) * hac + (b2*c3 - b3*c2 + b4*c5 - b5*c4 - b6*c7 + b7*c6) * haa
+  · linear_combination (2*a1*c3 - 2*a3*c1 - 2*a4*c6 - 2*a5*c7 + 2*a6*c4 + 2*a7*c5) * hab + (-2*a1*b3 + 2*a3*b1 + 2*a4*b6 + 2*a5*b7 - 2*a6*b4 - 2*a7*b5) * hac + (-b1*c3 + b3*c1 + b4*c6 + b5*c7 - b6*c4 - b7*c5) * haa
+  · linear_combination (-2*a1*c2 + 2*a2*c1 - 2*a4*c7 + 2*a5*c6 - 2*a6*c5 + 2*a7*c4) * hab + (2*a1*b2 - 2*a2*b1 + 2*a4*b7 - 2*a5*b6 + 2*a6*b5 - 2*a7*b4) * hac + (b1*c2 - b2*c1 + b4*c7 - b5*c6 + b6*c5 - b7*c4) * haa
+  · linear_combination (2*a1*c5 + 2*a2*c6 + 2*a3*c7 - 2*a5*c1 - 2*a6*c2 - 2*a7*c3) * hab + (-2*a1*b5 - 2*a2*b6 - 2*a3*b7 + 2*a5*b1 + 2*a6*b2 + 2*a7*b3) * hac + (-b1*c5 - b2*c6 - b3*c7 + b5*c1 + b6*c2 + b7*c3) * haa
+  · linear_combination (-2*a1*c4 + 2*a2*c7 - 2*a3*c6 + 2*a4*c1 + 2*a6*c3 - 2*a7*c2) * hab + (2*a1*b4 - 2*a2*b7 + 2*a3*b6 - 2*a4*b1 - 2*a6*b3 + 2*a7*b2) * hac + (b1*c4 - b2*c7 + b3*c6 - b4*c1 - b6*c3 + b7*c2) * haa
+  · linear_combination (-2*a1*c7 - 2*a2*c4 + 2*a3*c5 + 2*a4*c2 - 2*a5*c3 + 2*a7*c1) * hab + (2*a1*b7 + 2*a2*b4 - 2*a3*b5 - 2*a4*b2 + 2*a5*b3 - 2*a7*b1) * hac + (b1*c7 + b2*c4 - b3*c5 - b4*c2 + b5*c3 - b7*c1) * haa
+  · linear_combination (2*a1*c6 - 2*a2*c5 - 2*a3*c4 + 2*a4*c3 + 2*a5*c2 - 2*a6*c1) * hab + (-2*a1*b6 + 2*a2*b5 + 2*a3*b4 - 2*a4*b3 - 2*a5*b2 + 2*a6*b1) * hac + (-b1*c6 + b2*c5 + b3*c4 - b4*c3 - b5*c2 + b6*c1) * haa
+
+/-- **Phase invariance.**  Under the hypotheses of Theorem 5.1, the same fibre vector
+    v = (c, (ac)b) also annihilates J u = (−b, a).  Since J u is the quadrature rotation of u,
+    u·e^{iφ} = cos φ·u + sin φ·J u is annihilated for every carrier phase φ. -/
+theorem nullspace_J
+    (a b c : O)
+    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0)
+    (hab : dot a b = 0) (hac : dot a c = 0) (hbc : dot b c = 0) (habc : dot (omul a b) c = 0)
+    (haa : dot a a = 1) (hbb : dot b b = 1) :
+    smul (Jc (a, b)) (c, partner a b c) = (ozero, ozero) := by
+  show smul (oneg b, a) (c, partner a b c) = (ozero, ozero)
+  rw [← partner_J a b c ha0 hb0 hc0 hab hac hbc]
+  apply nullspace (oneg b) a c
+  · show -b.c0 = 0; rw [hb0]; ring
+  · exact ha0
+  · exact hc0
+  · rw [dot_oneg_left, dot_comm, hab]; ring
+  · rw [dot_oneg_left, hbc]; ring
+  · exact hac
+  · rw [dot_omul_J a b c ha0 hb0 hc0]; exact habc
+  · rw [dot_oneg_oneg]; exact hbb
+  · exact haa
+
 end SedenionRobust
