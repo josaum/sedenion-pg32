@@ -19,34 +19,14 @@
   No `sorry`, no `native_decide`; all identities close by `ring` / `linarith` / `positivity`.
 -/
 import Mathlib.Tactic
+import SedenionReal
+
+/-! The octonion/sedenion carrier, product, inner product and the constructive nullspace theorem
+    live in `SedenionReal` (bench/lean-real, symlinked here); this file only adds the robustness
+    and dual-polarisation results on top of them. -/
 
 namespace SedenionRobust
-
-@[ext] structure O where
-  (c0 c1 c2 c3 c4 c5 c6 c7 : ℝ)
-
-def conj (x : O) : O := ⟨x.c0, -x.c1, -x.c2, -x.c3, -x.c4, -x.c5, -x.c6, -x.c7⟩
-
-def omul (x y : O) : O := ⟨
-  x.c0 * y.c0 - x.c1 * y.c1 - x.c2 * y.c2 - x.c3 * y.c3 - x.c4 * y.c4 - x.c5 * y.c5 - x.c6 * y.c6 - x.c7 * y.c7,
-  x.c0 * y.c1 + x.c1 * y.c0 + x.c2 * y.c3 - x.c3 * y.c2 + x.c4 * y.c5 - x.c5 * y.c4 - x.c6 * y.c7 + x.c7 * y.c6,
-  x.c0 * y.c2 - x.c1 * y.c3 + x.c2 * y.c0 + x.c3 * y.c1 + x.c4 * y.c6 + x.c5 * y.c7 - x.c6 * y.c4 - x.c7 * y.c5,
-  x.c0 * y.c3 + x.c1 * y.c2 - x.c2 * y.c1 + x.c3 * y.c0 + x.c4 * y.c7 - x.c5 * y.c6 + x.c6 * y.c5 - x.c7 * y.c4,
-  x.c0 * y.c4 - x.c1 * y.c5 - x.c2 * y.c6 - x.c3 * y.c7 + x.c4 * y.c0 + x.c5 * y.c1 + x.c6 * y.c2 + x.c7 * y.c3,
-  x.c0 * y.c5 + x.c1 * y.c4 - x.c2 * y.c7 + x.c3 * y.c6 - x.c4 * y.c1 + x.c5 * y.c0 - x.c6 * y.c3 + x.c7 * y.c2,
-  x.c0 * y.c6 + x.c1 * y.c7 + x.c2 * y.c4 - x.c3 * y.c5 - x.c4 * y.c2 + x.c5 * y.c3 + x.c6 * y.c0 - x.c7 * y.c1,
-  x.c0 * y.c7 - x.c1 * y.c6 + x.c2 * y.c5 + x.c3 * y.c4 - x.c4 * y.c3 - x.c5 * y.c2 + x.c6 * y.c1 + x.c7 * y.c0⟩
-
-def dot (x y : O) : ℝ :=
-  x.c0 * y.c0 + x.c1 * y.c1 + x.c2 * y.c2 + x.c3 * y.c3 + x.c4 * y.c4 + x.c5 * y.c5 + x.c6 * y.c6 + x.c7 * y.c7
-
-def osub (x y : O) : O := ⟨x.c0 - y.c0, x.c1 - y.c1, x.c2 - y.c2, x.c3 - y.c3, x.c4 - y.c4, x.c5 - y.c5, x.c6 - y.c6, x.c7 - y.c7⟩
-def oadd (x y : O) : O := ⟨x.c0 + y.c0, x.c1 + y.c1, x.c2 + y.c2, x.c3 + y.c3, x.c4 + y.c4, x.c5 + y.c5, x.c6 + y.c6, x.c7 + y.c7⟩
-def ozero : O := ⟨0, 0, 0, 0, 0, 0, 0, 0⟩
-
-/-- sedenion product (Cayley–Dickson doubling) -/
-def smul (u v : O × O) : O × O :=
-  (osub (omul u.1 v.1) (omul (conj v.2) u.2), oadd (omul v.2 u.1) (omul u.2 (conj v.1)))
+open SedenionReal
 
 def sadd (u w : O × O) : O × O := (oadd u.1 w.1, oadd u.2 w.2)
 
@@ -61,11 +41,6 @@ theorem dot_nonneg (x : O) : 0 ≤ dot x x := by
   simp only [dot]
   nlinarith [sq_nonneg x0, sq_nonneg x1, sq_nonneg x2, sq_nonneg x3,
              sq_nonneg x4, sq_nonneg x5, sq_nonneg x6, sq_nonneg x7]
-
-theorem composition (x y : O) : dot (omul x y) (omul x y) = dot x x * dot y y := by
-  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
-  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
-  simp only [dot, omul]; ring
 
 theorem conj_norm (x : O) : dot (conj x) (conj x) = dot x x := by
   obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
@@ -361,7 +336,7 @@ theorem rf_smatrix_passivity_bound (x v_rf : O × O) (hv : snorm2 v_rf = 1 / 2) 
   rw [hv] at h
   linarith
 
-/-! ### Pivot 2 (constructive): Moreno-cone annihilator and the Dual-Pol Co-Linear Preservation Theorem -/
+/-! ### Pivot 2 (constructive): Dual-Pol Co-Linear Preservation on top of `SedenionReal.nullspace` -/
 
 /-- Sedenion conjugate `(a, b)* = (a*, -b)`. -/
 def sconj (u : O × O) : O × O := (conj u.1, oscal (-1) u.2)
@@ -378,59 +353,10 @@ theorem right_mul_adjoint (x y v : O × O) :
   simp only [sconj, oscal, sdot, smul, omul, conj, osub, oadd, dot]
   ring
 
-/-- The canonical Moreno annihilator `v(c) = (c, (a·c)·b)` attached to a cone point `(a, b)`. -/
-def moreno_annihilator (a b c : O) : O × O := (c, omul (omul a c) b)
-
-/-- **Moreno-cone annihilation (constructive, general position).**
-    Let `(a, b)` be a dual-polarised jammer signature on the Moreno cone: `a, b` imaginary,
-    `‖a‖ = ‖b‖ = 1`, `⟨a, b⟩ = 0` (equal RHCP/LHCP power, quadrature). For every imaginary
-    `c ⊥ {a, b, a·b}` (a 4-dimensional fibre) the sedenion `v(c) = (c, (a·c)·b)` satisfies
-        `(a, b) · v(c) = 0`
-    identically. The 16 coordinate identities close by explicit ideal-membership certificates
-    over the six cone hypotheses (no `sorry`, no `native_decide`). -/
-theorem moreno_cone_annihilation (a b c : O)
-    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hc0 : c.c0 = 0)
-    (haa : dot a a = 1) (hbb : dot b b = 1) (hab : dot a b = 0)
-    (hca : dot c a = 0) (hcb : dot c b = 0) (hcab : dot c (omul a b) = 0) :
-    smul (a, b) (moreno_annihilator a b c) = (ozero, ozero) := by
-  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
-  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
-  obtain ⟨c0, c1, c2, c3, c4, c5, c6, c7⟩ := c
-  simp only at ha0 hb0 hc0
-  subst ha0 hb0 hc0
-  simp only [dot, omul] at haa hbb hab hca hcb hcab
-  simp only [moreno_annihilator, ozero, smul, omul, conj, osub, oadd, Prod.mk.injEq, O.mk.injEq]
-  refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
-  · linear_combination (a1*c1 + a2*c2 + a3*c3 + a4*c4 + a5*c5 + a6*c6 + a7*c7) * hbb
-  · linear_combination (-a2*c3 + a3*c2 - a4*c5 + a5*c4 + a6*c7 - a7*c6) * hbb + (-2*b1) * hcab
-  · linear_combination (a1*c3 - a3*c1 - a4*c6 - a5*c7 + a6*c4 + a7*c5) * hbb + (-2*b2) * hcab
-  · linear_combination (-a1*c2 + a2*c1 - a4*c7 + a5*c6 - a6*c5 + a7*c4) * hbb + (-2*b3) * hcab
-  · linear_combination (a1*c5 + a2*c6 + a3*c7 - a5*c1 - a6*c2 - a7*c3) * hbb + (-2*b4) * hcab
-  · linear_combination (-a1*c4 + a2*c7 - a3*c6 + a4*c1 + a6*c3 - a7*c2) * hbb + (-2*b5) * hcab
-  · linear_combination (-a1*c7 - a2*c4 + a3*c5 + a4*c2 - a5*c3 + a7*c1) * hbb + (-2*b6) * hcab
-  · linear_combination (a1*c6 - a2*c5 - a3*c4 + a4*c3 + a5*c2 - a6*c1) * hbb + (-2*b7) * hcab
-  · linear_combination (b1*c1 + b2*c2 + b3*c3 + b4*c4 + b5*c5 + b6*c6 + b7*c7) * haa + (2) * hcb
-  · linear_combination (b2*c3 - b3*c2 + b4*c5 - b5*c4 - b6*c7 + b7*c6) * haa + (-2*a2*c3 + 2*a3*c2 - 2*a4*c5 + 2*a5*c4 + 2*a6*c7 - 2*a7*c6) * hab + (2*a2*b3 - 2*a3*b2 + 2*a4*b5 - 2*a5*b4 - 2*a6*b7 + 2*a7*b6) * hca
-  · linear_combination (-b1*c3 + b3*c1 + b4*c6 + b5*c7 - b6*c4 - b7*c5) * haa + (2*a1*c3 - 2*a3*c1 - 2*a4*c6 - 2*a5*c7 + 2*a6*c4 + 2*a7*c5) * hab + (-2*a1*b3 + 2*a3*b1 + 2*a4*b6 + 2*a5*b7 - 2*a6*b4 - 2*a7*b5) * hca
-  · linear_combination (b1*c2 - b2*c1 + b4*c7 - b5*c6 + b6*c5 - b7*c4) * haa + (-2*a1*c2 + 2*a2*c1 - 2*a4*c7 + 2*a5*c6 - 2*a6*c5 + 2*a7*c4) * hab + (2*a1*b2 - 2*a2*b1 + 2*a4*b7 - 2*a5*b6 + 2*a6*b5 - 2*a7*b4) * hca
-  · linear_combination (-b1*c5 - b2*c6 - b3*c7 + b5*c1 + b6*c2 + b7*c3) * haa + (2*a1*c5 + 2*a2*c6 + 2*a3*c7 - 2*a5*c1 - 2*a6*c2 - 2*a7*c3) * hab + (-2*a1*b5 - 2*a2*b6 - 2*a3*b7 + 2*a5*b1 + 2*a6*b2 + 2*a7*b3) * hca
-  · linear_combination (b1*c4 - b2*c7 + b3*c6 - b4*c1 - b6*c3 + b7*c2) * haa + (-2*a1*c4 + 2*a2*c7 - 2*a3*c6 + 2*a4*c1 + 2*a6*c3 - 2*a7*c2) * hab + (2*a1*b4 - 2*a2*b7 + 2*a3*b6 - 2*a4*b1 - 2*a6*b3 + 2*a7*b2) * hca
-  · linear_combination (b1*c7 + b2*c4 - b3*c5 - b4*c2 + b5*c3 - b7*c1) * haa + (-2*a1*c7 - 2*a2*c4 + 2*a3*c5 + 2*a4*c2 - 2*a5*c3 + 2*a7*c1) * hab + (2*a1*b7 + 2*a2*b4 - 2*a3*b5 - 2*a4*b2 + 2*a5*b3 - 2*a7*b1) * hca
-  · linear_combination (-b1*c6 + b2*c5 + b3*c4 - b4*c3 - b5*c2 + b6*c1) * haa + (2*a1*c6 - 2*a2*c5 - 2*a3*c4 + 2*a4*c3 + 2*a5*c2 - 2*a6*c1) * hab + (-2*a1*b6 + 2*a2*b5 + 2*a3*b4 - 2*a4*b3 - 2*a5*b2 + 2*a6*b1) * hca
-
-/-- **Annihilator energy (`‖v(c)‖² = 2‖c‖²`).** With `‖a‖ = ‖b‖ = 1` the Hurwitz composition law
-    gives `‖(a·c)·b‖² = ‖c‖²`, so `v(c)` is a unit weight exactly when `‖c‖² = 1/2`, and the
-    passive RF weight `v_rf = v(c)/√2` has `‖v_rf‖² = 1/2` when `‖c‖² = 1/4`. -/
-theorem moreno_annihilator_norm (a b c : O) (haa : dot a a = 1) (hbb : dot b b = 1) :
-    snorm2 (moreno_annihilator a b c) = 2 * onorm2 c := by
-  simp only [moreno_annihilator, snorm2, onorm2]
-  rw [composition, composition, haa, hbb]
-  ring
-
 /-- **Dual-Pol Co-Linear Preservation Theorem (Pivot 1 + Pivot 2, constructive).**
     An RHCP satellite `X_sat = (a_sat, 0)` and a linearly polarised jammer `(a_J, b_J)` on the
     Moreno cone arrive from the *same* direction (any `a_sat`, including `a_sat = a_J`). For the
-    annihilator `v(c)` with `‖c‖² = 1/2` (unit weight):
+    annihilator `v(c) = (c, partner a_J b_J c)` of `SedenionReal.nullspace` with `‖c‖² = 1/2` (unit weight):
       • `(a_J, b_J) · v(c) = 0`                         — jammer annihilated,
       • `‖(a_sat, 0) · v(c)‖² = ‖a_sat‖²`               — satellite at 0.0000 dB loss,
       • `‖v(c)‖² = 1`.
@@ -438,14 +364,14 @@ theorem moreno_annihilator_norm (a b c : O) (haa : dot a a = 1) (hbb : dot b b =
 theorem dualpol_colinear_preservation (a_sat a_J b_J c : O)
     (ha0 : a_J.c0 = 0) (hb0 : b_J.c0 = 0) (hc0 : c.c0 = 0)
     (haa : dot a_J a_J = 1) (hbb : dot b_J b_J = 1) (hab : dot a_J b_J = 0)
-    (hca : dot c a_J = 0) (hcb : dot c b_J = 0) (hcab : dot c (omul a_J b_J) = 0)
+    (hca : dot a_J c = 0) (hcb : dot b_J c = 0) (hcab : dot (omul a_J b_J) c = 0)
     (hc : onorm2 c = 1 / 2) :
-    smul (a_J, b_J) (moreno_annihilator a_J b_J c) = (ozero, ozero) ∧
-    snorm2 (smul (a_sat, ozero) (moreno_annihilator a_J b_J c)) = onorm2 a_sat ∧
-    snorm2 (moreno_annihilator a_J b_J c) = 1 := by
-  have hv : snorm2 (moreno_annihilator a_J b_J c) = 1 := by
-    rw [moreno_annihilator_norm a_J b_J c haa hbb, hc]; norm_num
-  refine ⟨moreno_cone_annihilation a_J b_J c ha0 hb0 hc0 haa hbb hab hca hcb hcab, ?_, hv⟩
+    smul (a_J, b_J) ((c, partner a_J b_J c)) = (ozero, ozero) ∧
+    snorm2 (smul (a_sat, ozero) ((c, partner a_J b_J c))) = onorm2 a_sat ∧
+    snorm2 ((c, partner a_J b_J c)) = 1 := by
+  have hv : snorm2 (c, partner a_J b_J c) = 1 := by
+    simp only [snorm2, onorm2] at hc ⊢; rw [partner_norm a_J b_J c haa hbb]; linarith
+  refine ⟨nullspace a_J b_J c ha0 hb0 hc0 hab hca hcb hcab haa hbb, ?_, hv⟩
   rw [rhcp_satellite_norm_preservation, hv, mul_one]
 
 /-- **Passive RF realisation of the dual-pol excision stage.**
@@ -456,15 +382,15 @@ theorem dualpol_colinear_preservation (a_sat a_J b_J c : O)
 theorem dualpol_passive_rf_stage (a_sat a_J b_J c : O)
     (ha0 : a_J.c0 = 0) (hb0 : b_J.c0 = 0) (hc0 : c.c0 = 0)
     (haa : dot a_J a_J = 1) (hbb : dot b_J b_J = 1) (hab : dot a_J b_J = 0)
-    (hca : dot c a_J = 0) (hcb : dot c b_J = 0) (hcab : dot c (omul a_J b_J) = 0)
+    (hca : dot a_J c = 0) (hcb : dot b_J c = 0) (hcab : dot (omul a_J b_J) c = 0)
     (hc : onorm2 c = 1 / 4) :
-    (∀ x : O × O, snorm2 (smul x (moreno_annihilator a_J b_J c)) ≤ snorm2 x) ∧
-    smul (a_J, b_J) (moreno_annihilator a_J b_J c) = (ozero, ozero) ∧
-    snorm2 (smul (a_sat, ozero) (moreno_annihilator a_J b_J c)) = onorm2 a_sat / 2 := by
-  have hv : snorm2 (moreno_annihilator a_J b_J c) = 1 / 2 := by
-    rw [moreno_annihilator_norm a_J b_J c haa hbb, hc]; norm_num
+    (∀ x : O × O, snorm2 (smul x ((c, partner a_J b_J c))) ≤ snorm2 x) ∧
+    smul (a_J, b_J) ((c, partner a_J b_J c)) = (ozero, ozero) ∧
+    snorm2 (smul (a_sat, ozero) ((c, partner a_J b_J c))) = onorm2 a_sat / 2 := by
+  have hv : snorm2 (c, partner a_J b_J c) = 1 / 2 := by
+    simp only [snorm2, onorm2] at hc ⊢; rw [partner_norm a_J b_J c haa hbb]; linarith
   refine ⟨fun x => rf_smatrix_passivity_bound x _ hv,
-          moreno_cone_annihilation a_J b_J c ha0 hb0 hc0 haa hbb hab hca hcb hcab, ?_⟩
+          nullspace a_J b_J c ha0 hb0 hc0 hab hca hcb hcab haa hbb, ?_⟩
   rw [rhcp_satellite_norm_preservation, hv]; ring
 
 /-! ### Pivot 2 (closed form): linearly polarised jammer family under the fixed RHCP/LHCP wiring -/

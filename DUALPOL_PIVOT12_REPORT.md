@@ -8,8 +8,8 @@ and `bench/gps_jamming/run_dualpol_pivot12.py` (numpy only; writes `results_dual
 | Theorem | Statement |
 |---|---|
 | `right_mul_adjoint` | ⟨x·v, y⟩ = ⟨x, y·v*⟩, i.e. R(v)ᵀ = R(v*): the reverse path of the 32-port S-matrix is the same passive network with the conjugate weight (reciprocity). |
-| `moreno_cone_annihilation` | (a,b) imaginary, ‖a‖=‖b‖=1, ⟨a,b⟩=0, c ⊥ {1,a,b,ab} ⇒ (a,b)·(c,(ac)b) = 0. Constructive, general position; 16 coordinate identities closed by explicit ideal-membership certificates (`gen_moreno_certificates.py`). |
-| `moreno_annihilator_norm` | ‖(c,(ac)b)‖² = 2‖c‖². |
+| `SedenionReal.nullspace` (imported) | (a,b) imaginary, ‖a‖=‖b‖=1, ⟨a,b⟩=0, c ⊥ {1,a,b,ab} ⇒ (a,b)·(c,(ac)b) = 0. This is Theorem 5.1 of the PG(3,2) paper, already in `bench/lean-real`; `SedenionRobust` now imports it instead of re-proving it. |
+| `SedenionReal.partner_norm` (imported) | ‖(ac)b‖² = ‖c‖², hence ‖(c,(ac)b)‖² = 2‖c‖². |
 | `dualpol_colinear_preservation` | Jammer on the cone annihilated AND ‖(a_sat,0)·v‖² = ‖a_sat‖² for the unit annihilator (0.0000 dB), any a_sat (Δθ = 0° included). |
 | `dualpol_passive_rf_stage` | For v_rf = v/√2: ‖X·v_rf‖² ≤ ‖X‖² for all X (passive), jammer still annihilated, satellite passes at ‖a_sat‖²/2. |
 | `jam_linear_on_cone` | Under the fixed wiring RHCP I/Q→(e1,e2), LHCP I/Q→(e5,e6), every sample of a tilt-ψ linearly polarised wave is on the Moreno cone. |
@@ -20,6 +20,8 @@ and `bench/gps_jamming/run_dualpol_pivot12.py` (numpy only; writes `results_dual
 
 The pre-existing hypothesis-form theorems (`rhcp_satellite_norm_preservation`, `lhcp_satellite_norm_preservation`,
 `colinear_dualpol_jammer_null_and_sat_preserve`, `rf_smatrix_passivity_bound`) are unchanged.
+
+`SedenionReal.lean` itself needed a repair to import: `crpa_antipartner_product` and `spoofer_half_sphere_passband` did not compile on Mathlib v4.15.0 (their `linarith` step saw mismatched atoms). They are now proven from `nullspace` through three `scale`-bilinearity lemmas and compile with the standard axioms. `AxiomsReal.lean` still imports a `SedenionDim` module that is not in the repository.
 
 ## What the simulation showed
 
