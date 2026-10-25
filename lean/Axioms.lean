@@ -1,0 +1,15 @@
+import SedenionRobust
+#print axioms SedenionRobust.leakage_bound
+#print axioms SedenionRobust.leakage_bound_unit
+#print axioms SedenionRobust.snorm_smul_le
+#print axioms SedenionRobust.cascade_leakage_bound
+#print axioms SedenionRobust.right_mul_adjoint
+#print axioms SedenionRobust.moreno_cone_annihilation
+#print axioms SedenionRobust.moreno_annihilator_norm
+#print axioms SedenionRobust.dualpol_colinear_preservation
+#print axioms SedenionRobust.dualpol_passive_rf_stage
+#print axioms SedenionRobust.jam_linear_on_cone
+#print axioms SedenionRobust.dualpol_tilt_annihilation
+#print axioms SedenionRobust.v_tilt_norm
+#print axioms SedenionRobust.dualpol_tilt_colinear_preservation
+#print axioms SedenionRobust.dualpol_tilt_passive_rf_stage

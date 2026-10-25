@@ -1,0 +1,253 @@
+{
+ "smatrix_canonical": {
+  "singular_values": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "min_eig_passivity": 2.220446049250313e-16,
+  "symmetry_err": 0.0,
+  "adjoint_err": 0.0,
+  "couplings_per_port": [
+   2
+  ],
+  "coupling_mags": [
+   0.5
+  ]
+ },
+ "smatrix_general": {
+  "singular_values": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.707107,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "min_eig_passivity": -2.884422437002398e-16,
+  "symmetry_err": 0.0,
+  "adjoint_err": 0.0,
+  "couplings_per_port": [
+   14
+  ],
+  "coupling_mags": [
+   0.016837,
+   0.017733,
+   0.01913,
+   0.032017,
+   0.041818,
+   0.118089,
+   0.14798,
+   0.198045,
+   0.210651,
+   0.236402,
+   0.25607,
+   0.271871,
+   0.292504,
+   0.309666
+  ]
+ },
+ "common_kernel_dim": 2,
+ "wiring": {
+  "e5e6_common_kernel_dim": 2,
+  "e4e5_common_kernel_dim": 0
+ },
+ "delta_theta_0": {
+  "sat_loss_db": 0.0,
+  "jam_suppression_db": 321.62123582199786
+ },
+ "lcmv_noise_gain_db": 3.010299956639813,
+ "sedenion_noise_gain_db": 3.010299956639812,
+ "dtheta_sweep": [
+  {
+   "dtheta": 0.0,
+   "spatial_mvdr_sinr_db": -80.00000004342945,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 0.5,
+   "spatial_mvdr_sinr_db": -24.184801868620426,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 1.0,
+   "spatial_mvdr_sinr_db": -18.190940090179392,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 2.0,
+   "spatial_mvdr_sinr_db": -12.263528680592161,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 5.0,
+   "spatial_mvdr_sinr_db": -4.894112320641075,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 10.0,
+   "spatial_mvdr_sinr_db": -0.7945947146571704,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  },
+  {
+   "dtheta": 30.0,
+   "spatial_mvdr_sinr_db": -0.021541331201226872,
+   "dualpol_sedenion_sinr_db": -3.010299956639812,
+   "dualpol_lcmv_sinr_db": -3.010299956639813
+  }
+ ],
+ "axial_ratio_sweep": [
+  {
+   "axial_ratio_db": null,
+   "suppression_db": NaN,
+   "leakage_bound_db": null
+  },
+  {
+   "axial_ratio_db": 40.0,
+   "suppression_db": 36.99013431612877,
+   "leakage_bound_db": 36.99002574929364
+  },
+  {
+   "axial_ratio_db": 30.0,
+   "suppression_db": 26.994040818153362,
+   "leakage_bound_db": 26.992955760036494
+  },
+  {
+   "axial_ratio_db": 20.0,
+   "suppression_db": 17.03291378118661,
+   "leakage_bound_db": 17.02212378393455
+  },
+  {
+   "axial_ratio_db": 10.0,
+   "suppression_db": 7.403626894942439,
+   "leakage_bound_db": 7.301377922987814
+  },
+  {
+   "axial_ratio_db": 6.0,
+   "suppression_db": 3.962927980447142,
+   "leakage_bound_db": 3.7264328887972042
+  },
+  {
+   "axial_ratio_db": 3.0,
+   "suppression_db": 1.7540486677250429,
+   "leakage_bound_db": 1.335322411749302
+  }
+ ],
+ "xpd_sweep": [
+  {
+   "xpd_db": null,
+   "sat_loss_db": 9.64327466553287e-16
+  },
+  {
+   "xpd_db": 40.0,
+   "sat_loss_db": 0.024005384753304188
+  },
+  {
+   "xpd_db": 30.0,
+   "sat_loss_db": 0.07630056384383709
+  },
+  {
+   "xpd_db": 25.0,
+   "sat_loss_db": 0.13632630831259415
+  },
+  {
+   "xpd_db": 20.0,
+   "sat_loss_db": 0.24375974678328977
+  },
+  {
+   "xpd_db": 15.0,
+   "sat_loss_db": 0.43364391472458286
+  }
+ ],
+ "calibration_sweep": [
+  {
+   "eps": 0,
+   "suppression_db": 321.5886452053215,
+   "bound_db": null
+  },
+  {
+   "eps": 0.0001,
+   "suppression_db": 79.81412806322227,
+   "bound_db": 76.98970004336019
+  },
+  {
+   "eps": 0.001,
+   "suppression_db": 59.3267047009303,
+   "bound_db": 56.98970004336019
+  },
+  {
+   "eps": 0.01,
+   "suppression_db": 40.70230342142368,
+   "bound_db": 36.98970004336019
+  },
+  {
+   "eps": 0.03,
+   "suppression_db": 31.810990035207833,
+   "bound_db": 27.44727494896694
+  },
+  {
+   "eps": 0.1,
+   "suppression_db": 19.882152337446854,
+   "bound_db": 16.989700043360187
+  }
+ ],
+ "crlb": [
+  {
+   "dtheta": 0.0,
+   "crlb_none_m": 126997.20068051982,
+   "crlb_spatial_mvdr_m": 126997.20068051982,
+   "crlb_dualpol_sedenion_m": 17.960116268780293,
+   "crlb_dualpol_lcmv_m": 17.960116268780293
+  },
+  {
+   "dtheta": 1.0,
+   "crlb_none_m": 126997.20068051982,
+   "crlb_spatial_mvdr_m": 103.11958356771069,
+   "crlb_dualpol_sedenion_m": 17.960116268780293,
+   "crlb_dualpol_lcmv_m": 17.960116268780293
+  },
+  {
+   "dtheta": 5.0,
+   "crlb_none_m": 126997.20068051982,
+   "crlb_spatial_mvdr_m": 22.31000985073369,
+   "crlb_dualpol_sedenion_m": 17.960116268780293,
+   "crlb_dualpol_lcmv_m": 17.960116268780293
+  },
+  {
+   "dtheta": 30.0,
+   "crlb_none_m": 126997.20068051982,
+   "crlb_spatial_mvdr_m": 12.731254872865605,
+   "crlb_dualpol_sedenion_m": 17.960116268780293,
+   "crlb_dualpol_lcmv_m": 17.960116268780293
+  }
+ ]
+}
