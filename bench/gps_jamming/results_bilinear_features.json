@@ -1,0 +1,152 @@
+{
+ "sed_full (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.72875,
+   0.74875,
+   0.73625
+  ],
+  "acc_mean": 0.738,
+  "acc_std": 0.008
+ },
+ "sed_e0_only": {
+  "dim": 7,
+  "acc": [
+   0.66375,
+   0.66875,
+   0.635
+  ],
+  "acc_mean": 0.656,
+  "acc_std": 0.015
+ },
+ "sed_imag_only": {
+  "dim": 105,
+  "acc": [
+   0.69625,
+   0.71125,
+   0.71
+  ],
+  "acc_mean": 0.706,
+  "acc_std": 0.007
+ },
+ "energy (1)": {
+  "dim": 1,
+  "acc": [
+   0.26875,
+   0.28125,
+   0.27125
+  ],
+  "acc_mean": 0.274,
+  "acc_std": 0.005
+ },
+ "spectral_kurtosis (1)": {
+  "dim": 1,
+  "acc": [
+   0.36625,
+   0.37625,
+   0.38625
+  ],
+  "acc_mean": 0.376,
+  "acc_std": 0.008
+ },
+ "cov_eigenvalues (8)": {
+  "dim": 8,
+  "acc": [
+   0.26625,
+   0.27375,
+   0.25375
+  ],
+  "acc_mean": 0.265,
+  "acc_std": 0.008
+ },
+ "lag_trace (7)": {
+  "dim": 7,
+  "acc": [
+   0.63875,
+   0.62375,
+   0.60125
+  ],
+  "acc_mean": 0.621,
+  "acc_std": 0.015
+ },
+ "random_proj (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.6575,
+   0.64375,
+   0.655
+  ],
+  "acc_mean": 0.652,
+  "acc_std": 0.006
+ },
+ "random_pm1_xor (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.6425,
+   0.655,
+   0.655
+  ],
+  "acc_mean": 0.651,
+  "acc_std": 0.006
+ },
+ "quaternion_H4 (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.69375,
+   0.69625,
+   0.7025
+  ],
+  "acc_mean": 0.698,
+  "acc_std": 0.004
+ },
+ "octonion_O2 (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.7075,
+   0.7125,
+   0.72625
+  ],
+  "acc_mean": 0.715,
+  "acc_std": 0.008
+ },
+ "complex_diag_autocorr (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.65125,
+   0.66375,
+   0.65
+  ],
+  "acc_mean": 0.655,
+  "acc_std": 0.006
+ },
+ "complex_random_proj (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.61,
+   0.61,
+   0.60875
+  ],
+  "acc_mean": 0.61,
+  "acc_std": 0.001
+ },
+ "full_lagcorr (256/lag)": {
+  "dim": 1792,
+  "acc": [
+   0.68625,
+   0.71,
+   0.71
+  ],
+  "acc_mean": 0.702,
+  "acc_std": 0.011
+ },
+ "pca16_of_lagcorr (16/lag)": {
+  "dim": 112,
+  "acc": [
+   0.7025,
+   0.72375,
+   0.70375
+  ],
+  "acc_mean": 0.71,
+  "acc_std": 0.01
+ }
+}
