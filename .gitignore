@@ -3,3 +3,4 @@
 lean/**/.lake/
 __pycache__/
 *.pyc
+zenodo/sedenion_pg32_v*.zip
