@@ -55,7 +55,7 @@ Benchmark scripts write their `results_*.json` next to themselves; the committed
 
 ```bash
 # finite PG(3,2) development: 8+7 Fano bifurcation, 672/2520 associator census, BCJ stratum theorems
-cd lean/pg32 && lake build SedenionPG32 && LEAN_PATH=.lake/build/lib lean Axioms.lean     # "does not depend on any axioms"
+cd lean/pg32 && lake build SedenionPG32 && LEAN_PATH=.lake/build/lib lean Axioms.lean     # propext at most; several "does not depend on any axioms"
 
 # real-analytic development (Mathlib): nullspace, CRPA gains, leakage bounds, dual-pol excision
 cd lean/real && lake exe cache get && lake build && lake env lean Axioms.lean            # propext, Classical.choice, Quot.sound only
