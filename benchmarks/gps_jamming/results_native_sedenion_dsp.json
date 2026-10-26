@@ -1,0 +1,52 @@
+{
+  "exp1_native_associator_detector": {
+    "lean4_lagrange_identity_max_abs_err": 1.1102230246251565e-15,
+    "Native-Associator (K=1)": {
+      "mean_score_H0": 0.11698,
+      "mean_score_H1": 0.55182,
+      "p_det_at_5pct_fa": 0.998,
+      "auroc": 0.9999
+    },
+    "Cov-EigenRatio (K=64)": {
+      "mean_score_H0": 0.00124,
+      "mean_score_H1": 0.00105,
+      "p_det_at_5pct_fa": 0.0938,
+      "auroc": 0.2055
+    },
+    "FBSS-Subspace (K=64)": {
+      "mean_score_H0": 2.01992,
+      "mean_score_H1": 2.01337,
+      "p_det_at_5pct_fa": 0.0488,
+      "auroc": 0.4865
+    }
+  },
+  "exp2_native_dyadic_sensor": {
+    "calibration_matrices_required": 0,
+    "mean_moreno_curvature_kappa": 1.0,
+    "mean_native_null_depth_db": 313.78,
+    "mean_antipartner_sat_gain_db": 3.01
+  },
+  "exp3_pre_adc_analog_crossbar": {
+    "Post-ADC Digital MVDR/Sedenion (12-Bit ADC Clips First)": {
+      "adc_saturation_rate": 0.1249,
+      "post_corr_sinr_db": -46.32,
+      "p_det": 0.0
+    },
+    "Pre-ADC Analog Sedenion Crossbar (0.05% Balun Mismatch)": {
+      "adc_saturation_rate": 0.0744,
+      "post_corr_sinr_db": 21.28,
+      "p_det": 1.0
+    },
+    "Pre-ADC Analog Sedenion Crossbar (Ideal Passive +-1)": {
+      "adc_saturation_rate": 0.0001,
+      "post_corr_sinr_db": 21.53,
+      "p_det": 1.0
+    }
+  },
+  "exp4_native_zdkm_waveform": {
+    "authorized_keyed_ber": 0.00098,
+    "authorized_keyed_accuracy": 0.99902,
+    "eavesdropper_radiometer_ber": 0.5024,
+    "eavesdropper_blind_sedenion_ber": 0.4951
+  }
+}

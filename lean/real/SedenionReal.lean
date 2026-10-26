@@ -334,4 +334,92 @@ theorem basis_mul_sign (i j : Nat) (hi : i < 8) (hj : j < 8) :
   rw [← signTab_eq i hi j hj]
   interval_cases i <;> interval_cases j <;> simp [omul, e, scale, signTab]
 
+theorem omul_add_left (x y z : O) : omul (oadd x y) z = oadd (omul x z) (omul y z) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  obtain ⟨z0, z1, z2, z3, z4, z5, z6, z7⟩ := z
+  simp only [omul, oadd, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+theorem omul_add_right (x y z : O) : omul x (oadd y z) = oadd (omul x y) (omul x z) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  obtain ⟨z0, z1, z2, z3, z4, z5, z6, z7⟩ := z
+  simp only [omul, oadd, O.mk.injEq]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ring
+
+/-- Sedenion addition and real scalar multiplication on O × O -/
+def sadd (u v : O × O) : O × O := (oadd u.1 v.1, oadd u.2 v.2)
+def sscale (r : ℝ) (u : O × O) : O × O := (scale r u.1, scale r u.2)
+
+/-- Left-linearity of sedenion multiplication:
+    (α u₁ + β u₂) · w = α (u₁ · w) + β (u₂ · w). -/
+theorem smul_linear_left (u1 u2 w : O × O) (α β : ℝ) :
+    smul (sadd (sscale α u1) (sscale β u2)) w =
+      sadd (sscale α (smul u1 w)) (sscale β (smul u2 w)) := by
+  obtain ⟨a1, b1⟩ := u1
+  obtain ⟨a2, b2⟩ := u2
+  obtain ⟨c, d⟩ := w
+  simp only [smul, sadd, sscale, omul_add_left, omul_add_right, omul_scale_left, omul_scale_right]
+  simp only [oadd, osub, scale, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Right-distributivity and scalar bilinearity of sedenion multiplication:
+    if u₁ · w = 0 and u₂ · w = 0, then for any real amplitudes α, β ∈ ℝ,
+    the simultaneous multi-jammer superposition (α u₁ + β u₂) · w = 0 identically. -/
+theorem crpa_multi_jammer_superposition_null
+    (u1 u2 w : O × O) (α β : ℝ)
+    (h1 : smul u1 w = (ozero, ozero))
+    (h2 : smul u2 w = (ozero, ozero)) :
+    smul (sadd (sscale α u1) (sscale β u2)) w = (ozero, ozero) := by
+  rw [smul_linear_left, h1, h2]
+  simp only [sadd, sscale, oadd, scale, ozero, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Sedenion subtraction and Sedenion associator [u, v, w] = (u · v) · w - u · (v · w) -/
+def ssub (u v : O × O) : O × O := (osub u.1 v.1, osub u.2 v.2)
+def sassoc (u v w : O × O) : O × O := ssub (smul (smul u v) w) (smul u (smul v w))
+
+/-- Octonionic unit e₀ = (1, 0, ..., 0) and Sedenion doubling generator e₈ = (0, e₀) -/
+def e0_oct : O := ⟨1, 0, 0, 0, 0, 0, 0, 0⟩
+def e8_sed : O × O := (ozero, e0_oct)
+
+/-- **Native Sedenion Associator–Commutator Theorem.**
+    For any pure sedenion wavefield R = (a, b) ∈ Im(O) × Im(O), the single-snapshot
+    associator [R, π_O(R), e₈] with its octonionic projection π_O(R) = (a, 0) and
+    the Cayley–Dickson generator e₈ = (0, e₀) equals the negative octonion commutator
+    (ba - ab, 0) = (-2 (a ×_O b), 0). -/
+theorem native_associator_commutator
+    (a b : O) (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) :
+    sassoc (a, b) (a, ozero) e8_sed = (osub (omul b a) (omul a b), ozero) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  simp only at ha0 hb0
+  subst ha0; subst hb0
+  simp only [sassoc, ssub, smul, e8_sed, e0_oct, osub, oadd, ozero, conj, omul, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- **Native Sedenion Associator–Lagrange Wedge Norm Identity.**
+    For any pure sedenion wavefield R = (a, b) ∈ Im(O) × Im(O), the Euclidean norm squared
+    of the native self-associator [R, π_O(R), e₈] is identically four times the 7D Lagrange
+    wedge / cross-product norm squared:
+      ‖[R, π_O(R), e₈]‖² = 4 (‖a‖² ‖b‖² - ⟨a, b⟩²).
+    Consequently, ‖[R, π_O(R), e₈]‖² = 0 iff a and b are collinear (single associative
+    quaternion channel), and achieves its global unit-sphere maximum ‖[R, π_O(R), e₈]‖² = 1
+    iff R lies on the Moreno Zero-Divisor Cone V₂(ℝ⁷) (‖a‖² = ‖b‖² = 1/2, ⟨a, b⟩ = 0). -/
+theorem native_associator_lagrange_norm
+    (a b : O) (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) :
+    snormSq (sassoc (a, b) (a, ozero) e8_sed) =
+      4 * (dot a a * dot b b - (dot a b) ^ 2) := by
+  rw [native_associator_commutator a b ha0 hb0]
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  simp only at ha0 hb0
+  subst ha0; subst hb0
+  simp only [snormSq, dot, osub, ozero, omul]
+  ring
+
 end SedenionReal
