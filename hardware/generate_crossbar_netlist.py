@@ -134,5 +134,5 @@ def build_84_primitive_blades_and_netlist():
         print(f"  {k:30s}: {v:.2f} dB")
 
 
-if __name__ == "__main__":
-    build_84_primitive_blades_and_netlist()
+if __name__ == "__main__":  # pragma: no cover
+    build_84_primitive_blades_and_netlist()  # pragma: no cover
