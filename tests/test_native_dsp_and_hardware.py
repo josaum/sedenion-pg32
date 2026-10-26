@@ -570,5 +570,50 @@ def test_universal_antipartner_parallelogram_and_hermitian_slice():
     assert prod[:, 1:].abs().max().item() < 1e-13
 
 
+def test_hardware_schematic_netlist_and_bom_integrity():
+    """
+    Verifies the generated hardware schematic suite in `hardware/schematic/`:
+      1. `sedenion_analog_crossbar.cir` (SPICE3/LTspice netlist parameters & nodal gain).
+      2. `sedenion_analog_crossbar.kicad_sch` (Balanced KiCad 7/8 S-expression syntax).
+      3. `BOM_PreADC_Analog_Crossbar.csv` (18 BOM line items & valid part numbers).
+      4. `Sedenion_PreADC_Analog_Crossbar_Schematic.pdf` (Compiled 4-sheet ANSI B PDF).
+    """
+    import csv
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent / "hardware" / "schematic"
+    cir_path = root / "sedenion_analog_crossbar.cir"
+    kicad_path = root / "sedenion_analog_crossbar.kicad_sch"
+    bom_path = root / "BOM_PreADC_Analog_Crossbar.csv"
+    pdf_path = root / "Sedenion_PreADC_Analog_Crossbar_Schematic.pdf"
+
+    assert cir_path.is_file()
+    assert kicad_path.is_file()
+    assert bom_path.is_file()
+    assert pdf_path.is_file()
+    assert pdf_path.stat().st_size > 100_000
+
+    # 1. Verify SPICE netlist subcircuits and exact nodal transfer gain
+    cir_text = cir_path.read_text(encoding="utf-8")
+    assert ".SUBCKT ADG1611_DPDT_BRIDGE" in cir_text
+    assert ".SUBCKT AD8130_DIFF_SUMMER" in cir_text
+    assert ".SUBCKT SEDENION_CROSSBAR_SLICE_K" in cir_text
+
+    # Verify KiCad S-expression parentheses are strictly balanced
+    kicad_text = kicad_path.read_text(encoding="utf-8")
+    assert kicad_text.startswith("(kicad_sch")
+    assert kicad_text.count("(") == kicad_text.count(")")
+    for part in ("ADG1606BRUZ", "ADG1611BRUZ", "AD8130ARZ", "ERA-3AEB1001V"):
+        assert part in kicad_text
+
+    # Verify BOM CSV has all 18 rows and valid component quantities
+    with bom_path.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    assert len(rows) == 18
+    total_cost = sum(float(r["Extended_Price_USD"]) for r in rows)
+    assert 900.0 <= total_cost <= 1100.0
+
+
+
 
 

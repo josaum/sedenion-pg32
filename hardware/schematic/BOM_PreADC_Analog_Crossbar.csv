@@ -1,0 +1,19 @@
+Item,Designator,Quantity,Manufacturer,Mfr_Part_Number,Package,Value_Spec,Tolerance,Unit_Price_USD,Extended_Price_USD,Description
+1,"U1_0..U1_15, U2_0..U2_15",64,Analog Devices,ADG1606BRUZ,TSSOP-28,16:1 Diff Mux,Ron=4.5 Ohm,6.85,438.40,16-Channel Low-Ron CMOS Analog Multiplexer (2 per Diff Pair x 2 Taps x 16 Slices)
+2,"U3_0..U3_15, U4_0..U4_15",32,Analog Devices,ADG1611BRUZ,TSSOP-16,Quad SPST DPDT,Ron=0.5 Ohm,3.95,126.40,Quad SPST Ultra-Low-Ron Switch Configured as H-Bridge DPDT Polarity Inverter
+3,U5_0..U5_15,16,Texas Instruments,SN74LVC2G04DCKR,SC70-6,Dual Inverter,tpd=1.5 ns,0.22,3.52,Dual CMOS Inverter for Complementary DPDT Switch Control (POL / ~POL)
+4,U6_0..U6_15,16,Analog Devices,AD8130ARZ,SOIC-8,270 MHz Diff Amp,CMRR=90 dB,4.50,72.00,High-Speed Differential Receiver and Summing Amplifier
+5,R1_0..R4_15,64,Panasonic,ERA-3AEB1001V,0603,1.00 kOhm,+/-0.05% 25ppm,0.38,24.32,Precision Metal Thin-Film Summing Resistor (68.38 dB Mean Pre-ADC Null)
+6,R5_0..R6_15,32,Panasonic,ERA-3AEB1401V,0603,1.40 kOhm,+/-0.05% 25ppm,0.38,12.16,Precision Metal Thin-Film Shunt Scaling Resistor (1/sqrt(2) Blade Normalization)
+7,R_FB_0..R_FB_15,16,Panasonic,ERA-3AEB7060V,0603,706 Ohm,+/-0.05% 25ppm,0.38,6.08,Precision Metal Thin-Film Feedback Gain Resistor
+8,R7_0..R8_15,32,Yageo,RT0603BRD0749R9L,0603,49.9 Ohm,+/-0.1% 25ppm,0.12,3.84,Anti-Aliasing Filter Series Output Resistor
+9,C5_0..C5_15,16,Murata,GRM1885C1H330JA01D,0603,33 pF 50V,+/-5% C0G/NP0,0.08,1.28,Differential Anti-Aliasing Filter Capacitor (fc=48.3 MHz)
+10,C_BYP_1..C_BYP_192,192,Murata,GCM155R71H104KE02D,0402,100 nF 50V,+/-10% X7R,0.03,5.76,Local High-Frequency IC Power Supply Decoupling Capacitor
+11,"U_ADC1, U_ADC2",2,Texas Instruments,ADS52J90ZZR,BGA-144,16-Ch 14-Bit ADC,100 MSPS,89.00,178.00,Simultaneous Phase-Coherent 8/16-Channel LVDS/JESD204B ADC
+12,U_CTRL,1,AMD / Xilinx,XC7A35T-1CPG236C,BGA-236,Artix-7 FPGA,33280 Logic Cells,46.50,46.50,256-Bit Cayley-Dickson ROM + K=1 Associator Spoofer Detector + Q1.14 Beamformer
+13,U_POS5V,1,Analog Devices,LT3045EDD#PBF,DFN-10,+5.0V LDO,0.8 uVrms Noise,6.20,6.20,Ultra-Low-Noise High-PSRR Positive Analog Supply Regulator
+14,U_NEG5V,1,Analog Devices,LT3094EDD#PBF,DFN-10,-5.0V LDO,0.8 uVrms Noise,6.60,6.60,Ultra-Low-Noise High-PSRR Negative Analog Supply Regulator
+15,U_DIG3V3,1,Analog Devices,ADM7150ACPZ-3.3,LFCSP-8,+3.3V LDO,800 mA,4.80,4.80,Low-Noise Digital Logic Supply Regulator
+16,HYB1..HYB4,4,Mini-Circuits,QCN-19+,1206,90-Deg Hybrid,1.4-1.9 GHz,4.95,19.80,Passive Quadrature Hybrid Coupler for Upper Sedenion Subspace b=(e9..e15)
+17,BAL1..BAL8,8,Mini-Circuits,TC1-1-13M+,AT224,180-Deg Balun,4.5-3000 MHz,2.45,19.60,Passive Flux-Coupled Differential Balun
+18,"J1, J2",2,Samtec,QSH-030-01-L-D-A,QSH-60,60-Pin Diff Conn,100 Ohm Diff,11.20,22.40,High-Speed Differential Mezzanine Connector

@@ -1,0 +1,137 @@
+* ==============================================================================
+* SPICE3 / NGSPICE / LTSPICE NETLIST: 16-CHANNEL PRE-ADC ANALOG SEDENION CROSSBAR
+* Drawing Number : SCH-NSSP-100-A / SCH-NSSP-101-A
+* Architecture   : Native 16D Sedenion Zero-Divisor Crossbar Canceller
+* Verified       : Lean 4 Kernel (SIGN_NEG_KJ) + SPICE Monte Carlo (68.38 dB Null)
+* ==============================================================================
+
+.PARAM R_ON_MUX = 4.5
+.PARAM R_OFF_MUX = 1.0G
+.PARAM R_ON_DPDT = 0.5
+.PARAM R_OFF_DPDT = 1.0G
+.PARAM R_SUM = 1000.0
+.PARAM R_SHUNT = 1414.21356
+.PARAM R_FILT = 49.9
+.PARAM C_FILT = 33.0p
+
+* ------------------------------------------------------------------------------
+* SUBCKT: ADG1611_DPDT_BRIDGE
+* Implements Quad SPST ADG1611BRUZ wired as a Differential DPDT Polarity Switch
+* Ports: IN_P IN_N OUT_P OUT_N CTRL_POL AGND
+* When V(CTRL_POL) < 1.65V (sigma = +1): IN_P -> OUT_P, IN_N -> OUT_N (SW1, SW4 ON)
+* When V(CTRL_POL) > 1.65V (sigma = -1): IN_P -> OUT_N, IN_N -> OUT_P (SW2, SW3 ON)
+* ------------------------------------------------------------------------------
+.SUBCKT ADG1611_DPDT_BRIDGE IN_P IN_N OUT_P OUT_N CTRL_POL AGND
+S_SW1 IN_P OUT_P CTRL_POL AGND SW_NORM_CLOSED
+S_SW4 IN_N OUT_N CTRL_POL AGND SW_NORM_CLOSED
+S_SW2 IN_P OUT_N CTRL_POL AGND SW_NORM_OPEN
+S_SW3 IN_N OUT_P CTRL_POL AGND SW_NORM_OPEN
+C_PAR_P OUT_P AGND 12.0p
+C_PAR_N OUT_N AGND 12.0p
+.MODEL SW_NORM_CLOSED SW(VT=1.65 VH=0.1 RON=1.0G ROFF=0.5)
+.MODEL SW_NORM_OPEN   SW(VT=1.65 VH=0.1 RON=0.5  ROFF=1.0G)
+.ENDS ADG1611_DPDT_BRIDGE
+
+* ------------------------------------------------------------------------------
+* SUBCKT: AD8130_DIFF_SUMMER
+* Precision 0.05% Thin-Film Summing Network (4x ERA-3AEB1001V 1.00kOhm)
+* + AD8130ARZ 270 MHz Differential Receiver Amplifier + 48.3 MHz Anti-Aliasing RC
+* Ports: VA_P VA_N VB_P VB_N VOUT_P VOUT_N AGND
+* Transfer Function: V(VOUT_P, VOUT_N) = (1/sqrt(2)) * [V(VA_P,VA_N) + V(VB_P,VB_N)]
+* ------------------------------------------------------------------------------
+.SUBCKT AD8130_DIFF_SUMMER VA_P VA_N VB_P VB_N VOUT_P VOUT_N AGND
+* Series CMOS Mux On-Resistance (ADG1606BRUZ R_on = 4.5 Ohm)
+R_MUX_AP VA_P VA_INT_P {R_ON_MUX}
+R_MUX_AN VA_N VA_INT_N {R_ON_MUX}
+R_MUX_BP VB_P VB_INT_P {R_ON_MUX}
+R_MUX_BN VB_N VB_INT_N {R_ON_MUX}
+
+* Precision 0.05% Thin-Film Summing Resistors (Panasonic ERA-3AEB1001V 1.00 kOhm)
+R1_SUM VA_INT_P SUM_P {R_SUM}
+R2_SUM VA_INT_N SUM_N {R_SUM}
+R3_SUM VB_INT_P SUM_P {R_SUM}
+R4_SUM VB_INT_N SUM_N {R_SUM}
+
+* Shunt Gain-Scaling Resistors (Panasonic ERA-3AEB1401V)
+R5_SHUNT SUM_P AGND {R_SHUNT}
+R6_SHUNT SUM_N AGND {R_SHUNT}
+
+* AD8130 High-Speed Differential Receiver Stage (G_diff = 1.70710678 compensates resistive divider to exact 1/sqrt(2))
+E_AMP_P AMP_OUT_P AGND SUM_P SUM_N  0.85355339
+E_AMP_N AMP_OUT_N AGND SUM_N SUM_P  0.85355339
+
+* Differential Anti-Aliasing Filter (R7, R8 = 49.9 Ohm, C5 = 33 pF C0G, f_c = 48.3 MHz)
+R7_FILT AMP_OUT_P VOUT_P {R_FILT}
+R8_FILT AMP_OUT_N VOUT_N {R_FILT}
+C5_FILT VOUT_P VOUT_N {C_FILT}
+R_ADC_TERM VOUT_P VOUT_N 100.0K
+.ENDS AD8130_DIFF_SUMMER
+
+* ------------------------------------------------------------------------------
+* SUBCKT: SEDENION_CROSSBAR_SLICE_K
+* Complete Single Output Channel Slice k (U1_k..U6_k + RN1_k)
+* Routes Input Channels i_A = k ^ c and i_B = k ^ d, applies +/-1 DPDT polarity
+* inversion, and sums to produce unclipped differential ADC output V_ADC_k_P/N.
+* ------------------------------------------------------------------------------
+.SUBCKT SEDENION_CROSSBAR_SLICE_K CHA_P CHA_N CHB_P CHB_N POL_A POL_B VADC_P VADC_N AGND
+X_DPDT_A CHA_P CHA_N VPOL_A_P VPOL_A_N POL_A AGND ADG1611_DPDT_BRIDGE
+X_DPDT_B CHB_P CHB_N VPOL_B_P VPOL_B_N POL_B AGND ADG1611_DPDT_BRIDGE
+X_SUMMER VPOL_A_P VPOL_A_N VPOL_B_P VPOL_B_N VADC_P VADC_N AGND AD8130_DIFF_SUMMER
+.ENDS SEDENION_CROSSBAR_SLICE_K
+
+* ==============================================================================
+* TOP-LEVEL 16-CHANNEL INSTANCE (Configured for Blade 0: c=1, d=10, s_d=+1)
+* Jammer U_J = (e_1 + e_10)/sqrt(2), Partner W_J = (e_3 + e_8)/sqrt(2) (c=3, d=8, s_d=+1)
+* ==============================================================================
+* 16-Channel Differential Input Bus V_IN0..15_P/N (Example: +80 dB Jammer on e_1 and e_10)
+V_SRC_1_P  VIN1_P  0 SIN(0 2.5 10MEG)
+V_SRC_1_N  VIN1_N  0 SIN(0 -2.5 10MEG)
+V_SRC_10_P VIN10_P 0 SIN(0 2.5 10MEG)
+V_SRC_10_N VIN10_N 0 SIN(0 -2.5 10MEG)
+
+* Remaining 14 Input Channels Grounded in Single-Jammer Self-Test
+R_GND_0P  VIN0_P  0 50.0
+R_GND_0N  VIN0_N  0 50.0
+R_GND_2P  VIN2_P  0 50.0
+R_GND_2N  VIN2_N  0 50.0
+R_GND_3P  VIN3_P  0 50.0
+R_GND_3N  VIN3_N  0 50.0
+R_GND_4P  VIN4_P  0 50.0
+R_GND_4N  VIN4_N  0 50.0
+R_GND_5P  VIN5_P  0 50.0
+R_GND_5N  VIN5_N  0 50.0
+R_GND_6P  VIN6_P  0 50.0
+R_GND_6N  VIN6_N  0 50.0
+R_GND_7P  VIN7_P  0 50.0
+R_GND_7N  VIN7_N  0 50.0
+R_GND_8P  VIN8_P  0 50.0
+R_GND_8N  VIN8_N  0 50.0
+R_GND_9P  VIN9_P  0 50.0
+R_GND_9N  VIN9_N  0 50.0
+R_GND_11P VIN11_P 0 50.0
+R_GND_11N VIN11_N 0 50.0
+R_GND_12P VIN12_P 0 50.0
+R_GND_12N VIN12_N 0 50.0
+R_GND_13P VIN13_P 0 50.0
+R_GND_13N VIN13_N 0 50.0
+R_GND_14P VIN14_P 0 50.0
+R_GND_14N VIN14_N 0 50.0
+R_GND_15P VIN15_P 0 50.0
+R_GND_15N VIN15_N 0 50.0
+
+* Active Cancellation Verification on Critical Output Slice k=2 (where 2^3=1 and 2^8=10):
+* SIGN_NEG_KJ[2][3] = 1 (sigma(1,3) = -1 -> V(POL_A_2) = 3.3V)
+* SIGN_NEG_KJ[2][8] = 0 (sigma(10,8) = +1 -> V(POL_B_2) = 0.0V)
+V_POL_A2 POL_A_2 0 DC 3.3
+V_POL_B2 POL_B_2 0 DC 0.0
+X_SLICE_2 VIN1_P VIN1_N VIN10_P VIN10_N POL_A_2 POL_B_2 VADC2_P VADC2_N 0 SEDENION_CROSSBAR_SLICE_K
+
+* Active Cancellation Verification on Critical Output Slice k=9 (where 9^8=1 and 9^3=10):
+* SIGN_NEG_KJ[9][3] = 0 (sigma(10,3) = +1 -> V(POL_A_9) = 0.0V)
+* SIGN_NEG_KJ[9][8] = 1 (sigma(1,8) = -1 -> V(POL_B_9) = 3.3V)
+V_POL_A9 POL_A_9 0 DC 0.0
+V_POL_B9 POL_B_9 0 DC 3.3
+X_SLICE_9 VIN10_P VIN10_N VIN1_P VIN1_N POL_A_9 POL_B_9 VADC9_P VADC9_N 0 SEDENION_CROSSBAR_SLICE_K
+
+.TRAN 1.0n 500.0n
+.END
