@@ -61,11 +61,11 @@ All conventional multi-antenna digital signal processing (DSP), phased-array rad
 \textbf{4. Vulnerability of Scalar Spread-Spectrum Waveforms to Radiometric Interception:} Conventional BPSK/QPSK Direct-Sequence Spread Spectrum (DSSS) waveforms modulate a 1D complex phase and remain vulnerable to cyclostationary feature detection and cross-correlation interception.
 
 \section*{SUMMARY OF THE INVENTION}
-The present invention overcomes all four limitations by formulating the antenna feed, pre-ADC analog front-end, anomaly detector, digital baseband processor, and physical waveform **natively** within the 16-dimensional Cayley--Dickson sedenion algebra $\mathbb{S} = \mathbb{O} \oplus \mathbb{O}e_8 \cong \mathbb{R}^{16}$ and its 15-point, 35-line finite projective geometry $\mathrm{PG}(3,2)$. Unlike real ($\mathbb{R}$), complex ($\mathbb{C}$), quaternion ($\mathbb{H}$), and octonion ($\mathbb{O}$) division algebras, the sedenion algebra $\mathbb{S}$ is both **non-associative** ($[x,y,z] := (xy)z - x(yz) \neq 0$) and possesses an exact submanifold of **zero divisors** ($x \cdot y = 0$ for non-zero $x, y \in \mathbb{S}\setminus\{0\}$) governed by the Moreno cone $V_2(\mathbb{R}^7) = \{(a,b) \in \mathrm{Im}(\mathbb{O})\times\mathrm{Im}(\mathbb{O}) : \|a\|_2 = \|b\|_2,\, \langle a,b\rangle = 0\}$ and 84 primitive zero-divisor 2-blades $Z_m = (e_a \pm e_b)/\sqrt{2}$.
+The present invention overcomes all four limitations by formulating the antenna feed, pre-ADC analog front-end, anomaly detector, digital baseband processor, and physical waveform \textbf{natively} within the 16-dimensional Cayley--Dickson sedenion algebra $\mathbb{S} = \mathbb{O} \oplus \mathbb{O}e_8 \cong \mathbb{R}^{16}$ and its 15-point, 35-line finite projective geometry $\mathrm{PG}(3,2)$. Unlike real ($\mathbb{R}$), complex ($\mathbb{C}$), quaternion ($\mathbb{H}$), and octonion ($\mathbb{O}$) division algebras, the sedenion algebra $\mathbb{S}$ is both \textbf{non-associative} ($[x,y,z] := (xy)z - x(yz) \neq 0$) and possesses an exact submanifold of \textbf{zero divisors} ($x \cdot y = 0$ for non-zero $x, y \in \mathbb{S}\setminus\{0\}$) governed by the Moreno cone $V_2(\mathbb{R}^7) = \{(a,b) \in \mathrm{Im}(\mathbb{O})\times\mathrm{Im}(\mathbb{O}) : \|a\|_2 = \|b\|_2,\, \langle a,b\rangle = 0\}$ and 84 primitive zero-divisor 2-blades $Z_m = (e_a \pm e_b)/\sqrt{2}$.
 
 The invention provides four synergistic native sedenion hardware and algorithmic innovations:
 \begin{enumerate}[leftmargin=18pt,itemsep=2pt]
-    \item \textbf{Pre-ADC Passive/Switched Analog Sedenion Zero-Divisor Crossbar Canceller:} Exploits the fact that all 84 primitive zero-divisor blades $Z_m = (e_c \pm e_d)/\sqrt{2}$ have pure sign coefficients $\{-1, 0, +1\}$ under the bitwise-XOR Cayley--Dickson product $e_{k\oplus j} e_j = \sigma(k\oplus j, j) e_k$. A 16-channel differential analog crossbar switch and precision resistor summing network executes $Z_{\mathrm{out}}(t) = R(t) \cdot W_J$ in the analog domain **ahead of the ADCs** using zero multipliers, annihilating $+80\text{ dB}$ jammers before ADC saturation can occur.
+    \item \textbf{Pre-ADC Passive/Switched Analog Sedenion Zero-Divisor Crossbar Canceller:} Exploits the fact that all 84 primitive zero-divisor blades $Z_m = (e_c \pm e_d)/\sqrt{2}$ have pure sign coefficients $\{-1, 0, +1\}$ under the bitwise-XOR Cayley--Dickson product $e_{k\oplus j} e_j = \sigma(k\oplus j, j) e_k$. A 16-channel differential analog crossbar switch and precision resistor summing network executes $Z_{\mathrm{out}}(t) = R(t) \cdot W_J$ in the analog domain \textbf{ahead of the ADCs} using zero multipliers, annihilating $+80\text{ dB}$ jammers before ADC saturation can occur.
     \item \textbf{Single-Snapshot Native Associator Curvature Detector for Coherent Spoofing:} Introduces a closed-form algebraic identity proving that for any pure sedenion wavefield $R = (a, b) \in \mathrm{Im}(\mathbb{O}) \times \mathrm{Im}(\mathbb{O})$, the single-snapshot self-associator with its octonionic projection $\pi_{\mathbb{O}}(R) = (a, 0)$ and doubling generator $e_8 = (0, e_0)$ satisfies:
     \[
         \mathcal{A}_{\mathrm{native}}(R) := \bigl[R,\, \pi_{\mathbb{O}}(R),\, e_8\bigr] = \bigl(ba - ab,\; 0\bigr) = \bigl(-2(a \times_{\mathbb{O}} b),\; 0\bigr),
@@ -91,25 +91,25 @@ The invention provides four synergistic native sedenion hardware and algorithmic
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
     font=\footnotesize,
-    block/.style={draw, thick, rounded corners=3pt, fill=gray!8, align=center, minimum height=1.15cm},
-    arrow/.style={-{Stealth[length=2.5mm]}, thick}
+    block/.style={draw, thick, rounded corners=3pt, fill=gray!8, align=center, minimum height=1.85cm, inner sep=5pt},
+    arrow/.style={-{Stealth[length=2.6mm]}, thick}
 ]
-    \node[block, text width=2.7cm] (ant) at (0, 0) {\textbf{100: Dyadic $2\times 2$}\\\textbf{TEM Vector Array}\\$(\mathbf{E}_\theta, \mathbf{E}_\phi)$ Ports};
-    \node[block, text width=2.8cm] (hyb) at (3.4, 0) {\textbf{110: Passive $90^\circ/180^\circ$}\\\textbf{Octonion Hybrid Feed}\\$a \in \mathrm{Im}(\mathbb{O}),\, b \in \mathrm{Im}(\mathbb{O})e_8$\\$\|a\|=\|b\|,\, \langle a,b\rangle=0$};
-    \node[block, text width=3.3cm] (xbar) at (7.1, 0) {\textbf{120: Pre-ADC Analog}\\\textbf{Sedenion Crossbar}\\$Z(t) = R(t) \cdot W_J$\\$\pm 1$ Wire-Swap + XOR Mux};
-    \node[block, text width=2.4cm] (adc) at (10.6, 0) {\textbf{130: 16-Ch}\\\textbf{Coherent ADCs}\\(Unsaturated\\Q1.14 Stream)};
-    \node[block, text width=2.7cm] (pll) at (13.8, 0) {\textbf{150: $\mathrm{PG}(3,2)$ Hinge}\\\textbf{Projector \& PLL}\\$\mathbb{H}_{\ell^*} \subset \mathbb{S}$\\($[x,y,z]=0$)};
+    \node[block, text width=3.1cm] (ant) at (0.0, 0) {\textbf{100: Dyadic $2\times 2$}\\\textbf{TEM Vector Array}\\$(\mathbf{E}_\theta, \mathbf{E}_\phi)$ Ports};
+    \node[block, text width=3.7cm] (hyb) at (4.6, 0) {\textbf{110: Passive $90^\circ/180^\circ$}\\\textbf{Octonion Hybrid Feed}\\$a \in \mathrm{Im}(\mathbb{O}),\; b \in \mathrm{Im}(\mathbb{O})e_8$\\$\|a\|=\|b\|,\; \langle a,b\rangle=0$};
+    \node[block, text width=4.0cm] (xbar) at (9.9, 0) {\textbf{120: Pre-ADC Analog}\\\textbf{Sedenion Crossbar}\\$Z(t) = R(t) \cdot W_J$\\$\pm 1$ Wire-Swap + XOR Mux};
+    \node[block, text width=3.1cm] (adc) at (14.8, 0) {\textbf{130: 16-Channel}\\\textbf{Coherent ADCs}\\(Unsaturated\\Q1.14 Stream)};
+    \node[block, text width=3.3cm] (pll) at (19.3, 0) {\textbf{150: $\mathrm{PG}(3,2)$ Hinge}\\\textbf{Projector \& PLL}\\$\mathbb{H}_{\ell^*} \subset \mathbb{S}$\\($[x,y,z]=0$)};
 
-    \node[block, text width=6.2cm] (assoc) at (8.8, -2.3) {\textbf{140: Single-Snapshot Associator Curvature Detector ($K=1$)}\\[2pt]
-    $\mathcal{A}_{\mathrm{native}}(R) = [R, \pi_{\mathbb{O}}(R), e_8] = (-2(a\times_{\mathbb{O}} b), 0), \quad \kappa_{\mathbb{S}}(R) = \frac{\|\mathcal{A}_{\mathrm{native}}(R)\|_2}{\|R\|_2^2} \in [0,1]$\\
-    Detects Zero-Lag Coherent Spoofer \& Computes Partner Blade Index $W_J \in \{0..83\}$};
+    \node[block, text width=12.3cm, minimum height=1.85cm] (assoc) at (12.2, -3.7) {\textbf{140: Single-Snapshot Associator Curvature Detector ($K=1$)}\\[2pt]
+    \mbox{$\mathcal{A}_{\mathrm{native}}(R) = [R, \pi_{\mathbb{O}}(R), e_8] = (-2(a\times_{\mathbb{O}} b), 0), \;\; \kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0,1]$}\\[2pt]
+    \mbox{Detects Zero-Lag Coherent Spoofer \& Computes Partner Blade Index $W_J \in \{0..83\}$}};
 
     \draw[arrow] (ant) -- (hyb);
-    \draw[arrow] (hyb) -- node[above, font=\scriptsize] {$R(t)$} (xbar);
-    \draw[arrow] (xbar) -- node[above, font=\scriptsize] {$Z(t)$} (adc);
+    \draw[arrow] (hyb) -- node[above, font=\scriptsize] {$R(t) \in \mathbb{S}$} (xbar);
+    \draw[arrow] (xbar) -- node[above, font=\scriptsize] {$Z(t) \in \mathbb{S}$} (adc);
     \draw[arrow] (adc) -- (pll);
-    \draw[arrow] (hyb.south) |- (assoc.west);
-    \draw[arrow] (assoc.north) -| node[pos=0.25, right, font=\scriptsize] {7-Bit Blade GPIO $W_J$} (xbar.south);
+    \draw[arrow] (hyb.south) |- node[pos=0.75, above, font=\scriptsize] {$R(t)$} (assoc.west);
+    \draw[arrow] (assoc.north -| xbar.south) -- node[right, font=\scriptsize] {7-Bit Blade GPIO $W_J$} (xbar.south);
 \end{tikzpicture}%
 }
 \caption{\textbf{FIG.\ 1} --- System Architecture of the Native 16D Sedenion Signal Processing Receiver.}
@@ -117,29 +117,31 @@ The invention provides four synergistic native sedenion hardware and algorithmic
 
 \begin{figure}[h!]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
     font=\footnotesize,
-    block/.style={draw, thick, rounded corners=2pt, fill=gray!6, align=center, minimum height=0.9cm},
-    arrow/.style={-{Stealth[length=2.2mm]}, thick}
+    block/.style={draw, thick, rounded corners=2pt, fill=gray!6, align=center, minimum height=1.15cm, inner sep=5pt},
+    arrow/.style={-{Stealth[length=2.4mm]}, thick}
 ]
-    \node[block, text width=3.2cm] (inA) at (0, 0.9) {\textbf{210A: XOR Mux A}\\Selects Ch $i_A = k \oplus c$\\$(V_{i_A}^+, V_{i_A}^-)$};
-    \node[block, text width=3.2cm] (inB) at (0, -0.9) {\textbf{210B: XOR Mux B}\\Selects Ch $i_B = k \oplus d$\\$(V_{i_B}^+, V_{i_B}^-)$};
+    \node[block, text width=3.4cm] (inA) at (0, 1.1) {\textbf{210A: XOR Mux A}\\Selects Ch $i_A = k \oplus c$\\$(V_{i_A}^+, V_{i_A}^-)$};
+    \node[block, text width=3.4cm] (inB) at (0, -1.1) {\textbf{210B: XOR Mux B}\\Selects Ch $i_B = k \oplus d$\\$(V_{i_B}^+, V_{i_B}^-)$};
 
-    \node[block, text width=3.3cm] (polA) at (4.2, 0.9) {\textbf{220A: DPDT Polarity}\\$\sigma(k\oplus c, c) \in \{+1,-1\}$\\Swaps $V^+/V^-$ if $-1$};
-    \node[block, text width=3.3cm] (polB) at (4.2, -0.9) {\textbf{220B: DPDT Polarity}\\$s_d \sigma(k\oplus d, d) \in \{+1,-1\}$\\Swaps $V^+/V^-$ if $-1$};
+    \node[block, text width=3.8cm] (polA) at (4.7, 1.1) {\textbf{220A: DPDT Polarity}\\$\sigma(k\oplus c, c) \in \{+1,-1\}$\\Swaps $V^+/V^-$ if $-1$};
+    \node[block, text width=3.8cm] (polB) at (4.7, -1.1) {\textbf{220B: DPDT Polarity}\\$s_d \sigma(k\oplus d, d) \in \{+1,-1\}$\\Swaps $V^+/V^-$ if $-1$};
 
-    \node[block, text width=3.8cm, minimum height=2.2cm] (sum) at (8.8, 0) {\textbf{230: Precision $0.05\%$}\\\textbf{Thin-Film Summing Amp}\\(\texttt{AD8130} + \texttt{ERA-3AEB1001V})\\[3pt]
+    \node[block, text width=4.6cm, minimum height=2.6cm] (sum) at (10.1, 0) {\textbf{230: Precision $0.05\%$}\\\textbf{Thin-Film Summing Amp}\\(\texttt{AD8130} + \texttt{ERA-3AEB1001V})\\[3pt]
     $z_k(t) = \frac{1}{\sqrt{2}}\bigl(\pm x_{k\oplus c} \pm x_{k\oplus d}\bigr)$\\
     Jammer Component $\equiv 0.0\text{ V}$};
 
-    \node[block, text width=2.6cm] (adc_k) at (13.0, 0) {\textbf{240: ADC Ch $k$}\\12/14-Bit Input\\(Unclipped)};
+    \node[block, text width=2.9cm] (adc_k) at (15.0, 0) {\textbf{240: ADC Ch $k$}\\12/14-Bit Input\\(Unclipped)};
 
     \draw[arrow] (inA) -- (polA);
     \draw[arrow] (inB) -- (polB);
     \draw[arrow] (polA.east) -- (sum.west |- polA.east);
     \draw[arrow] (polB.east) -- (sum.west |- polB.east);
     \draw[arrow] (sum) -- (adc_k);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{\textbf{FIG.\ 2} --- Pre-ADC Differential Analog Sedenion Crossbar Channel $k \in \{0,\dots,15\}$.}
 \end{figure}
 
