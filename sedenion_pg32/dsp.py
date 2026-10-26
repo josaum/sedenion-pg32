@@ -25,12 +25,13 @@ def native_sedenion_associator(
     `native_associator_commutator`) guarantees:
         A_native(R) = (b*a - a*b, 0) = (-2 * (a x_O b), 0).
     """
+    ks = k_signs.to(device=R.device, dtype=R.dtype)
     pi_O = torch.zeros_like(R)
     pi_O[..., :8] = R[..., :8]
     e8 = torch.zeros_like(R)
     e8[..., 8] = 1.0
-    left = sed_mul(sed_mul(R, pi_O, k_signs, xor_idx), e8, k_signs, xor_idx)
-    right = sed_mul(R, sed_mul(pi_O, e8, k_signs, xor_idx), k_signs, xor_idx)
+    left = sed_mul(sed_mul(R, pi_O, ks, xor_idx), e8, ks, xor_idx)
+    right = sed_mul(R, sed_mul(pi_O, e8, ks, xor_idx), ks, xor_idx)
     return left - right
 
 
@@ -226,9 +227,9 @@ def q14_sedenion_mul_rtl(
     w_q14 = torch.clamp(torch.round(w_float * scale), q_min, q_max).to(torch.int64)
     ks_int = k_signs.to(torch.int64)
 
-    # 16x16 signed products accumulated in 36-bit integer precision, then arithmetic >> 14
+    # 16x16 signed products accumulated in 36-bit integer precision, then arithmetic >> 14 with 16-bit saturation
     prod_acc = (x_q14[..., xor_idx] * w_q14.unsqueeze(-2) * ks_int).sum(dim=-1)
-    z_q14_int = prod_acc >> frac_bits
+    z_q14_int = torch.clamp(prod_acc >> frac_bits, q_min, q_max)
     z_q14_float = z_q14_int.to(x_float.dtype) / scale
     return z_q14_int, z_q14_float
 
@@ -276,15 +277,50 @@ def cascaded_sedenion_array_peeler(
     Multi-Jammer Cascaded Sedenion Array Peeler over a 16-tile sedenion array `R_array` [..., 16].
     Given a list of K independent jammer sedenion states `[J_1, J_2, ..., J_K]` on the Moreno cone,
     tracks how each stage's zero-divisor partner W_s transforms the remaining jammer states
-    (`J_next = J_curr * W_s`), projecting each transformed jammer onto the Moreno cone and
-    annihilating it in O(1) operations without forming a covariance matrix.
+    (`J_next = J_curr * W_s`), selecting W_s in ker L_S(J_s) to preserve the Moreno zero-divisor
+    cone structure of downstream jammers and annihilating all K jammers in O(1) operations
+    without forming a covariance matrix.
     """
     curr_signal = R_array
     active_jammers = [j.clone() for j in jammer_Macro_states]
+    eye7 = torch.eye(7, dtype=R_array.dtype, device=R_array.device)
 
     for s_idx in range(len(active_jammers)):
         j_target = active_jammers[s_idx]
         w_s = associator_nullspace_partner(j_target, k_signs, xor_idx)
+        w_s = w_s / w_s.norm(dim=-1, keepdim=True).clamp_min(1e-30)
+        if s_idx + 1 < len(active_jammers):
+            # Evaluate unit-normalized candidates in the 4D kernel ker L_S(j_target) and pick
+            # the partner that maximizes total Moreno cone curvature across all downstream jammers
+            a_im = j_target[..., 1:8]
+            b_im = j_target[..., 9:16]
+            a_unit = a_im / a_im.norm(dim=-1, keepdim=True).clamp_min(1e-30)
+            b_ortho = b_im - (b_im * a_unit).sum(dim=-1, keepdim=True) * a_unit
+            b_unit = b_ortho / b_ortho.norm(dim=-1, keepdim=True).clamp_min(1e-30)
+            u_cone = torch.zeros_like(j_target)
+            u_cone[..., 1:8] = a_unit
+            u_cone[..., 9:16] = b_unit
+
+            best_score = torch.zeros(R_array.shape[:-1], dtype=R_array.dtype, device=R_array.device)
+            for rem_idx in range(s_idx + 1, len(active_jammers)):
+                j_rem_img = sed_mul(active_jammers[rem_idx], w_s, k_signs, xor_idx)
+                best_score = best_score + native_associator_curvature(j_rem_img, k_signs, xor_idx)
+
+            for idx in range(7):
+                w_raw = moreno_nullspace_partner(u_cone, eye7[idx].expand_as(a_unit), k_signs, xor_idx)
+                w_norm = w_raw.norm(dim=-1, keepdim=True)
+                w_cand = w_raw / w_norm.clamp_min(1e-30)
+                null_res = sed_mul(j_target, w_cand, k_signs, xor_idx).norm(dim=-1)
+                valid = ((w_norm.squeeze(-1) > 0.5) & (null_res < 1e-6)).to(R_array.dtype)
+                score = torch.zeros_like(best_score)
+                for rem_idx in range(s_idx + 1, len(active_jammers)):
+                    j_rem_img = sed_mul(active_jammers[rem_idx], w_cand, k_signs, xor_idx)
+                    score = score + native_associator_curvature(j_rem_img, k_signs, xor_idx)
+                score = score * valid
+                take = (score > best_score + 1e-9).unsqueeze(-1)
+                w_s = torch.where(take, w_cand, w_s)
+                best_score = torch.maximum(best_score, score)
+
         curr_signal = sed_mul(curr_signal, w_s, k_signs, xor_idx)
         # Update remaining downstream jammer states through the bilinear operator R_{w_s}
         for rem_idx in range(s_idx + 1, len(active_jammers)):
@@ -298,14 +334,16 @@ def sedenion_array_interferometric_navigator(
     tile_positions_wavelengths: torch.Tensor,
     k_signs: torch.Tensor,
     xor_idx: torch.Tensor,
+    u_hinge: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Single-Snapshot (K=1) Multi-Tile Sedenion Array Navigator & Attitude Estimator.
     Given M Sedenion tiles at 3D body-frame coordinates `tile_positions_wavelengths` [M, 3] (in units
     of carrier wavelength lambda) receiving a multi-tile sedenion wavefield `R_tiles` [..., M, 16]:
       1. Computes the sedenion Hermitian inner product C_{m,0} = R_m * conj(R_0) in S across tiles.
-      2. Extracts the inter-tile carrier phase gradient phi_m = atan2(C_{m,0}[e_1], C_{m,0}[e_0])
-         projected onto the associative quaternion hinge span{e_0, e_1, e_2, e_3}.
+      2. Extracts the inter-tile carrier phase gradient phi_m = atan2(<C_{m,0}[e_1..e_3], u_hinge>, C_{m,0}[e_0])
+         projected onto the associative quaternion hinge span{e_0, e_1, e_2, e_3} (using explicit unit
+         3-vector projection when `u_hinge` is provided, or dominant canonical axis selection in blind mode).
       3. Solves the 3D direction-of-arrival unit vector u_hat = (u_x, u_y, u_z) via least-squares
          on the fixed geometry pinv(2*pi*P) and computes per-tile non-associative curvature kappa_S
          to flag multipath/spoofing per tile.
@@ -322,8 +360,17 @@ def sedenion_array_interferometric_navigator(
     quat_hinge = rel_sedenion[..., :4]
     quat_hinge = quat_hinge / quat_hinge.norm(dim=-1, keepdim=True).clamp_min(1e-30)
 
-    # Extract carrier phase offset in the (e_0, e_1) complex/quaternion plane
-    phases = torch.atan2(rel_sedenion[..., 1], rel_sedenion[..., 0])  # [..., M]
+    # Extract carrier phase offset across the 3D imaginary quaternion hinge span{e_1, e_2, e_3}
+    hinge_im = rel_sedenion[..., 1:4]  # [..., M, 3]
+    if u_hinge is not None:
+        u_vec = u_hinge[..., 1:4] if u_hinge.shape[-1] >= 4 else u_hinge[..., :3]
+        u_vec = u_vec / u_vec.norm(dim=-1, keepdim=True).clamp_min(1e-30)
+        im_component = (hinge_im * u_vec.unsqueeze(-2)).sum(dim=-1)
+    else:
+        hinge_energy = hinge_im.pow(2).sum(dim=-2, keepdim=True)  # [..., 1, 3]
+        dom_idx = hinge_energy.argmax(dim=-1, keepdim=True)  # [..., 1, 1]
+        im_component = torch.gather(hinge_im, dim=-1, index=dom_idx.expand(*hinge_im.shape[:-1], 1)).squeeze(-1)
+    phases = torch.atan2(im_component, rel_sedenion[..., 0])  # [..., M]
 
     # Solve 2*pi * (P - P_0) @ u = phases for 3D direction cosines (u_x, u_y, u_z)
     delta_p = 2.0 * math.pi * (tile_positions_wavelengths - tile_positions_wavelengths[:1])  # [M, 3]

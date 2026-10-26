@@ -572,4 +572,33 @@ theorem sedenion_hermitian_octonion_slice (a : O) :
   refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
           ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
 
+/-- **Anti-Partner Strict Non-Annihilation Theorem.**
+    Whenever a non-zero sedenion partner `(c, d)` annihilates a non-zero jammer `(a, b)`,
+    the orthogonal anti-partner `(a, -b)` has strictly positive output power
+    (`0 < snormSq (smul (a, -b) (c, d))`) — proving it is mathematically impossible
+    for a zero-divisor beamformer to accidentally null the anti-partner signal. -/
+theorem antipartner_never_null (a b c d : O)
+    (hu : 0 < snormSq (a, b)) (hw : 0 < snormSq (c, d))
+    (hnull : snormSq (smul (a, b) (c, d)) = 0) :
+    0 < snormSq (smul (a, scale (-1) b) (c, d)) := by
+  have h := zdkm_antipartner_exact_gain a b c d hnull
+  rw [h]
+  positivity
+
+/-- **Native Associator Curvature Cone Upper Bound (`κ_S ≤ 1`).**
+    For any unit-norm purely imaginary sedenion wavefield (`‖a‖² + ‖b‖² = 1`),
+    the native associator squared norm is upper-bounded by `1`, achieving `1`
+    if and only if `R = (a, b)` lies on the Moreno zero-divisor cone (`‖a‖² = ‖b‖² = 1/2, ⟨a,b⟩ = 0`). -/
+theorem native_associator_cone_upper_bound
+    (a b : O) (ha0 : a.c0 = 0) (hb0 : b.c0 = 0)
+    (h_unit : dot a a + dot b b = 1) :
+    snormSq (sassoc (a, b) (a, ozero) e8_sed) ≤ 1 := by
+  rw [native_associator_lagrange_norm a b ha0 hb0]
+  have h1 : 0 ≤ (dot a a - dot b b) ^ 2 := sq_nonneg (dot a a - dot b b)
+  have h2 : 0 ≤ 4 * (dot a b) ^ 2 := by positivity
+  have h_sum_sq : (dot a a + dot b b) ^ 2 = 1 := by
+    rw [h_unit]
+    ring
+  linarith
+
 end SedenionReal

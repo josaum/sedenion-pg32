@@ -246,4 +246,29 @@ theorem cascaded_peeler_two_stage_kernel :
     isZero (mul (mul (add u_moreno (basis 0)) v_beam2) v_stage2) := by
   decide +kernel
 
+/-- Genuine physical second jammer blade `j_phy2 = e₃ + e₁₂ ∈ Im(S)` (with zero `e₀` and `e₈` components,
+    orthogonal to `u_moreno = e₁ + e₁₀`) and its Stage-2 partner blade `v_stage2_phy = e₄ + e₁₁`. -/
+def j_phy2 : Vec := add (basis 3) (basis 12)
+def v_stage2_phy : Vec := add (basis 4) (basis 11)
+
+/-- Theorem 2.5 (Physical Pure-Imaginary Two-Stage Cascaded Peeler & +6.02 dB Signal Gain):
+    For two orthogonal purely imaginary primitive zero-divisor jammers `u_moreno = e₁ + e₁₀ ∈ Im(S)`
+    and `j_phy2 = e₃ + e₁₂ ∈ Im(S)` that do NOT lie in the same Stage-1 kernel (`j_phy2 · v_beam2 ≠ 0`):
+      (1) `u_moreno · v_beam2 = 0` (Jammer 1 annihilated at Stage 1),
+      (2) `(j_phy2 · v_beam2)` has zero `e₀` and `e₈` scalar components and is annihilated at Stage 2
+          by `v_stage2_phy = e₄ + e₁₁` (`((j_phy2 · v_beam2) · v_stage2_phy) = 0`),
+      (3) Both jammers are simultaneously annihilated (`((u_moreno + j_phy2) · v_beam2) · v_stage2_phy = 0`), and
+      (4) The authentic anti-partner satellite signal `u_antipartner = e₁ - e₁₀` achieves exact two-stage
+          coherent power gain `‖(u_antipartner · v_beam2) · v_stage2_phy‖² = 16` (`+6.02 dB` normalized gain). -/
+theorem cascaded_peeler_two_stage_kernel_physical :
+    vdot u_moreno j_phy2 = 0 ∧
+    isZero (mul u_moreno v_beam2) ∧
+    !isZero (mul j_phy2 v_beam2) ∧
+    (mul j_phy2 v_beam2) 0 = 0 ∧
+    (mul j_phy2 v_beam2) 8 = 0 ∧
+    isZero (mul (mul j_phy2 v_beam2) v_stage2_phy) ∧
+    isZero (mul (mul (add u_moreno j_phy2) v_beam2) v_stage2_phy) ∧
+    vnormSq (mul (mul u_antipartner v_beam2) v_stage2_phy) = 16 := by
+  decide +kernel
+
 end SedenionPG32

@@ -132,15 +132,19 @@ Let $R = (a, b) \in \ImPart(\Oc) \times \ImPart(\Oc)$ be any purely imaginary 16
 
 \begin{IEEEproof}
 Using the Cayley--Dickson multiplication law \eqref{eq:cd_mul} with $\bar{a} = -a$ and $\bar{e}_0 = e_0$:
-First, $(a, b)\cdot(a, 0) = (a^2, ba)$, and multiplying on the right by $e_8 = (0, e_0)$ yields
+Let $R = (a, b) \in \ImPart(\Oc) \times \ImPart(\Oc)$ such that $\bar{a} = -a$ and $\bar{b} = -b$, and let $e_8 = (0, e_0)$ with $\bar{e}_0 = e_0$. Applying the Cayley--Dickson multiplication law \eqref{eq:cd_mul}, we first evaluate $(R \cdot \pi_{\Oc}(R))\cdot e_8$:
 \[
-    \bigl((a, b)\cdot(a, 0)\bigr)\cdot(0, e_0) = \bigl(-e_0(ba),\; e_0 a^2\bigr) = \bigl(-ba,\; a^2\bigr).
+    (a, b)\cdot(a, 0) = \bigl(a^2 - \bar{0}b,\; 0\cdot a + b\bar{a}\bigr) = \bigl(a^2,\; -ba\bigr),
 \]
-Second, $(a, 0)\cdot(0, e_0) = (0, a)$, and left-multiplying by $(a, b)$ with $\bar{a} = -a$ yields
 \[
+    \bigl((a, b)\cdot(a, 0)\bigr)\cdot(0, e_0) = \bigl(a^2\cdot 0 - \bar{e}_0(-ba),\; e_0 a^2 + (-ba)\bar{0}\bigr) = \bigl(ba,\; a^2\bigr).
+\]
+Second, we evaluate $R \cdot (\pi_{\Oc}(R)\cdot e_8)$:
+\[
+    (a, 0)\cdot(0, e_0) = \bigl(0,\; e_0 a\bigr) = \bigl(0,\; a\bigr), \quad
     (a, b)\cdot(0, a) = \bigl(-\bar{a}b,\; a^2\bigr) = \bigl(ab,\; a^2\bigr).
 \]
-Subtracting the two expressions cancels the upper component $a^2$ identically, giving $\Anative(R) = (-ba - ab, 0)$ if $a$ were real, or with $\bar{a} = -a$ in $(a,0)\cdot(0,e_0) = (0, e_0 a) = (0, a)$ and $(a,b)\cdot(0,a) = (a\cdot 0 - \bar{a}b, a\cdot a + b\cdot 0) = (ab, a^2)$, whereas $((a,b)\cdot(a,0))\cdot(0,e_0) = (a^2, b\bar{a})\cdot(0,e_0) = (a^2, -ba)\cdot(0,e_0) = (ba, a^2)$. Subtracting yields $(ba - ab, 0) = (-2(a\times_{\Oc} b), 0)$, proving \eqref{eq:thm_commutator}. For \eqref{eq:thm_lagrange_norm}, since $a, b \in \ImPart(\Oc)$, $ab = -\langle a, b\rangle e_0 + a\times_{\Oc} b$ and $ba = -\langle a, b\rangle e_0 - a\times_{\Oc} b$, so $ba - ab = -2(a\times_{\Oc} b)$ and $\|ba - ab\|_2^2 = 4\|a\times_{\Oc} b\|_2^2 = 4(\|a\|_2^2\|b\|_2^2 - \langle a,b\rangle^2)$ by the 7D octonionic Lagrange identity. Both \eqref{eq:thm_commutator} and \eqref{eq:thm_lagrange_norm} are machine-checked over arbitrary real variables in Lean~4 (\texttt{native\_associator\_commutator} and \texttt{native\_associator\_lagrange\_norm} in \texttt{lean/real/SedenionReal.lean}) with \texttt{0 sorry}.
+Subtracting the two expressions cancels the upper component $a^2$ identically, yielding $\Anative(R) = (ba - ab, 0)$. Since $a, b \in \ImPart(\Oc)$, $ab = -\langle a, b\rangle e_0 + a\times_{\Oc} b$ and $ba = -\langle a, b\rangle e_0 - a\times_{\Oc} b$, so $ba - ab = -2(a\times_{\Oc} b)$, proving \eqref{eq:thm_commutator}. For \eqref{eq:thm_lagrange_norm}, $\|ba - ab\|_2^2 = 4\|a\times_{\Oc} b\|_2^2 = 4(\|a\|_2^2\|b\|_2^2 - \langle a,b\rangle^2)$ by the 7D octonionic Lagrange identity. Both \eqref{eq:thm_commutator} and \eqref{eq:thm_lagrange_norm} are machine-checked over arbitrary real variables in Lean~4 (\texttt{native\_associator\_commutator} and \texttt{native\_associator\_lagrange\_norm} in \texttt{lean/real/SedenionReal.lean}) with \texttt{0 sorry}.
 \end{IEEEproof}
 
 \begin{corollary}[Curvature Duality of $\Se$]
@@ -205,7 +209,7 @@ For each of the 84 blades $U_J$, there exist exactly $4$ primitive partner blade
 
 Fig.~\ref{fig:system_arch} depicts the end-to-end NSSP hardware architecture. Rather than digitizing 16 independent element channels and attempting to invert an ill-conditioned covariance matrix in software, the signal path operates natively in $\Se$:
 \begin{enumerate}
-    \item The \textbf{Dyadic $2\times 2$ TEM Vector-Sensor Array} (Block 1) and \textbf{Passive $90^\circ/180^\circ$ Octonion Hybrid Feed} (Block 2) map the orthogonal transverse electric field components $(\bm{E}_\theta, \bm{E}_\phi)$ into the lower octonion $a \in \ImPart(\Oc)$ and upper sedenion $b \in \ImPart(\Oc)e_8$, ensuring $\|a\|_2 = \|b\|_2$ and $\langle a,b\rangle = 0$ physically across all angles of arrival.
+    \item The \textbf{Dyadic $2\times 2$ TEM Vector-Sensor Array} (Block 1) and \textbf{Passive $90^\circ/180^\circ$ Octonion Hybrid Feed} (Block 2) map the orthogonal transverse electric field components $(\bm{E}_\theta, \bm{E}_\phi)$ into the lower octonion $a \in \ImPart(\Oc)$ and upper sedenion $b \in \ImPart(\Oc)e_8$, ensuring $\|a\|_2 = \|b\|_2$ and $\langle a,b\rangle = 0$ physically across all angles of arrival for circularly polarized (or $45^\circ$ slant-linear) incident TEM waves.
     \item Ahead of the ADCs, the \textbf{Pre-ADC Analog Sedenion Crossbar} (Block 3) multiplies the analog differential sedenion bus $R(t)$ by the selected primitive partner blade $W_J \in \{0..83\}$ via multiplier-free XOR channel routing and $\pm 1$ differential wire-swaps, annihilating $+80\,\mathrm{dB}$ jammers to zero volts before the \textbf{16-Channel ADC Bank} (Block 4).
     \item In parallel, the \textbf{Single-Snapshot Associator Curvature Detector} (Block 6) evaluates $\Anative(R) = [R, \pi_{\Oc}(R), e_8]$ on a single snapshot ($K=1$) to detect zero-lag coherent repeater spoofers and extract the Moreno nulling partner $W_J$, while the \textbf{$\PG(3,2)$ Quaternion Hinge Projector} (Block 5) confines carrier-phase tracking to an associative 4D quaternion line $\Ha_{\ell^*} \subset \Se$.
 \end{enumerate}
@@ -226,12 +230,12 @@ Because both modes multiply the \emph{exact same scalar symbol} $s[k]$ at every 
 \end{equation}
 where $\bm{v} = u_{\mathrm{auth}} + \alpha u_{\mathrm{spoof}}$, has \textbf{exact Rank 1}. Consequently, the classical ratio of the second-largest to largest covariance eigenvalues $\lambda_2(\hat{\bm{R}}_{xx}) / \lambda_1(\hat{\bm{R}}_{xx})$ collapses as $\mathrm{SSR}$ increases!
 
-In contrast, the Native Sedenion Associator Curvature $\kappas(R[1])$ operates internally on the single snapshot $R[1]$ via \eqref{eq:kappas_def}: the scalar $s[1]$ cancels in the ratio $\|\Anative(R[1])\|_2 / \|R[1]\|_2^2$, and the non-collinear upper/lower octonion frames $(a, b)$ of $\bm{v}$ produce a non-zero octonion cross product $a \times_{\Oc} b \neq 0$, driving $\kappas(R[1]) \to 1.0$ in $K=1$ snapshot. Furthermore, normalizing the lower octonion of the associator output directly yields the unit vector
+In contrast, the Native Sedenion Associator Curvature $\kappas(R[1])$ operates internally on the single snapshot $R[1]$ via \eqref{eq:kappas_def}: the scalar $s[1]$ cancels in the ratio $\|\Anative(R[1])\|_2 / \|R[1]\|_2^2$, and the non-collinear upper/lower octonion frames $(a, b)$ of $\bm{v}$ produce a non-zero octonion cross product $a \times_{\Oc} b \neq 0$, driving $\kappas(R[1]) \to 1.0$ in $K=1$ snapshot. Furthermore, the associator output directly isolates the third vector of the associative quaternion triad $\Ha_u = \mathrm{span}\{e_0, a, b, a\times_{\Oc} b\}$:
 \begin{equation}
-    c = -\frac{\pi_{\Oc}\bigl(\Anative(R[1])\bigr)}{\bigl\|\pi_{\Oc}\bigl(\Anative(R[1])\bigr)\bigr\|_2} = \frac{a \times_{\Oc} b}{\|a \times_{\Oc} b\|_2} \perp a, b,
+    q_3 = -\frac{1}{2}\pi_{\Oc}\bigl(\Anative(R[1])\bigr) = a \times_{\Oc} b \perp a, b.
     \label{eq:direct_seed}
 \end{equation}
-which plugs directly into Moreno's formula $W = \frac{1}{\sqrt{2}}(c, (\tilde{a}c)\tilde{b})$ to annihilate the interferer in one snapshot without SVD or random search.
+Because Moreno's zero-divisor condition requires the partner seed $c \in \ImPart(\Oc)$ to reside in the 4-dimensional orthogonal complement $\Ha_u^\perp = \mathrm{span}\{a, b, q_3\}^\perp$, projecting the standard basis elements $\{e_1,\dots,e_7\}$ onto $\mathrm{span}\{a, b, q_3\}^\perp$ and normalizing yields a deterministic unit seed $c \in \Ha_u^\perp$ ($\|c\|_2 = 1$). Normalizing $\tilde{a} = a/\|a\|_2$ and $\tilde{b} = b_\perp/\|b_\perp\|_2$ (where $b_\perp = b - \langle b, \tilde{a}\rangle\tilde{a}$) on $V_2(\R^7)$ and substituting into Moreno's formula $W = \frac{1}{\sqrt{2}}(c, (\tilde{a}c)\tilde{b})$ annihilates the interferer in one snapshot without SVD or random search.
 
 \begin{table}[!t]
 \centering

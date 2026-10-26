@@ -495,3 +495,78 @@ def test_q14_rtl_exact_zero_across_all_84_blades():
                 break
 
     assert total_zero_channels == 84 * 16
+
+
+# ==============================================================================
+# 11. SAKANA AI FUGU-MAX AUDIT STRENGTHENINGS
+# ==============================================================================
+
+def test_fugu_max_audit_strengthenings():
+    """
+    Verifies the concrete strengthenings recommended by the Sakana AI `fugu-max` audit:
+      1. Physical two-stage (K=2) and three-stage (K=3) cascaded peeler on purely imaginary
+         zero-divisor blades `u_moreno = (e_1 + e_10)/sqrt(2)` and `j_phy2 = (e_3 + e_12)/sqrt(2)` in Im(S)
+         (matching Lean 4 theorem `cascaded_peeler_two_stage_kernel_physical`),
+         preserving authentic anti-partner `u_sat = (e_1 - e_10)/sqrt(2)` with exact sqrt(2) (+3.01 dB
+         unit-normalized power gain, corresponding to integer normSq = 16 before 2^3 normalization).
+      2. Interferometric navigator phase extraction on canonical `e_2`/`e_3` axes and on arbitrary mixed
+         unit quaternion hinge axes `u_hinge = 0.6 e_1 + 0.8 e_2` (passed as 16D sedenion or 3D vector).
+      3. `q14_sedenion_mul_rtl` 16-bit signed saturation (`+32767` and `-32768`) on positive and negative overflow.
+      4. `native_sedenion_associator` dtype and device preservation on `float32` inputs.
+    """
+    eye = torch.eye(16, dtype=F64)
+    u_moreno = (eye[1] + eye[10]) / math.sqrt(2.0)
+    j_phy2 = (eye[3] + eye[12]) / math.sqrt(2.0)
+    u_sat = (eye[1] - eye[10]) / math.sqrt(2.0)
+
+    rx_composite = u_sat + 1e4 * u_moreno + 1e4 * j_phy2
+    peeled_composite = cascaded_sedenion_array_peeler(rx_composite, [u_moreno, j_phy2], KS, XOR)
+    peeled_clean = cascaded_sedenion_array_peeler(u_sat, [u_moreno, j_phy2], KS, XOR)
+    assert torch.allclose(peeled_composite, peeled_clean, atol=1e-9)
+    assert abs(peeled_clean.norm().item() - math.sqrt(2.0)) < 1e-12
+
+    # Also verify K=3 multi-stage downstream curvature scoring across all remaining jammers
+    j_stage3 = eye[0]
+    rx_k3 = u_sat + 1e4 * u_moreno + 1e4 * j_phy2 + 1e4 * j_stage3
+    peeled_k3_comp = cascaded_sedenion_array_peeler(rx_k3, [u_moreno, j_phy2, j_stage3], KS, XOR)
+    peeled_k3_clean = cascaded_sedenion_array_peeler(u_sat, [u_moreno, j_phy2, j_stage3], KS, XOR)
+    assert torch.allclose(peeled_k3_comp, peeled_k3_clean, atol=1e-9)
+
+    # 2. Navigator on canonical e_2/e_3 axes (blind) and mixed quaternion hinge 0.6*e_1 + 0.8*e_2
+    tile_pos = torch.tensor([
+        [0.00, 0.00, 0.00],
+        [0.20, 0.00, 0.00],
+        [0.00, 0.20, 0.00],
+        [0.00, 0.00, 0.20],
+    ], dtype=F64)
+    true_u = torch.tensor([0.36, 0.48, 0.80], dtype=F64)
+    phases = 2.0 * math.pi * (tile_pos @ true_u)
+    for im_axis in (2, 3):
+        R_tiles = torch.zeros(4, 16, dtype=F64)
+        R_tiles[:, 0] = torch.cos(phases)
+        R_tiles[:, im_axis] = torch.sin(phases)
+        est_u, _, _ = sedenion_array_interferometric_navigator(R_tiles, tile_pos, KS, XOR)
+        assert torch.allclose(est_u, true_u, atol=1e-12)
+
+    u_hinge_16 = 0.6 * eye[1] + 0.8 * eye[2]
+    u_hinge_3 = torch.tensor([0.6, 0.8, 0.0], dtype=F64)
+    R_mixed = torch.cos(phases).unsqueeze(-1) * eye[0] + torch.sin(phases).unsqueeze(-1) * u_hinge_16
+    est_u_16, _, _ = sedenion_array_interferometric_navigator(R_mixed, tile_pos, KS, XOR, u_hinge=u_hinge_16)
+    est_u_3, _, _ = sedenion_array_interferometric_navigator(R_mixed, tile_pos, KS, XOR, u_hinge=u_hinge_3)
+    assert torch.allclose(est_u_16, true_u, atol=1e-12)
+    assert torch.allclose(est_u_3, true_u, atol=1e-12)
+
+    # 3. Q1.14 16-bit signed saturation (+32767 positive and -32768 negative overflow)
+    big_x = torch.ones(16, dtype=F64) * 2.0
+    big_w = torch.ones(16, dtype=F64) * 2.0
+    z_int, _ = q14_sedenion_mul_rtl(big_x, big_w, KS, XOR)
+    assert (z_int <= 32767).all() and (z_int >= -32768).all()
+    assert (z_int == 32767).any() and (z_int == -32768).any()
+
+    # 4. Float32 dtype & device preservation in native_sedenion_associator
+    r_fp32 = torch.randn(4, 16, dtype=torch.float32)
+    assoc_fp32 = native_sedenion_associator(r_fp32, KS, XOR)
+    assert assoc_fp32.dtype == torch.float32
+    assert assoc_fp32.device == r_fp32.device
+
+

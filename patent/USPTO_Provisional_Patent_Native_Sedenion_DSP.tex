@@ -180,7 +180,7 @@ Detector \textbf{140} evaluates $\kappa_{\mathbb{S}}(R) = \|[R, \pi_{\mathbb{O}}
 \begin{itemize}[leftmargin=18pt,itemsep=1pt]
     \item Under an unspoofed authentic wavefield confined to an associative quaternion channel ($b = \lambda a$), $\kappa_{\mathbb{S}}(R) = 0$ (up to thermal noise).
     \item Under a zero-lag coherent repeater spoofer $R = s(t)(u_{\mathrm{auth}} + \alpha u_{\mathrm{spoof}})$ where $K$-snapshot covariance matrices $\hat{\mathbf{R}}_{xx}$ collapse to Rank 1, $\kappa_{\mathbb{S}}(R)$ jumps immediately toward $1.0$, achieving $99.80\%$ detection probability at $5\%$ false-alarm rate ($\mathrm{AUROC} = 0.9999$) in 1 snapshot vs.\ $\mathrm{AUROC} = 0.2055$ for $K=64$ covariance eigenvalue ratio detection.
-    \item Furthermore, the non-zero output vector $\pi_{\mathbb{O}}(\mathcal{A}_{\mathrm{native}}(R)) = -2(a \times_{\mathbb{O}} b)$ directly yields the orthogonal octonion vector $a \times_{\mathbb{O}} b \perp a, b$ required to construct the Moreno zero-divisor annihilator without SVD or random search.
+    \item Furthermore, the non-zero output vector $\pi_{\mathbb{O}}(\mathcal{A}_{\mathrm{native}}(R)) = -2(a \times_{\mathbb{O}} b)$ isolates the third basis vector $q_3 = a \times_{\mathbb{O}} b$ of the associative quaternion triad $\mathbb{H}_u = \mathrm{span}\{e_0, a, b, q_3\}$, enabling deterministic projection of standard octonion basis vectors onto the 4D orthogonal complement $\mathrm{span}\{a, b, q_3\}^\perp \subset \mathrm{Im}(\mathbb{O})$ to obtain $c$ and construct the Moreno zero-divisor annihilator $W = \frac{1}{\sqrt{2}}(c, (ac)b)$ without SVD or random search.
 \end{itemize}
 
 \newpage
@@ -188,47 +188,84 @@ Detector \textbf{140} evaluates $\kappa_{\mathbb{S}}(R) = \|[R, \pi_{\mathbb{O}}
 What is claimed is:
 
 \begin{enumerate}[leftmargin=20pt,itemsep=4pt]
-    \item \textbf{(Independent --- Pre-ADC Analog Zero-Divisor Crossbar Apparatus)} An electromagnetic interference cancellation apparatus comprising:
+    \item \textbf{(Apparatus --- Pre-ADC Analog Zero-Divisor Crossbar)} An electromagnetic interference cancellation apparatus comprising:
     \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
         \item a 16-channel differential analog input bus configured to receive a 16-dimensional real baseband or intermediate-frequency (IF) wavefield representation $R(t) \in \mathbb{S} \cong \mathbb{R}^{16}$;
-        \item a digital blade-selection controller configured to output a zero-divisor partner index selecting a primitive sedenion zero-divisor blade $W_J = \frac{1}{\sqrt{2}}(e_c + s_d e_d)$ in the kernel $\ker L_{\mathbb{S}}(U_J)$ of an interference state $U_J \in \mathbb{S}$;
-        \item a multiplier-free analog crossbar multiplexer and differential polarity-inversion network coupled to the 16-channel differential analog input bus and controlled by a 256-bit Cayley--Dickson sign look-up table (\texttt{SIGN\_NEG\_KJ}), wherein for each output channel $k \in \{0,\dots,15\}$, the network routes input channels $k \oplus c$ and $k \oplus d$ with differential wire-swap polarity $\sigma(k \oplus c, c) \in \{+1, -1\}$ and $s_d \sigma(k \oplus d, d) \in \{+1, -1\}$;
+        \item an interference controller configured to output a zero-divisor partner index selecting a primitive unit sedenion zero-divisor blade $W_J = \frac{1}{\sqrt{2}}(e_c + s_d e_d)$ residing in a left-multiplication kernel $\ker L_{\mathbb{S}}(U_J)$ of a Moreno zero-divisor cone state $U_J \in V_2(\mathbb{R}^7) \subset \mathbb{S}$ representing an interference signal present on said bus;
+        \item a multiplier-free analog crossbar multiplexer and differential polarity-inversion network coupled to the 16-channel differential analog input bus and controlled by a 256-bit memory storing Cayley--Dickson multiplication sign products $\sigma(i, j) \in \{+1, -1\}$, wherein for each output channel $k \in \{0,\dots,15\}$, the network routes input channels $k \oplus c$ and $k \oplus d$ with differential wire-swap polarities $\sigma(k \oplus c, c)$ and $s_d \sigma(k \oplus d, d)$;
         \item a plurality of analog differential summing amplifiers configured to sum the routed and polarity-inverted differential signal pairs to produce a jammer-annihilated analog output $Z_{\mathrm{out}}(t) = R(t) \cdot W_J$; and
-        \item an Analog-to-Digital Converter (ADC) bank positioned downstream of the analog differential summing amplifiers, whereby high-power interference is algebraically annihilated in the analog domain prior to ADC quantization.
+        \item an Analog-to-Digital Converter (ADC) bank positioned downstream of the analog differential summing amplifiers, whereby interference is algebraically annihilated in the analog domain prior to ADC quantization.
     \end{enumerate}
 
-    \item The apparatus of claim 1, wherein the analog differential summing amplifiers utilize matched thin-film or bulk-metal foil resistors with tolerance $\le 0.1\%$, achieving $\ge 60\text{ dB}$ pre-ADC analog interference suppression without active RF mixers or digital multipliers.
+    \item The apparatus of claim 1, wherein the analog differential summing amplifiers comprise matched thin-film or bulk-metal foil resistors having a resistance tolerance $\le 0.1\%$, providing $\ge 60\text{ dB}$ of pre-ADC analog interference rejection.
 
-    \item The apparatus of claim 1, wherein the digital blade-selection controller selects among 84 primitive zero-divisor blades partitioned across 7 octahedral assessment contexts of the finite projective space $\mathrm{PG}(3,2)$.
+    \item The apparatus of claim 1, wherein the interference controller selects the blade from among 84 primitive zero-divisor blades partitioned across 7 non-apex quasi-octonion Fano assessment hyperplanes $H_\omega$ ($\omega \in \{9,\dots,15\}$, each contributing 12 primitive blades) among the 15 projective planes of a finite projective space $\mathrm{PG}(3,2)$.
 
-    \item \textbf{(Independent --- Single-Snapshot Non-Associative Curvature Coherent Spoofer Detector)} A method for detecting coherent spoofing, meaconing, or multipath interference in a multi-channel receiver without covariance matrix accumulation or eigenvalue decomposition, the method comprising:
+    \item \textbf{(Method --- Single-Snapshot Curvature Spoofer Detection \& Mitigation)} A method for detecting coherent spoofing or multipath interference in a multi-channel receiver and mitigating interference in an analog or digital signal stream, the method comprising:
     \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
         \item acquiring a single 16-dimensional sedenion snapshot $R = (a, b) \in \mathrm{Im}(\mathbb{O}) \times \mathrm{Im}(\mathbb{O})$ from a multi-channel sensor array;
-        \item forming the lower-octonion projection $\pi_{\mathbb{O}}(R) = (a, 0)$ and selecting the Cayley--Dickson doubling generator $e_8 = (0, e_0)$;
-        \item computing in hardware or software the single-snapshot sedenion associator $\mathcal{A}_{\mathrm{native}}(R) = (R \cdot \pi_{\mathbb{O}}(R)) \cdot e_8 - R \cdot (\pi_{\mathbb{O}}(R) \cdot e_8) = (ba - ab, 0)$;
-        \item computing the normalized non-associative curvature metric $\kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0, 1]$; and
-        \item declaring the presence of a coherent spoofer or multi-mode interferer when $\kappa_{\mathbb{S}}(R)$ exceeds a predetermined threshold above zero, even when the authentic signal and coherent interferer share an identical time-domain waveform resulting in a Rank-1 sample covariance matrix.
+        \item computing an associator vector $\mathcal{A}_{\mathrm{native}}(R) = (R \cdot \pi_{\mathbb{O}}(R)) \cdot e_8 - R \cdot (\pi_{\mathbb{O}}(R) \cdot e_8) = (ba - ab, 0)$, wherein $\pi_{\mathbb{O}}(R) = (a, 0)$ is a lower-octonion projection and $e_8 = (0, e_0)$ is a doubling generator;
+        \item calculating a normalized non-associative curvature metric $\kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0, 1]$;
+        \item detecting the presence of a coherent spoofer when $\kappa_{\mathbb{S}}(R)$ exceeds a predetermined threshold above zero, notwithstanding that a multi-snapshot sample covariance matrix of the wavefield exhibits Rank-1 collapse; and
+        \item in response to detecting the coherent spoofer, dynamically configuring a beamformer weight or an analog crossbar matrix to steer an algebraic zero-divisor null toward the coherent spoofer.
     \end{enumerate}
 
-    \item The method of claim 4, further comprising extracting the octonionic cross-product vector $a \times_{\mathbb{O}} b = -\frac{1}{2}\pi_{\mathbb{O}}(\mathcal{A}_{\mathrm{native}}(R))$ directly from the associator output to construct a Moreno zero-divisor partner weight $W = (c, (ac)b)$ that annihilates the detected interferer in a single snapshot.
-
-    \item \textbf{(Independent --- Native Dyadic TEM Vector-Sensor Array)} A native sedenion electromagnetic sensor array comprising:
+    \item The method of claim 4, further comprising:
     \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
-        \item a plurality of dual-polarized antenna elements arranged in a dyadic geometry configured to sense two mutually orthogonal transverse electromagnetic field components $(\mathbf{E}_\theta, \mathbf{E}_\phi)$; and
-        \item a passive $90^\circ$ quadrature and $180^\circ$ differential hybrid feed network coupling the $\mathbf{E}_\theta$ ports into the lower 7 imaginary octonion coordinates $a = (e_1,\dots,e_7) \in \mathrm{Im}(\mathbb{O})$ and the $\mathbf{E}_\phi$ ports into the upper 7 imaginary sedenion coordinates $b = (e_9,\dots,e_{15}) \in \mathrm{Im}(\mathbb{O})e_8$, such that any incident transverse electromagnetic plane wave natively satisfies $\|a\|_2 = \|b\|_2$ and $\langle a, b \rangle = 0$ on the Moreno zero-divisor cone $V_2(\mathbb{R}^7)$ across all continuous arrival angles $(\theta, \phi)$ without digital array-manifold calibration matrices.
+        \item extracting an octonionic cross-product vector $q_3 = a \times_{\mathbb{O}} b = -\frac{1}{2}\pi_{\mathbb{O}}(\mathcal{A}_{\mathrm{native}}(R))$ from the associator vector, thereby completing an associative triad $\mathrm{span}\{a, b, q_3\}$ in $\mathrm{Im}(\mathbb{O})$;
+        \item normalizing $(a, b)$ to orthonormal octonion frames $\tilde{a} = a/\|a\|_2$ and $\tilde{b} = b_\perp / \|b_\perp\|_2$ (where $b_\perp = b - \langle b, \tilde{a}\rangle\tilde{a}$) on the Moreno zero-divisor cone $V_2(\mathbb{R}^7)$ and selecting a unit octonion seed vector $c \in \mathrm{Im}(\mathbb{O})$ ($\|c\|_2 = 1$) orthogonal to $\mathrm{span}\{\tilde{a}, \tilde{b}, q_3\}$; and
+        \item constructing a unit-normalized Moreno zero-divisor partner weight $W = (c, (\tilde{a}c)\tilde{b})/\sqrt{2}$ satisfying $(\tilde{a}, \tilde{b}) \cdot W = 0$ to annihilate the detected spoofer in a single snapshot without singular value decomposition.
     \end{enumerate}
 
-    \item The sensor array of claim 6, wherein an authentic satellite or communication signal of opposite polarization handedness maps to the orthogonal anti-partner manifold $(a, -b) \in V_2(\mathbb{R}^7)$, experiencing $+3.01\text{ dB}$ coherent array gain ($\|(a,-b)\cdot(c,(ac)b)\|_2 = \sqrt{2}\|a\|_2\|c\|_2$) simultaneously with exact zero-divisor jammer annihilation ($\|(a,b)\cdot(c,(ac)b)\|_2 = 0$).
-
-    \item \textbf{(Independent --- Zero-Divisor Keyed Modulation [ZDKM] Transceiver)} A low-probability-of-intercept / low-probability-of-detection (LPI/LPD) communication and navigation system comprising:
+    \item \textbf{(Apparatus --- Native Dyadic TEM Vector-Sensor Array)} A native sedenion electromagnetic sensor array comprising:
     \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
-        \item a transmitter configured to hop across a cryptographically keyed sequence of Moreno zero-divisor states $(a_k, b_k) \in V_2(\mathbb{R}^7) \subset \mathbb{S}$, encoding a first binary state (\texttt{0}) as the unit zero-divisor sedenion $U_0[k] = (a_k, +b_k)/\sqrt{2}$ and a second binary state (\texttt{1}) as the unit orthogonal anti-partner sedenion $U_1[k] = (a_k, -b_k)/\sqrt{2}$; and
-        \item an authorized receiver synchronized to the cryptographic key sequence and configured to generate the corresponding Moreno nullspace partner weight $W_{\mathrm{key}}[k] = (c_k, (a_k c_k)b_k)/\sqrt{2}$ and compute the bilinear sedenion product $Y[k] = R_{\mathrm{rx}}[k] \cdot W_{\mathrm{key}}[k]$, wherein $\|U_0[k] \cdot W_{\mathrm{key}}[k]\|_2 = 0$ and $\|U_1[k] \cdot W_{\mathrm{key}}[k]\|_2 = \sqrt{2}$, while both transmitted states maintain identical unit Euclidean norm $\|U_0[k]\|_2 = \|U_1[k]\|_2 = 1$ and isotropic spatial-polarimetric covariance $\mathbf{I}_{16}$ to an unkeyed eavesdropper.
+        \item a plurality of dual-polarized antenna elements arranged in a spatial array configured to sense two mutually orthogonal transverse electromagnetic field components $(\mathbf{E}_\theta, \mathbf{E}_\phi)$; and
+        \item a passive RF beamforming and hybrid feed network coupling $\mathbf{E}_\theta$ signals into 7 lower imaginary octonion channels $a = (e_1,\dots,e_7) \in \mathrm{Im}(\mathbb{O})$ and $\mathbf{E}_\phi$ signals into 7 upper imaginary sedenion channels $b = (e_9,\dots,e_{15}) \in \mathrm{Im}(\mathbb{O})e_8$, wherein circularly polarized incident plane waves produce terminal signals mapped onto a Moreno zero-divisor manifold $V_2(\mathbb{R}^7) = \{(a,b) : \|a\|_2 = \|b\|_2,\, \langle a, b \rangle = 0\}$.
     \end{enumerate}
 
-    \item The system of claim 8, further comprising a $\mathrm{PG}(3,2)$ Quaternion Hinge projector configured to project the post-multiplication output $Y[k]$ onto one of the 35 four-dimensional associative quaternion subalgebras $\mathbb{H}_{\ell} = \mathrm{span}\{e_0, e_i, e_j, e_{i\oplus j}\} \subset \mathbb{S}$ where the sedenion associator vanishes identically ($[x, y, z] = 0$), preserving carrier-phase continuity without cycle slips.
+    \item An interference cancellation system comprising the sensor array of claim 6 and the pre-ADC analog crossbar apparatus of claim 1, wherein a unit-normalized authentic signal $U_{\mathrm{sat}} = (\tilde{a}, -\tilde{b})/\sqrt{2}$ having a circular polarization opposite to that of a unit-normalized interference signal $U_J = (\tilde{a}, +\tilde{b})/\sqrt{2}$ maps to an anti-partner manifold, experiencing $+3.01\text{ dB}$ coherent power gain ($\|U_{\mathrm{sat}}\cdot W_J\|_2 = \sqrt{2}$, squared norm $2.0$) concurrently with jammer cancellation ($\|U_J\cdot W_J\|_2 = 0$).
 
-    \item A digital integrated circuit or Field-Programmable Gate Array (FPGA) bitstream implementing the 16-dimensional sedenion zero-divisor beamformer and $\mathrm{PG}(3,2)$ quaternion hinge projector of claims 1, 4, 6, or 8 in signed 16-bit fixed-point (\texttt{Q1.14}) arithmetic using a single-cycle XOR-sign butterfly and zero matrix inversions.
+    \item \textbf{(System --- Zero-Divisor Keyed Modulation [ZDKM] Transceiver)} A low-probability-of-intercept communication system comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item a transmitter configured to hop across a cryptographically keyed sequence of unit-frame Moreno zero-divisor states $(\tilde{a}_k, \tilde{b}_k) \in V_2(\mathbb{R}^7) \subset \mathbb{S}$ ($\|\tilde{a}_k\|_2 = \|\tilde{b}_k\|_2 = 1$, $\langle \tilde{a}_k, \tilde{b}_k\rangle = 0$), encoding bit \texttt{0} as a unit sedenion $U_0[k] = (\tilde{a}_k, +\tilde{b}_k)/\sqrt{2}$ and bit \texttt{1} as an orthogonal anti-partner unit sedenion $U_1[k] = (\tilde{a}_k, -\tilde{b}_k)/\sqrt{2}$; and
+        \item an authorized receiver synchronized to the keyed sequence and configured to generate a unit-normalized Moreno nullspace partner weight $W_{\mathrm{key}}[k] = (c_k, (\tilde{a}_k c_k)\tilde{b}_k)/\sqrt{2}$, where unit vector $c_k \in \mathrm{Im}(\mathbb{O})$ is orthogonal to $\mathrm{span}\{\tilde{a}_k, \tilde{b}_k, \tilde{a}_k \times_{\mathbb{O}} \tilde{b}_k\}$, and evaluate a sedenion product $Y[k] = R_{\mathrm{rx}}[k] \cdot W_{\mathrm{key}}[k]$, wherein $\|U_0[k] \cdot W_{\mathrm{key}}[k]\|_2 = 0$ and $\|U_1[k] \cdot W_{\mathrm{key}}[k]\|_2 = \sqrt{2}$, while both transmitted states exhibit identical deterministic unit Euclidean norms ($\|U_{0,1}[k]\|_2 = 1$) on every symbol and an isotropic time-averaged ensemble spatial covariance across the keyed hop sequence to an unkeyed interceptor.
+    \end{enumerate}
+
+    \item The system of claim 8, further comprising a $\mathrm{PG}(3,2)$ quaternion hinge projector configured to project $Y[k]$ onto one of 35 four-dimensional associative quaternion subalgebras $\mathbb{H}_{\ell} = \mathrm{span}\{e_0, e_i, e_j, e_{i\oplus j}\} \subset \mathbb{S}$ where the sedenion associator vanishes identically, thereby preserving continuous carrier phase tracking.
+
+    \item \textbf{(Apparatus --- Fixed-Point Digital Sedenion Beamformer)} A digital beamforming processor comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item a 16-channel digital input configured to receive signed fixed-point sedenion samples; and
+        \item a single-cycle fixed-point multiplier-free arithmetic core executing a sedenion product $R \cdot W$ using 16 parallel butterfly units controlled by a 256-bit Cayley--Dickson sign lookup table, achieving $\ge 70\text{ dB}$ digital null depth against continuous Moreno zero divisors without computing a matrix inverse.
+    \end{enumerate}
+
+    \item \textbf{(System --- Kronecker Multi-Tile Array)} A hierarchical sedenion array beamformer comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item an array of $M=16$ sedenion sub-arrays providing a 256-dimensional composite wavefield tensor $R(t) \in \mathbb{R}^{16 \times 16}$, wherein each sub-array $m \in \{0,\dots,15\}$ provides a 16-dimensional sedenion wavefield representation $R_m(t) \in \mathbb{S}$;
+        \item a stage-1 intra-tile processor configured to multiply each sub-array $R_m(t)$ by a unit-normalized intra-tile zero-divisor partner $W_{\mathrm{micro}} \in \ker L_{\mathbb{S}}(u_{\mathrm{micro}})$ along the intra-tile channel dimension, annihilating a local polarimetric interference mode $u_{\mathrm{micro}}$; and
+        \item a stage-2 inter-tile processor configured to, for each of the 16 intra-tile output channels, treat the 16 sub-array outputs across the $M=16$ sub-arrays as a 16-dimensional macro-sedenion vector and multiply along the inter-tile dimension by a unit-normalized inter-tile zero-divisor partner $W_{\mathrm{macro}} \in \ker L_{\mathbb{S}}(u_{\mathrm{macro}})$, annihilating a spatial interference mode $u_{\mathrm{macro}}$ while imparting $+6.02\text{ dB}$ two-stage coherent power gain ($\|S_{\mathrm{out}}\|_F = 2.0$) to a unit-Frobenius-norm separable anti-partner authentic wavefield $S_{\mathrm{sat}} = u_{\mathrm{sat,macro}} \otimes u_{\mathrm{sat,micro}}$.
+    \end{enumerate}
+
+    \item \textbf{(Method --- Multi-Jammer Cascaded Peeler)} A method for canceling a plurality of $K$ independent interference signals in a 16-dimensional sedenion receiver, the method comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item mapping an array snapshot $R$ and a plurality of $K$ interference vectors onto the Moreno zero-divisor cone $V_2(\mathbb{R}^7) \subset \mathbb{S}$;
+        \item iteratively for each interference stage $s \in \{1,\dots,K\}$:
+        \begin{enumerate}[leftmargin=14pt,itemsep=1pt]
+            \item selecting a unit-normalized zero-divisor partner $W_s \in \ker L_{\mathbb{S}}(J_s)$ that annihilates an active interference vector $J_s$ while maximizing cumulative non-associative zero-divisor curvature $\sum_{r=s+1}^K \kappa_{\mathbb{S}}(J_r \cdot W_s)$ across all remaining downstream interference states;
+            \item updating the receive snapshot via $R \leftarrow R \cdot W_s$; and
+            \item updating each remaining downstream interference vector via $J_r \leftarrow J_r \cdot W_s$ for $r \in \{s+1,\dots,K\}$;
+        \end{enumerate}
+        whereby $K$ interference sources are sequentially eliminated without computing sample covariance matrices or matrix inverses.
+    \end{enumerate}
+
+    \item \textbf{(System --- Interferometric Attitude Navigator)} A single-snapshot sedenion array navigation and attitude estimation system comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item $M$ sedenion antenna tiles positioned at predetermined 3D coordinates on a mobile platform, each tile outputting a 16-dimensional sedenion snapshot $R_m$;
+        \item a cross-tile correlator configured to evaluate sedenion Hermitian products $C_{m,0} = R_m \cdot \overline{R_0}$ relative to a reference tile $R_0$;
+        \item a quaternion hinge estimator configured to extract inter-tile carrier phase offsets $\phi_m = \mathrm{atan2}(\langle C_{m,0}[e_1..e_3], \hat{u}_{\mathrm{hinge}}\rangle, C_{m,0}[e_0])$ within an associative quaternion subalgebra $\mathrm{span}\{e_0, e_1, e_2, e_3\}$ via inner-product projection onto a unit quaternion hinge axis $\hat{u}_{\mathrm{hinge}} \in \mathrm{span}\{e_1, e_2, e_3\}$;
+        \item a geometric direction-of-arrival estimator configured to solve for a 3D platform line-of-sight vector via a precomputed pseudo-inverse of relative tile coordinates; and
+        \item a curvature monitoring module configured to compute $\kappa_{\mathbb{S}}(R_m)$ for each tile to flag local structural multipath or spoofing anomalies.
+    \end{enumerate}
 \end{enumerate}
 
 \vspace{10pt}
