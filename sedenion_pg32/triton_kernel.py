@@ -17,6 +17,10 @@ import torch
 
 HAS_TRITON = (importlib.util.find_spec("triton") is not None) and torch.cuda.is_available()
 
+if HAS_TRITON:  # pragma: no cover  (GPU-only path; exercised on CUDA hosts)
+    import triton  # noqa: F401
+    import triton.language as tl  # noqa: F401
+
 
 class _CPUPtr:
     """Lightweight flat-memory pointer wrapper emulating Triton pointer arithmetic on CPU tensors."""
@@ -93,7 +97,7 @@ class _CPUTritonRuntime:
         return _KernelRunner()
 
 
-if not HAS_TRITON:
+if not HAS_TRITON:  # pragma: no branch
     triton = _CPUTritonRuntime
     tl = _CPUTritonLanguage
 
