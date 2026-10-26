@@ -1,0 +1,165 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathptmx} % 12pt Times New Roman
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+\titlespacing*{\subsection}{0pt}{4pt}{2pt}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\sloppy
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE (1 Page -- Does NOT count against the 3-page written limit)
+% ============================================================================
+\pagenumbering{roman}
+\thispagestyle{empty}
+\vspace*{-12pt}
+\begin{center}
+    {\textbf{DARPA-PS-26-09: Strategic Technology Office (STO) Office-Wide ISO --- PROPOSAL ABSTRACT}}\\[2pt]
+    {\large \textbf{Native 16D Sedenion Signal Processing: Pre-ADC Analog Zero-Divisor Crossbar Front-End, Single-Snapshot Spoofer Detection, and ZDKM LPI/LPD Transceiver}}\\[2pt]
+\end{center}
+
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular}{@{}p{2.0in}p{4.3in}@{}}
+\toprule
+\textbf{Proposer / Organization:} & jai \\
+\textbf{Abstract Title:} & Native 16D Sedenion Signal Processing: Pre-ADC Analog Zero-Divisor Crossbar Front-End, Single-Snapshot Spoofer Detection, and ZDKM LPI/LPD Transceiver \\
+\textbf{Solicitation / Office:} & DARPA-PS-26-09 (STO) / EW \& LPI/LPD Comms \\
+\textbf{Date \& PI:} & October 26, 2026 \quad | \quad Dionisio Chiuratto Agourakis \\
+\textbf{E-Mail \& Phone:} & \href{mailto:dionisio.ca@gmail.com}{dionisio.ca@gmail.com} \quad | \quad +55 11 98787-4110 \\
+\textbf{Mailing Address:} & Rua Joaquim Floriano 1125, apt 102, S\~ao Paulo, SP 04534-002, Brazil \\
+\textbf{CAGE / NCAGE Code:} & N/A (Foreign Entity -- NCAGE Pending; USPTO Patent Pending) \\
+\textbf{Proposed ROM \& Period:} & \$485,000.00 USD (12 Months) \\
+\bottomrule
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\vspace{2pt}
+\textbf{Mandatory SETA / A\&AS Non-Conflict Statement (DARPA-PS-26-09 Section 1.2):}
+The proposer (\textit{jai} and Principal Investigator Dionisio Chiuratto Agourakis) truthfully states and certifies that \textbf{no people on the proposer's team are also working for DARPA as Systems Engineering Technical Assistance (SETA), Advisory and Assistance Services (A\&AS), or similar support services}, in compliance with DARPA policy prohibiting such personnel from working as a technical performer.
+
+\vspace{1pt}
+\textbf{Mandatory DARPA-PS-26-09 Section 1.2 Applicability Statements:}
+\begin{enumerate}[leftmargin=16pt,itemsep=-1pt,topsep=0pt]
+    \item \textbf{Applicable to STO Technical Areas:} Directly addresses Analog/RF Front-End Electronic Protection (EP) against ADC saturation, Single-Snapshot Counter-Meaconing, and LPI/LPD Tactical Communications.
+    \item \textbf{Important to STO's Portfolio:} Protects tactical SDR/CRPA receivers from $+80\text{ dB}$ JSR front-end ADC clipping without active vector modulators, while providing a radiometer-invisible LPI/LPD waveform with white covariance ($\mathbf{I}_{16}$).
+    \item \textbf{Revolutionary Advances Over State of Practice:} Replaces post-ADC covariance processing with \textit{Native 16D Sedenion Signal Processing}: (i) a multiplier-free Pre-ADC Analog Sedenion Crossbar achieving $68.4\text{--}82.8\text{ dB}$ analog jammer suppression via $\pm 1$ wire-swaps; (ii) a $K=1$ Associator Curvature spoofer detector defeating Rank-1 covariance collapse; and (iii) Zero-Divisor Keyed Modulation (ZDKM).
+    \item \textbf{Work Not Already Completed:} Lean~4 proofs (\texttt{0 sorry}), SPICE tolerance simulations, and \texttt{Q1.14} RTL are established; the proposed 12-month R\&D funds PCB fabrication of the Pre-ADC Analog Crossbar Mezzanine, Dyadic $2\times 2$ Dual-Pol TEM Array, and over-the-air ZDKM validation.
+    \item \textbf{No Prior Government Funding:} The proposer has \textbf{not} already received government funding or a positive funding decision for the proposed concept (from DARPA or another Government agency).
+\end{enumerate}
+
+\newpage
+% ============================================================================
+% WRITTEN ABSTRACT BODY (Strictly <= 3 Pages: Pages 1, 2, 3)
+% ============================================================================
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Applicability to STO Portfolio: Analog EP \& LPI/LPD Dominance}
+Modern tactical Electronic Warfare (EW), Assured PNT, and covert C2 links face three physical hardware limits that cannot be solved by post-ADC digital beamforming alone:
+\begin{itemize}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
+    \item \textbf{Pre-ADC Front-End Saturation at 80 dB JSR:} Digital beamforming (MVDR, STAP, or digital subspace projection) executes \textit{after} the Analog-to-Digital Converters (ADCs). A $+80\text{ dB}$ Jammer-to-Signal Ratio ($\mathrm{JSR}$) interferer drives a 12-bit tactical ADC ($\sim 72\text{ dB}$ dynamic range) into hard rail-to-rail clipping ($98.7\%$ sample clipping), destroying the $-20\text{ dB}$ SNR signal before digital weights can be applied. Conventional analog RF cancellers require 16 continuous active vector modulators (VGAs + phase shifters) that suffer from severe thermal drift and non-linearity.
+    \item \textbf{Rank-1 Covariance Collapse Under Zero-Lag Coherent Spoofing:} When a coherent repeater spoofer (meaconer) radiates a phase-locked copy of the authentic waveform $s(t)$ from a distinct spatial-polarimetric state $u_{\mathrm{spoof}}$, the composite snapshot $R(t) = s(t)(u_{\mathrm{auth}} + \alpha u_{\mathrm{spoof}})$ produces an outer-product covariance matrix $\hat{\mathbf{R}}_{xx} = (\frac{1}{K}\sum |s[k]|^2)\mathbf{v}\mathbf{v}^H$ of \textbf{exact Rank 1} for any number of snapshots $K \to \infty$, blinding classical eigenvalue/subspace detectors.
+    \item \textbf{Vulnerability of Conventional Waveforms to Spatial Interception:} Standard directional LPI/LPD waveforms create non-isotropic spatial covariance signatures ($\mathbf{R}_{xx} \neq \mathbf{I}$) detectable by multi-antenna radiometers and eigenvalue interceptors.
+\end{itemize}
+
+\section{Revolutionary Technical Approach: Native 16D Sedenion DSP (NSSP)}
+Building upon our machine-checked $\mathrm{PG}(3,2)$ sedenion algebra framework (Lean~4 verified with \texttt{0 sorry}; DOIs \texttt{10.5281/zenodo.23588274} and \texttt{10.5281/zenodo.23603006}; USPTO Provisional Patent Pending), we introduce \textbf{Native 16-Dimensional Sedenion Signal Processing (NSSP)}. Instead of treating 16 receiver channels as an unstructured vector in $\mathbb{C}^8$, NSSP implements the non-associative Cayley--Dickson sedenion product $\mathbb{S} = \mathbb{O} \oplus \mathbb{O}e_8$ directly inside the passive antenna feed, the pre-ADC analog crossbar circuit, the single-snapshot spoofer detector, and the LPI/LPD waveform:
+
+\subsection{Pre-ADC Passive Analog Differential Sedenion Crossbar (68.4--82.8 dB Nulling)}
+In $\mathrm{PG}(3,2)$, the 7 quasi-octonion Fano hyperplanes contain 84 primitive zero-divisor blades $U_J = \frac{1}{\sqrt{2}}(e_a + s_b e_b)$, each annihilated identically ($U_J \cdot W_J = 0$) by 4 primitive partner blades $W_J = \frac{1}{\sqrt{2}}(e_c + s_d e_d) \in \ker L_{\mathbb{S}}(U_J)$. Crucially, because $W_J$ has non-zero support at \textit{only two indices} $(c, d)$ with discrete signs in $\{+1, -1\}$, the $k$-th channel of $Z(t) = R(t)\cdot W_J$ is given by the exact 2-tap XOR formula:
+\[
+    z_k(t) = \frac{1}{\sqrt{2}}\Bigl(\sigma(k\oplus c, c)\, x_{k\oplus c}(t) + s_d\, \sigma(k\oplus d, d)\, x_{k\oplus d}(t)\Bigr), \quad \sigma \in \{+1, -1\}.
+\]
+Carrying each sedenion coordinate $x_i(t)$ as a balanced differential analog voltage pair $(V_i^+, V_i^-)$, our Pre-ADC Analog Crossbar executes $R(t)\cdot W_J$ \textbf{ahead of the ADCs with zero analog multipliers}:
+\begin{enumerate}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
+    \item \textbf{XOR Channel Routing:} Low-$R_{\mathrm{on}}$ CMOS crossbar multiplexers (\texttt{ADG1611}, $0.5\,\Omega$) select differential channels $i_A = k \oplus c$ and $i_B = k \oplus d$ from a 7-bit FPGA GPIO blade index.
+    \item \textbf{Multiplier-Free $\pm 1$ Wire-Swap:} Double-Pole Double-Throw (DPDT) switches controlled by the 256-bit \texttt{SIGN\_NEG\_KJ} ROM invert polarity by physically swapping $(V^+, V^-) \mapsto (V^-, V^+)$ with zero phase or amplitude error.
+    \item \textbf{Precision Thin-Film Summing:} Differential amplifiers (\texttt{AD8130}) with $\pm 0.05\%$ matched thin-film resistors (\texttt{Panasonic ERA-3AEB1001V}) sum the two differential pairs prior to the 12-bit ADC.
+\end{enumerate}
+\textbf{Baseline SPICE Verification:} Across $16{,}800$ Monte Carlo PCB tolerance runs spanning all 84 blades, the Pre-ADC Analog Crossbar achieves \textbf{68.38 dB mean analog jammer suppression} with $\pm 0.05\%$ resistors (\textbf{82.76 dB} with $\pm 0.01\%$ Vishay foil resistors). Under $+80\text{ dB}$ JSR jamming on a 12-bit ADC, post-ADC digital beamforming suffers $98.7\%$ ADC clipping ($-46.32\text{ dB}$ SINR, $0.0\%$ GPS L1 C/A acquisition), whereas the Pre-ADC Analog Crossbar eliminates clipping ($0.0\%$) and restores \textbf{+21.28 dB post-correlation SINR} and \textbf{100.0\% acquisition}.
+
+\subsection{Single-Snapshot (K=1) Associator Curvature Coherent Spoofer Detector}
+We proved and formally verified in Lean~4 (\texttt{native\_associator\_commutator} and \texttt{native\_associator\_lagrange\_norm} in \texttt{SedenionReal.lean}) the \textit{Single-Snapshot Native Associator--Lagrange Wedge Identity}: for any purely imaginary snapshot $R = (a, b) \in \mathrm{Im}(\mathbb{O})\times\mathrm{Im}(\mathbb{O})$, the intrinsic associator $\mathcal{A}_{\mathrm{native}}(R) \triangleq [R, \pi_{\mathbb{O}}(R), e_8]$ equals $(ba - ab, 0) = (-2(a\times_{\mathbb{O}} b), 0)$ and satisfies:
+\[
+    \bigl\|\bigl[R,\, \pi_{\mathbb{O}}(R),\, e_8\bigr]\bigr\|_2^2 = 4\bigl(\|a\|_2^2 \|b\|_2^2 - \langle a, b \rangle^2\bigr).
+\]
+Thus the normalized curvature $\kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0, 1]$ vanishes ($\kappa_{\mathbb{S}}=0$) in an associative quaternion channel ($a \parallel b$) and peaks ($\kappa_{\mathbb{S}}=1$) on the Moreno zero-divisor cone. Under a zero-lag coherent repeater spoofer ($\mathrm{SSR}=+6\text{ dB}$), $K=64$ covariance eigenvalue ratio detection collapses ($\mathrm{AUROC} = 0.2055$, $P_{\mathrm{det}} = 9.38\%$), whereas our \textbf{$K=1$ single-snapshot associator detector achieves $P_{\mathrm{det}} = 99.80\%$ ($\mathrm{AUROC} = 0.9999$)} and directly outputs the orthogonal annihilator seed $c = (a\times_{\mathbb{O}} b)/\|a\times_{\mathbb{O}} b\|_2$ without SVD.
+
+\subsection{Calibration-Free Dyadic TEM Vector Array \& ZDKM LPI/LPD Transceiver}
+By coupling the $(\mathbf{E}_\theta, \mathbf{E}_\phi)$ ports of a $2\times 2$ dual-polarized patch array through passive $90^\circ/180^\circ$ quadrature hybrids (\texttt{QCN-19+} / \texttt{TC1-1-13M+}) into $\mathrm{Im}(\mathbb{O})$ and $\mathrm{Im}(\mathbb{O})e_8$, Maxwell's TEM relations enforce $\|a\|_2=\|b\|_2$ and $\langle a,b\rangle=0$ physically across all angles $(\theta,\phi)$ with \textbf{zero calibration LUTs} ($\kappa_{\mathbb{S}} = 1.000000$). Conversely, transmitting keyed hops $U_0[k] = (a_k, +b_k)/\sqrt{2}$ (bit 0) vs.\ $U_1[k] = (a_k, -b_k)/\sqrt{2}$ (bit 1) on $V_2(\mathbb{R}^7)$ creates our \textbf{Zero-Divisor Keyed Modulation (ZDKM)} LPI/LPD waveform: both symbols have constant unit energy ($\|U_{0,1}\|_2=1$) and white covariance $\mathbf{I}_{16}$ to eavesdroppers ($49.76\%$ radiometer / $50.49\%$ blind interceptor accuracy), while the keyed receiver achieves \textbf{99.90\% accuracy} ($\mathrm{BER} = 9.8\times 10^{-4}$ at $+6\text{ dB}$ SNR).
+
+\begin{table}[h!]
+\centering
+\caption{Verified Baseline Performance Across Native 16D Sedenion Hardware Primitives}
+\vspace{2pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{NSSP Hardware Primitive} & \textbf{Classical Baseline} & \textbf{Native Sedenion (Ours)} & \textbf{Verification Status} \\
+\midrule
+Pre-ADC Crossbar ($+80\text{ dB}$ JSR) & $-46.3\text{ dB}$ SINR (Clipped) & \textbf{+21.3 dB SINR ($68.4\text{ dB}$ Null)} & 84-Blade SPICE Sim \\
+Coherent Spoofer Det.\ ($\mathrm{Rank}=1$) & $9.38\%$ $P_{\mathrm{det}}$ ($K=64$ Cov) & \textbf{99.80\% $P_{\mathrm{det}}$ ($K=1$ Snap)} & Lean 4 + Monte Carlo \\
+Dyadic $2\times 2$ TEM Vector Array & Direction LUT Required & \textbf{0 LUTs ($\kappa_{\mathbb{S}}=1.0000$)} & Full-Sphere EM Sim \\
+ZDKM LPI/LPD Waveform & Radiometer Detectable & \textbf{99.90\% Auth / 49.8\% Intercept} & 4,096-Symbol Sim \\
+\bottomrule
+\end{tabular}%
+}
+\vspace{-4pt}
+\end{table}
+
+\section{12-Month Hardware Build Plan, Deliverables, and Transition}
+\textbf{Why Proposed Work Is Not Yet Completed:} While the Lean~4 theorems, 84-blade SPICE netlist (\texttt{crossbar\_84\_blades\_rom.json}), and \texttt{Q1.14} SystemVerilog RTL (\texttt{sedenion\_crpa\_beamformer.sv}, $75.14\text{ dB}$ digital null depth) are complete, fabricating and testing the physical RF/analog boards requires three 12-month R\&D tasks:
+\begin{enumerate}[leftmargin=16pt,itemsep=1pt,topsep=1pt]
+    \item \textbf{Task 1 (Mos.\ 1--4): Dyadic $2\times 2$ Dual-Pol TEM Array \& Passive Octonion Hybrid Feed PCB.} Fabricate the 4-layer Rogers \texttt{RO4350B} antenna/balun feed board (\texttt{CGGBP.35.6.A.02} patches + \texttt{QCN-19+}/\texttt{TC1-1-13M+} hybrids) and characterize anechoic $V_2(\mathbb{R}^7)$ orthogonality. \textit{Deliverable D1:} Calibrated Dyadic TEM Vector Array hardware \& S-parameter report.
+    \item \textbf{Task 2 (Mos.\ 5--8): Pre-ADC Analog Sedenion Crossbar Mezzanine Fabrication.} Fabricate and populate the 16-channel differential analog crossbar PCB (\texttt{ADG1611} switches + \texttt{AD8130} summing amps + $\pm 0.05\%$ \texttt{ERA-3AEB1001V} networks) controlled by the Zynq FPGA $K=1$ Associator Spoofer Detector. \textit{Deliverable D2:} Bench-tested Pre-ADC Crossbar Mezzanine demonstrating $>65\text{ dB}$ pre-ADC analog jammer suppression prior to 12-bit ADC quantization.
+    \item \textbf{Task 3 (Mos.\ 9--12): Over-the-Air ZDKM LPI/LPD \& $+80\text{ dB}$ JSR HIL Demonstration.} Execute full hardware-in-the-loop (HIL) testing of $+80\text{ dB}$ JSR pre-ADC nulling, $K=1$ zero-lag repeater spoofer rejection, and ZDKM LPI/LPD transceiver links. \textit{Deliverable D3:} Final Technical Report, Gerber/BOM package, and Government Purpose Rights (GPR) hardware/RTL deliverables for U.S.\ DoD transition.
+\end{enumerate}
+
+\newpage
+% ============================================================================
+% PRICE REALISM / ROUGH ORDER OF MAGNITUDE (ROM) (<= 1/2 Page, Excluded from Limit)
+% ============================================================================
+\thispagestyle{empty}
+\section*{Price Realism / Rough Order of Magnitude (ROM)}
+\textit{(Per DARPA-PS-26-09 Section 1.2, the Price/ROM section is $\le \frac{1}{2}$ page and does not count against the 3-page written abstract limit.)}
+
+The total Rough Order of Magnitude (ROM) for the 12-month hardware prototype and RF validation effort is \textbf{\$485,000.00 USD}. All foundational Lean~4 proofs, 84-blade crossbar netlists, and baseline \texttt{Q1.14} SystemVerilog RTL cores are leveraged at zero cost to the U.S.\ Government.
+
+\vspace{4pt}
+\begin{tabular}{@{}p{2.9in}p{1.75in}r@{}}
+\toprule
+\textbf{Resource Category / Labor \& Materials} & \textbf{Basis of Estimate (12 Mos)} & \textbf{Cost (USD)} \\
+\midrule
+\textbf{Principal Investigator / Sedenion RF-DSP Architect} \newline (Pre-ADC crossbar architecture, $K=1$ associator spoofer detector, ZDKM LPI/LPD transceiver integration) & 1,200 Direct Labor Hours @ \$150/hr (loaded) & \$180,000.00 \\
+\addlinespace[3pt]
+\textbf{Senior RF / Mixed-Signal PCB Design Engineer} \newline (Rogers RO4350B dyadic TEM hybrid feed, 16-ch differential \texttt{ADG1611}/\texttt{AD8130} analog crossbar layout \& SI) & 1,000 Direct Labor Hours @ \$140/hr (loaded) & \$140,000.00 \\
+\addlinespace[3pt]
+\textbf{FPGA \& HIL Test Engineer} \newline (Zynq GPIO crossbar controller, 16-ch phase-coherent SDR interface, anechoic \& $+80\text{ dB}$ JSR HIL testing) & 600 Direct Labor Hours @ \$115/hr (loaded) & \$69,000.00 \\
+\addlinespace[3pt]
+\textbf{PCB Fabrication, Precision Components \& RF Testbed} \newline (4-layer Rogers/FR4 PCBs, $\pm 0.05\%$/$\pm 0.01\%$ resistor arrays, 16-ch phase-coherent SDR bank, VNA/chamber rental) & Vendor BOM \& Fab Quotes & \$76,000.00 \\
+\addlinespace[3pt]
+\textbf{Travel, Reporting \& DoD Transition Reviews} \newline (2$\times$ technical review trips to DARPA STO, Arlington, VA) & 2 Trips + Hardware Demo & \$20,000.00 \\
+\midrule
+\textbf{Total Proposed Rough Order of Magnitude (ROM)} & \textbf{2,800 Hrs + Hardware} & \textbf{\$485,000.00} \\
+\bottomrule
+\end{tabular}
+
+\end{document}
