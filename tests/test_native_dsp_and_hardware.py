@@ -28,6 +28,9 @@ from sedenion_pg32 import (
     associator_nullspace_partner, dyadic_tem_vector_array_snapshot,
     pre_adc_analog_crossbar, zdkm_modulate, zdkm_demodulate,
     q14_sedenion_mul_rtl,
+    hierarchical_sedenion_array_nuller,
+    cascaded_sedenion_array_peeler,
+    sedenion_array_interferometric_navigator,
 )
 
 F64 = torch.float64
@@ -416,5 +419,119 @@ def test_selective_input_grad_branches():
     y2 = SedenionLinearFunction.apply(x_frozen, w_grad_only, None, KS, XOR)
     y2.sum().backward()
     assert x_frozen.grad is None and w_grad_only.grad is not None
+
+
+# ==============================================================================
+# 7. MULTI-TILE SEDENION ARRAYS (256-DOF KRONECKER, CASCADE PEELER, NAVIGATOR)
+# ==============================================================================
+
+def test_hierarchical_256dof_sedenion_array_nuller():
+    """
+    Verifies two-stage Hierarchical Sedenion Array Beamforming over M=16 Sedenion Tiles
+    (16 x 16 = 256 real DOFs):
+      - Stage 1 annihilates any micro/polarimetric jammer `u_jam_micro` inside each tile.
+      - Stage 2 annihilates any macro/long-baseline jammer `u_jam_macro` across the 16 tiles.
+      - Authentic anti-partner signal experiences exact +6.02 dB gain (norm = 2.0) with 0 matrix inversions.
+    """
+    torch.manual_seed(51)
+    mp = MorenoConeProjection(normalize_unit_sphere=True)
+    u_jam_micro = mp(torch.randn(16, dtype=F64)) / math.sqrt(2.0)
+    u_jam_macro = mp(torch.randn(16, dtype=F64)) / math.sqrt(2.0)
+
+    # Anti-partner authentic satellite states (a, -b) on micro and macro scales
+    u_sat_micro = u_jam_micro.clone()
+    u_sat_micro[9:16] *= -1.0
+    u_sat_macro = u_jam_macro.clone()
+    u_sat_macro[9:16] *= -1.0
+
+    # 1. Pure micro-jammer wavefield across arbitrary macro profile -> annihilated in Stage 1
+    arbitrary_macro = torch.randn(16, dtype=F64)
+    J_micro_tiles = torch.outer(arbitrary_macro, u_jam_micro)  # [16, 16]
+    out_j_micro = hierarchical_sedenion_array_nuller(J_micro_tiles, u_jam_micro, u_jam_macro, KS, XOR)
+    assert out_j_micro.norm().item() < 1e-13
+
+    # 2. Pure macro-jammer wavefield across arbitrary micro profile -> annihilated in Stage 2
+    arbitrary_micro = torch.randn(16, dtype=F64)
+    J_macro_tiles = torch.outer(u_jam_macro, arbitrary_micro)  # [16, 16]
+    out_j_macro = hierarchical_sedenion_array_nuller(J_macro_tiles, u_jam_micro, u_jam_macro, KS, XOR)
+    assert out_j_macro.norm().item() < 1e-13
+
+    # 3. Authentic signal + +80 dB micro jammer + +80 dB macro jammer -> exact +6.02 dB signal gain (norm = 2.0)
+    S_sat_tiles = torch.outer(u_sat_macro, u_sat_micro)  # Frobenius norm = 1.0
+    rx_composite = S_sat_tiles + 1e4 * J_micro_tiles + 1e4 * J_macro_tiles
+    out_composite = hierarchical_sedenion_array_nuller(rx_composite, u_jam_micro, u_jam_macro, KS, XOR)
+    out_clean = hierarchical_sedenion_array_nuller(S_sat_tiles, u_jam_micro, u_jam_macro, KS, XOR)
+    assert torch.allclose(out_composite, out_clean, atol=1e-9)
+    assert abs(out_clean.norm().item() - 2.0) < 1e-12
+
+
+def test_cascaded_sedenion_array_peeler():
+    """
+    Verifies sequential multi-jammer peeling (`cascaded_sedenion_array_peeler`)
+    where a single jammer or cascaded jammer chain is annihilated without covariance inversion.
+    """
+    torch.manual_seed(52)
+    mp = MorenoConeProjection(normalize_unit_sphere=True)
+    j1 = mp(torch.randn(16, dtype=F64)) / math.sqrt(2.0)
+    w1 = associator_nullspace_partner(j1, KS, XOR)
+
+    # Construct a second jammer j2 whose image after Stage 1 (j2 * w1) lands on the Moreno cone
+    j2_after = mp(torch.randn(16, dtype=F64)) / math.sqrt(2.0)
+    # Since w1 has norm 1 on the unit sphere in a quaternion/octonion slice or via right-inverse on range(R_w1):
+    R_w1 = torch.stack([sed_mul(torch.eye(16, dtype=F64)[i], w1, KS, XOR) for i in range(16)], dim=-1)
+    # Pick j2_after inside range(R_w1) by projecting onto the 12D column space of R_w1
+    U_col, S_col, _ = torch.linalg.svd(R_w1)
+    # Create a primitive zero-divisor blade inside range(R_w1) or test 2-stage peeler directly:
+    eye = torch.eye(16, dtype=F64)
+    j_blade1 = (eye[1] + eye[10]) / math.sqrt(2.0)
+    # After multiplying by w_s1 = associator_nullspace_partner(j_blade1), check what a second blade becomes:
+    w_s1 = associator_nullspace_partner(j_blade1, KS, XOR)
+    # Construct j_stage2 in the pre-image of a known zero-divisor blade (e_2 + e_13)/sqrt(2) under R_{w_s1}?
+    # Even simpler: any single basis vector e_i multiplied by w_s1 is a unit sedenion; if we take two basis vectors
+    # whose images under w_s1 lie in Im(O) and Im(O)e_8 respectively, their sum is on the Moreno cone!
+    # Wait: e_0 * w_s1 = w_s1 = (c, d) WHICH IS ALREADY ON THE MORENO CONE V_2(R^7)!
+    # Because w_s1 = (c, d)/sqrt(2) with ||c||=||d||=1, <c,d>=0, e_0 * w_s1 = w_s1 is literally on the Moreno cone!
+    j_pre2 = eye[0]  # Since e_0 * w_s1 == w_s1 in V_2(R^7)!
+    rx_two_jammers = 1e3 * j_blade1 + 1e3 * j_pre2
+    peeled = cascaded_sedenion_array_peeler(rx_two_jammers, [j_blade1, j_pre2], KS, XOR)
+    assert peeled.norm().item() < 1e-10
+
+
+def test_sedenion_array_interferometric_navigator():
+    """
+    Verifies `sedenion_array_interferometric_navigator` across an M=8 tile 3D drone/airframe
+    array: recovers exact 3D direction cosines (u_x, u_y, u_z) in K=1 snapshot, outputs unit
+    quaternion hinges, and flags tile-level spoofing curvature.
+    """
+    torch.manual_seed(53)
+    # 8 tiles arranged in 3D on an airframe (within +-0.25 wavelengths for unambiguous phase)
+    tile_pos = torch.tensor([
+        [0.00, 0.00, 0.00],
+        [0.20, 0.00, 0.00],
+        [0.00, 0.20, 0.00],
+        [0.00, 0.00, 0.20],
+        [-0.15, 0.15, 0.00],
+        [0.15, -0.15, 0.05],
+        [0.10, 0.10, -0.15],
+        [-0.10, -0.10, 0.10],
+    ], dtype=F64)
+
+    # True 3D unit direction vector of the satellite/beacon
+    true_u = torch.tensor([0.48, -0.36, 0.80], dtype=F64)
+    true_u = true_u / true_u.norm()
+
+    # Phase at each tile m: phi_m = 2*pi * <p_m, true_u>
+    phases = 2.0 * math.pi * (tile_pos @ true_u)  # [8]
+
+    # Construct 8-tile sedenion snapshot in the associative quaternion channel (e_0, e_1)
+    R_tiles = torch.zeros(8, 16, dtype=F64)
+    R_tiles[:, 0] = torch.cos(phases)
+    R_tiles[:, 1] = torch.sin(phases)
+
+    est_u, quat_hinge, curvatures = sedenion_array_interferometric_navigator(R_tiles, tile_pos, KS, XOR)
+    assert torch.allclose(est_u, true_u, atol=1e-12)
+    assert torch.allclose(quat_hinge.norm(dim=-1), torch.ones(8, dtype=F64), atol=1e-14)
+    assert (curvatures.abs() < 1e-14).all()
+
 
 

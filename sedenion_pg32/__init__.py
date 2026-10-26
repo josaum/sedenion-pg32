@@ -12,4 +12,7 @@ from .dsp import (
     associator_nullspace_partner, dyadic_tem_vector_array_snapshot,
     pre_adc_analog_crossbar, zdkm_modulate, zdkm_demodulate,
     q14_sedenion_mul_rtl,
+    hierarchical_sedenion_array_nuller,
+    cascaded_sedenion_array_peeler,
+    sedenion_array_interferometric_navigator,
 )
