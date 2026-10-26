@@ -175,4 +175,75 @@ theorem crpa_multi_jammer_simultaneous_null :
     vnormSq (mul u_antipartner2 v_beam1) = 8 := by
   decide +kernel
 
+/-- Sum over the 7 imaginary octonion indices `1..7` and the 7 twist-sector indices `9..15`. -/
+def sumOct (f : Nat → Int) : Int :=
+  f 1 + f 2 + f 3 + f 4 + f 5 + f 6 + f 7
+
+def sumTwist (f : Nat → Int) : Int :=
+  f 9 + f 10 + f 11 + f 12 + f 13 + f 14 + f 15
+
+/-- The multiplierless 2-tap Pre-ADC Analog Crossbar operator `pre_adc_analog_crossbar`:
+    for partner blade `W = e_c + s_d e_d`, each output channel `k` sums exactly two signed inputs:
+    `z_k = ε_{k⊕c, c} u_{k⊕c} + s_d ε_{k⊕d, d} u_{k⊕d}`. -/
+def preAdcCrossbar (u : Vec) (c d : Nat) (s_d : Int) : Vec :=
+  fun k => epsT (k ^^^ c) c * u (k ^^^ c) + s_d * epsT (k ^^^ d) d * u (k ^^^ d)
+
+/-- Theorem 2.3a (Exact Algebraic Equivalence of Pre-ADC 2-Tap Crossbar and Full 16D Sedenion Multiplication):
+    For every input basis channel `i ∈ 0..15` and the 4 orthogonal zero-divisor steering blades `v_beam1..4`,
+    the 2-tap analog crossbar `preAdcCrossbar` is identically equal to the full 256-MAC sedenion product `mul`. -/
+theorem pre_adc_crossbar_eq_full_sedenion_mul :
+    all16 (fun i =>
+      veq (preAdcCrossbar (basis i) 4 15 (-1)) (mul (basis i) v_beam1) &&
+      veq (preAdcCrossbar (basis i) 5 14 1)    (mul (basis i) v_beam2) &&
+      veq (preAdcCrossbar (basis i) 6 13 (-1)) (mul (basis i) v_beam3) &&
+      veq (preAdcCrossbar (basis i) 7 12 1)    (mul (basis i) v_beam4)) = true := by
+  decide +kernel
+
+/-- Fast 2-blade product evaluation via the verified Pre-ADC crossbar on the 4 active output channels
+    `a ⊕ c`, `b ⊕ d`, `a ⊕ d`, `b ⊕ c`: returns `1` iff `(e_a + s₁ e_b)(e_c + s₂ e_d) = 0` AND
+    the anti-partner `(e_a - s₁ e_b)(e_c + s₂ e_d)` has exact squared norm `8` (`+3.01 dB` gain). -/
+def countCrossbarPartner (a b : Nat) (s₁ : Int) (c d : Nat) (s₂ : Int) : Int :=
+  if (a ^^^ c) == (b ^^^ d) &&
+     (a ^^^ d) == (b ^^^ c) &&
+     (epsT a c + s₁ * s₂ * epsT b d == 0) &&
+     (s₂ * epsT a d + s₁ * epsT b c == 0) &&
+     ((epsT a c - s₁ * s₂ * epsT b d) * (epsT a c - s₁ * s₂ * epsT b d) +
+      (s₂ * epsT a d - s₁ * epsT b c) * (s₂ * epsT a d - s₁ * epsT b c) == 8)
+  then 1 else 0
+
+/-- Theorem 2.3b (Exhaustive Kernel Verification of the 84-Blade / 336-Partner Hardware Crossbar ROM):
+    Across all `a, c ∈ 1..7`, `b, d ∈ 9..15` (`b ≠ a ^^^ 8`, `d ≠ c ^^^ 8`), and signs `s₁, s₂ ∈ {±1}`,
+    there are exactly 336 (= 84 × 4) ordered annihilating blade-partner pairs `(U_J, W_J)` satisfying
+    `U_J · W_J = 0` AND simultaneously delivering exact `+3.01 dB` (`‖U_sat · W_J‖² = 8`) coherent
+    array gain to the orthogonal anti-partner signal `U_sat = e_a - s₁ e_b`. -/
+theorem hardware_crossbar_84_blades_336_partners :
+    (sumOct fun a => sumTwist fun b =>
+      if (b ^^^ 8) != a then
+        (sumOct fun c => sumTwist fun d =>
+          if (d ^^^ 8) != c then
+            countCrossbarPartner a b 1 c d 1 +
+            countCrossbarPartner a b 1 c d (-1) +
+            countCrossbarPartner a b (-1) c d 1 +
+            countCrossbarPartner a b (-1) c d (-1)
+          else 0)
+      else 0) = 336 := by
+  decide +kernel
+
+
+/-- Stage-2 partner blade `v_stage2 = e₁ + e₁₀` which annihilates `v_beam2 = e₅ + e₁₄` from the right:
+    `(e₅ + e₁₄) · (e₁ + e₁₀) = 0` (by anti-involution of Cayley–Dickson conjugation on Im(S)). -/
+def v_stage2 : Vec := add (basis 1) (basis 10)
+
+/-- Theorem 2.4 (Two-Stage Non-Associative Cascaded Array Peeler Exactness):
+    Even when two jammers `u_moreno = e₁ + e₁₀` and `j_2 = e₀` do not lie in the same single-stage
+    kernel (`e₀ · v_beam2 = v_beam2 ≠ 0`), the two-stage cascaded array peeler
+    `((u_moreno + e₀) · v_beam2) · v_stage2` annihilates `u_moreno` at Stage 1 and peels off
+    the transformed image `e₀ · v_beam2 = e₅ + e₁₄` at Stage 2, yielding `0` identically. -/
+theorem cascaded_peeler_two_stage_kernel :
+    isZero (mul u_moreno v_beam2) ∧
+    !isZero (mul (basis 0) v_beam2) ∧
+    isZero (mul (mul (basis 0) v_beam2) v_stage2) ∧
+    isZero (mul (mul (add u_moreno (basis 0)) v_beam2) v_stage2) := by
+  decide +kernel
+
 end SedenionPG32

@@ -197,9 +197,11 @@ def test_pre_adc_analog_crossbar_and_84_blade_rom():
 
 
 def test_hardware_crossbar_netlist_generator_execution():
-    """Executes `build_84_primitive_blades_and_netlist` directly to cover `hardware/generate_crossbar_netlist.py`."""
-    from hardware.generate_crossbar_netlist import build_84_primitive_blades_and_netlist
-    build_84_primitive_blades_and_netlist()
+    """Executes `hardware/generate_crossbar_netlist.py` via `runpy` as `__main__` for 100% coverage."""
+    import runpy
+    script_path = pathlib.Path(__file__).resolve().parents[1] / "hardware" / "generate_crossbar_netlist.py"
+    runpy.run_path(str(script_path), run_name="__main__")
+
 
 
 # ==============================================================================
@@ -532,6 +534,41 @@ def test_sedenion_array_interferometric_navigator():
     assert torch.allclose(est_u, true_u, atol=1e-12)
     assert torch.allclose(quat_hinge.norm(dim=-1), torch.ones(8, dtype=F64), atol=1e-14)
     assert (curvatures.abs() < 1e-14).all()
+
+
+def test_universal_antipartner_parallelogram_and_hermitian_slice():
+    """
+    Numerically mirrors the Lean 4 real algebraic theorems in `lean/real/SedenionReal.lean`:
+      1. `sedenion_antipartner_parallelogram_norm`:
+         ||(a, b)*(c, d)||^2 + ||(a, -b)*(c, d)||^2 == 2 * ||(a, b)||^2 * ||(c, d)||^2
+         for ALL octonions a, b, c, d.
+      2. `zdkm_antipartner_exact_gain`:
+         When (a, b)*(c, d) == 0, ||(a, -b)*(c, d)||^2 == 2 * ||(a, b)||^2 * ||(c, d)||^2.
+      3. `sedenion_hermitian_octonion_slice`:
+         For any octonion slice R = (a, 0), R * conj(R) == ||a||^2 * e_0.
+    """
+    torch.manual_seed(54)
+    u_plus = torch.randn(128, 16, dtype=F64)
+    u_minus = u_plus.clone()
+    u_minus[:, 8:16] *= -1.0  # (a, -b)
+    w_any = torch.randn(128, 16, dtype=F64)
+
+    lhs = (
+        sed_mul(u_plus, w_any, KS, XOR).pow(2).sum(dim=-1)
+        + sed_mul(u_minus, w_any, KS, XOR).pow(2).sum(dim=-1)
+    )
+    rhs = 2.0 * u_plus.pow(2).sum(dim=-1) * w_any.pow(2).sum(dim=-1)
+    assert torch.allclose(lhs, rhs, atol=1e-11)
+
+    # Hermitian octonion slice: R = (a, 0) -> R * conj(R) = ||a||^2 e_0
+    r_oct = torch.zeros(64, 16, dtype=F64)
+    r_oct[:, :8] = torch.randn(64, 8, dtype=F64)
+    r_conj = r_oct.clone()
+    r_conj[:, 1:8] *= -1.0
+    prod = sed_mul(r_oct, r_conj, KS, XOR)
+    assert torch.allclose(prod[:, 0], r_oct[:, :8].pow(2).sum(dim=-1), atol=1e-13)
+    assert prod[:, 1:].abs().max().item() < 1e-13
+
 
 
 

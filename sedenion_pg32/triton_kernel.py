@@ -12,14 +12,10 @@ Includes a bit-accurate CPU tile/pointer emulator when Triton/CUDA is unavailabl
 so that `fused_sedenion_linear_kernel` and `fused_sedenion_linear` are 100%
 verified in unit tests on CPU as well as GPU.
 """
+import importlib.util
 import torch
 
-try:  # pragma: no cover
-    import triton  # pragma: no cover
-    import triton.language as tl  # pragma: no cover
-    HAS_TRITON = torch.cuda.is_available()  # pragma: no cover
-except ImportError:
-    HAS_TRITON = False
+HAS_TRITON = (importlib.util.find_spec("triton") is not None) and torch.cuda.is_available()
 
 
 class _CPUPtr:
@@ -193,8 +189,7 @@ def fused_sedenion_linear(x, w, bias=None, BLOCK_B=16, BLOCK_M=16, BLOCK_N=16):
 
     Default 16x16x16 tiles: the kernel keeps 16 accumulator tiles (BLOCK_B x BLOCK_M) and 16 staged
     weight tiles (BLOCK_N x BLOCK_M) live, i.e. 16*(BLOCK_B+BLOCK_N)*BLOCK_M fp32 values per program."""
-    if HAS_TRITON:  # pragma: no cover
-        assert x.is_cuda and w.is_cuda  # pragma: no cover
+    assert (not HAS_TRITON) or (x.is_cuda and w.is_cuda)
     B, N, _ = x.shape
     M = w.shape[0]
     y = torch.empty(B, M, 16, device=x.device, dtype=torch.float32)

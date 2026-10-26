@@ -422,4 +422,154 @@ theorem native_associator_lagrange_norm
   simp only [snormSq, dot, osub, ozero, omul]
   ring
 
+/-- **Native Sedenion Curvature Vanishing on Associative Quaternion Subalgebras.**
+    For any purely imaginary octonion `a ∈ Im(O)` and any real scalar `lam ∈ ℝ`,
+    the collinear sedenion wavefield `R = (a, lam · a)` lies in a 4D associative
+    quaternion subalgebra and has identically zero single-snapshot associator:
+      `[ (a, lam · a), (a, 0), e₈ ] = (0, 0)`. -/
+theorem native_associator_quaternion_vanishes
+    (a : O) (lam : ℝ) (ha0 : a.c0 = 0) :
+    sassoc (a, scale lam a) (a, ozero) e8_sed = (ozero, ozero) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  simp only at ha0
+  subst ha0
+  simp only [sassoc, ssub, smul, scale, e8_sed, e0_oct, osub, oadd, ozero, conj, omul, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Octonion parallelogram identity for `x - y` and `x - (-y)`:
+    `‖x - y‖² + ‖x - (-y)‖² = 2 (‖x‖² + ‖y‖²)`. -/
+theorem oct_parallelogram_sub (x y : O) :
+    dot (osub x y) (osub x y) + dot (osub x (scale (-1) y)) (osub x (scale (-1) y)) =
+      2 * (dot x x + dot y y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [dot, osub, scale]
+  ring
+
+/-- Octonion parallelogram identity for `x + y` and `x + (-y)`:
+    `‖x + y‖² + ‖x + (-y)‖² = 2 (‖x‖² + ‖y‖²)`. -/
+theorem oct_parallelogram_add (x y : O) :
+    dot (oadd x y) (oadd x y) + dot (oadd x (scale (-1) y)) (oadd x (scale (-1) y)) =
+      2 * (dot x x + dot y y) := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  obtain ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩ := y
+  simp only [dot, oadd, scale]
+  ring
+
+/-- Octonion conjugation preserves the Euclidean norm squared: `‖conj x‖² = ‖x‖²`. -/
+theorem dot_conj (x : O) : dot (conj x) (conj x) = dot x x := by
+  obtain ⟨x0, x1, x2, x3, x4, x5, x6, x7⟩ := x
+  simp only [dot, conj]
+  ring
+
+/-- **Universal Sedenion Anti-Partner Parallelogram & ZDKM Energy Conservation Law.**
+    For ANY four octonions `a, b, c, d ∈ O` (without restriction):
+      `‖(a, b) · (c, d)‖² + ‖(a, -b) · (c, d)‖² = 2 ‖(a, b)‖² ‖(c, d)‖²`.
+    Consequences:
+      1. Whenever `(c, d)` annihilates a jammer `(a, b)` (`‖(a, b) · (c, d)‖² = 0`),
+         the orthogonal anti-partner satellite/signal `(a, -b)` is guaranteed to achieve
+         exact `2 ‖(a, b)‖² ‖(c, d)‖²` output power (`+3.01 dB` gain for unit vectors).
+      2. In Zero-Divisor Keyed Modulation (ZDKM), bit 0 (`U₀ = (a, b)`) and bit 1
+         (`U₁ = (a, -b)`) strictly conserve total energy `2 ‖U‖² ‖W‖²` across the key. -/
+theorem sedenion_antipartner_parallelogram_norm (a b c d : O) :
+    snormSq (smul (a, b) (c, d)) + snormSq (smul (a, scale (-1) b) (c, d)) =
+      2 * snormSq (a, b) * snormSq (c, d) := by
+  unfold snormSq smul
+  dsimp only
+  rw [omul_scale_right, omul_scale_left]
+  have hsub := oct_parallelogram_sub (omul a c) (omul (conj d) b)
+  have hadd := oct_parallelogram_add (omul d a) (omul b (conj c))
+  have hcomp1 := composition a c
+  have hcomp2 := composition (conj d) b
+  have hcomp3 := composition d a
+  have hcomp4 := composition b (conj c)
+  rw [dot_conj d] at hcomp2
+  rw [dot_conj c] at hcomp4
+  linarith
+
+/-- **ZDKM & Anti-Partner Exact Gain Corollary.**
+    If `(c, d)` lies in the right zero-divisor kernel of `(a, b)` so that
+    `snormSq (smul (a, b) (c, d)) = 0`, then the anti-partner `(a, -b)` satisfies
+    `snormSq (smul (a, -b) (c, d)) = 2 * snormSq (a, b) * snormSq (c, d)` identically. -/
+theorem zdkm_antipartner_exact_gain (a b c d : O)
+    (hnull : snormSq (smul (a, b) (c, d)) = 0) :
+    snormSq (smul (a, scale (-1) b) (c, d)) = 2 * snormSq (a, b) * snormSq (c, d) := by
+  have h := sedenion_antipartner_parallelogram_norm a b c d
+  linarith
+
+/-- Helper: left-multiplication of `(ozero, ozero)` by any sedenion `w` yields `(ozero, ozero)`. -/
+theorem smul_zero_left (w : O × O) : smul (ozero, ozero) w = (ozero, ozero) := by
+  obtain ⟨c, d⟩ := w
+  simp only [smul, omul, ozero, osub, oadd, conj, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Helper: adding `(ozero, ozero)` on the right of `sadd` is the identity. -/
+theorem sadd_zero_right (u : O × O) : sadd u (ozero, ozero) = u := by
+  obtain ⟨a, b⟩ := u
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  simp only [sadd, oadd, ozero, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Helper: scaling `(ozero, ozero)` by any scalar `r` yields `(ozero, ozero)`. -/
+theorem sscale_zero (r : ℝ) : sscale r (ozero, ozero) = (ozero, ozero) := by
+  simp only [sscale, scale, ozero, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- Helper: `smul (sadd u v) w = sadd (smul u w) (smul v w)` (right-distributivity). -/
+theorem smul_add_left (u v w : O × O) : smul (sadd u v) w = sadd (smul u w) (smul v w) := by
+  have h := smul_linear_left u v w 1 1
+  have h1 : ∀ x : O × O, sscale 1 x = x := by
+    intro ⟨⟨x0, x1, x2, x3, x4, x5, x6, x7⟩, ⟨y0, y1, y2, y3, y4, y5, y6, y7⟩⟩
+    simp only [sscale, scale, one_mul]
+  rw [h1 u, h1 v, h1 (smul u w), h1 (smul v w)] at h
+  exact h
+
+/-- Helper: `smul (sscale r u) w = sscale r (smul u w)`. -/
+theorem smul_sscale_left (r : ℝ) (u w : O × O) : smul (sscale r u) w = sscale r (smul u w) := by
+  obtain ⟨a, b⟩ := u
+  obtain ⟨c, d⟩ := w
+  simp only [smul, sscale, omul_scale_left, omul_scale_right]
+  simp only [osub, oadd, scale, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
+/-- **Multi-Tile / Multi-Stage Cascaded Sedenion Array Peeler Theorem.**
+    For any authentic array wavefield `s_sat` and any two independent jammer states `j1, j2`
+    with arbitrary amplitudes `α1, α2 ∈ ℝ`: if Stage 1 partner `w1` annihilates `j1`
+    (`j1 · w1 = 0`) and Stage 2 partner `w2` annihilates the Stage-1 transformed jammer
+    `(j2 · w1) · w2 = 0`, then the two-stage non-associative cascade `((R · w1) · w2)`
+    annihilates both jammers identically:
+      `(((s_sat + α1 j1 + α2 j2) · w1) · w2) = ((s_sat · w1) · w2)`. -/
+theorem cascaded_two_jammer_peeler_null
+    (s_sat j1 j2 w1 w2 : O × O) (α1 α2 : ℝ)
+    (hj1 : smul j1 w1 = (ozero, ozero))
+    (hj2 : smul (smul j2 w1) w2 = (ozero, ozero)) :
+    smul (smul (sadd s_sat (sadd (sscale α1 j1) (sscale α2 j2))) w1) w2 =
+      smul (smul s_sat w1) w2 := by
+  rw [smul_add_left, smul_linear_left j1 j2 w1 α1 α2, hj1, sscale_zero]
+  have hzero_left : sadd (ozero, ozero) (sscale α2 (smul j2 w1)) = sscale α2 (smul j2 w1) := by
+    obtain ⟨a, b⟩ := smul j2 w1
+    obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+    obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+    simp only [sadd, sscale, oadd, scale, ozero, Prod.mk.injEq, O.mk.injEq]
+    refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+            ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+  rw [hzero_left, smul_add_left, smul_sscale_left, hj2, sscale_zero, sadd_zero_right]
+
+/-- **Inter-Tile Sedenion Interferometric Self-Inner-Product Identity.**
+    For any octonion-slice reference tile `R₀ = (a, 0)`, its sedenion product with its
+    conjugate `(conj a, 0)` lies strictly along the real identity axis `e₀` with
+    amplitude `‖a‖²`: `(a, 0) · (conj a, 0) = (‖a‖² e₀, 0)`. -/
+theorem sedenion_hermitian_octonion_slice (a : O) :
+    smul (a, ozero) (conj a, ozero) = (scale (dot a a) e0_oct, ozero) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  simp only [smul, omul, conj, ozero, osub, oadd, scale, dot, e0_oct, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩,
+          ⟨by ring, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩⟩
+
 end SedenionReal
