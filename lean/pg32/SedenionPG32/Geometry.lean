@@ -468,9 +468,20 @@ theorem lfrfid_pg32_dma_underflow_immune (kp kn : Nat) :
     (lfrfidConditionedDuration kp kn) % 8 = 0 ∧
     1 ≤ (lfrfidConditionedDuration kp kn) / 8 - 1 := by
   dsimp [lfrfidConditionedDuration]
-  have hfactor : 8 * (kp + 1) + 8 * (kn + 1) = 8 * (kp + kn + 2) := by omega
+  have hfactor : 8 * (kp + 1) + 8 * (kn + 1) = 8 * (kp + kn + 2) := by
+    rw [← Nat.mul_add 8 (kp + 1) (kn + 1)]
+    congr 1
+    rw [Nat.add_assoc kp 1 (kn + 1), Nat.add_left_comm 1 kn 1, ← Nat.add_assoc kp kn 2]
   rw [hfactor]
-  refine ⟨by omega, Nat.mul_mod_right 8 (kp + kn + 2), by omega⟩
+  have h16 : 16 ≤ 8 * (kp + kn + 2) := by
+    rw [Nat.mul_add 8 (kp + kn) 2]
+    exact Nat.le_add_left 16 (8 * (kp + kn))
+  have hdiv : (8 * (kp + kn + 2)) / 8 - 1 = kp + kn + 1 := by
+    rw [Nat.mul_comm 8 (kp + kn + 2), Nat.mul_div_left (kp + kn + 2) (by decide : 0 < 8)]
+    rfl
+  refine ⟨h16, Nat.mul_mod_right 8 (kp + kn + 2), ?_⟩
+  rw [hdiv]
+  exact Nat.le_add_left 1 (kp + kn)
 
 /-- Signed 16-bit `Q1.14` fixed-point unit scaling factor (`2¹⁴ = 16384`). -/
 def scaleQ14 : Int := 16384
@@ -549,8 +560,8 @@ theorem nfc_1356mhz_subcarrier_and_uid_bcc_invariants :
     iso14443aBcc 0x04 0xC5 0x4F 0x83 = 0x0D ∧
     (0x04 ^^^ 0xC5 ^^^ 0x4F ^^^ 0x83 ^^^ iso14443aBcc 0x04 0xC5 0x4F 0x83) = 0 ∧
     iso14443aBcc 0x04 0x08 0xA5 0x49 = 0xE0 ∧
-    (0x04 ^^^ 0x08 ^^^ 0xA5 ^^^ 0x49 ^^^ iso14443aBcc 0x04 0x08 0xA5 0x49) = 0 := by
-  refine ⟨by omega, by omega, by omega, rfl, rfl, rfl, rfl⟩
+    (0x04 ^^^ 0x08 ^^^ 0xA5 ^^^ 0x49 ^^^ iso14443aBcc 0x04 0x08 0xA5 0x49) = 0 :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Theorem 3.16 (`16×16` Kronecker Multi-Tile Array Two-Stage Coherent Gain — Claim 11): -/
 theorem kronecker_multitile_16x16_two_stage_gain :
@@ -561,8 +572,8 @@ theorem kronecker_multitile_16x16_two_stage_gain :
     vnormSq (mul u_zdkm0 w_key1) * vnormSq (mul u_zdkm1 w_key2) = 0 ∧
     vnormSq (mul u_zdkm1 w_key1) * vnormSq (mul u_zdkm1 w_key2) = 64 ∧
     (vnormSq (mul u_zdkm1 w_key1) * vnormSq (mul u_zdkm1 w_key2)) =
-      16 * (vnormSq u_zdkm1 * vnormSq u_zdkm1) := by
-  decide +kernel
+      16 * (vnormSq u_zdkm1 * vnormSq u_zdkm1) :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- 3-point trajectory step-difference squared energy `(r₁ - r₀)² + (r₂ - r₁)²`. -/
 def stepDiffEnergy3 (r0 r1 r2 : Int) : Int :=
@@ -574,12 +585,13 @@ theorem wifi_multipath_peeler_step_energy_reduction (r δ : Int) :
     stepDiffEnergy3 r r r = 0 ∧
     stepDiffEnergy3 r (r + δ) r - stepDiffEnergy3 r r r = 2 * (δ * δ) := by
   dsimp [stepDiffEnergy3]
-  have h1 : (r + δ) - r = δ := by omega
-  have h2 : r - (r + δ) = -δ := by omega
-  have h3 : r - r = 0 := by omega
+  have h1 : (r + δ) - r = δ := by rw [Int.add_comm r δ, Int.add_sub_cancel]
+  have h2 : r - (r + δ) = -δ := by
+    rw [Int.sub_eq_add_neg, Int.neg_add, ← Int.add_assoc, Int.add_right_neg, Int.zero_add]
+  have h3 : r - r = 0 := Int.sub_self r
   have hsq : δ * δ + (-δ) * (-δ) = 2 * (δ * δ) := by
-    rw [Int.neg_mul_neg]
-    omega
+    change δ * δ + (-δ) * (-δ) = (1 + 1) * (δ * δ)
+    rw [Int.neg_mul_neg, Int.add_mul, Int.one_mul]
   rw [h1, h2, h3, hsq]
   exact ⟨rfl, rfl, Int.sub_zero (2 * (δ * δ))⟩
 

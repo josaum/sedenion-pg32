@@ -34,7 +34,8 @@ def seqTriangularRoot (w : List Bool) : Option Nat :=
 theorem pedro_toy_triangular_root_identities :
     seqTriangularRoot [true, false] = some 1 ∧
     seqTriangularRoot [true, false, true] = some 2 ∧
-    seqTriangularRoot [true, false, false] = none := by decide +kernel
+    seqTriangularRoot [true, false, false] = none :=
+  ⟨rfl, rfl, rfl⟩
 
 /-- Test whether imaginary basis index `v ∈ {1..15}` is active in 16-bit support mask `m`. -/
 def inMask (m v : Nat) : Bool := ((m >>> v) &&& 1) == 1
@@ -89,7 +90,7 @@ def geomTriangularRoot (m : Nat) : Option Nat :=
 def allProjectiveMasks : List Nat :=
   let pts := (List.range 15).map (· + 1)
   let rank1 := pts.map (fun a => listToMask [a])
-  let rank2 := (pts.flatMap fun a => (pts.filter (· > a)).map fun b =>
+  let rank2 := (pts.flatMap fun a => (pts.filter (fun b => Nat.blt a b)).map fun b =>
     triangularizeList [a, b]).eraseDups
   let rank3 := (rank2.flatMap fun lMask =>
     pts.filter (fun c => !(inMask lMask c)) |>.map fun c =>
@@ -106,7 +107,9 @@ theorem geometric_root_domain_66_and_ranks :
     (allProjectiveMasks.filter (fun m => maskCard m == 1)).length = 15 ∧
     (allProjectiveMasks.filter (fun m => maskCard m == 3)).length = 35 ∧
     (allProjectiveMasks.filter (fun m => maskCard m == 7)).length = 15 ∧
-    (allProjectiveMasks.filter (fun m => maskCard m == 15)).length = 1 := by decide +kernel
+    (allProjectiveMasks.filter (fun m => maskCard m == 15)).length = 1 :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel,
+   by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-- Proposition 5.3 of [1]: Inverse property `&^geo_S(χ_{T^geo_S(R)}) = χ_{rref(U)}`
     verified across all 66 projective cells of PG(3,2). -/
@@ -163,8 +166,9 @@ theorem zd_filtered_domain_30_plus_36_by_rank :
     (allProjectiveMasks.filter (fun m => maskCard m == 7 && isZDFreeSupport m)).length = 1 ∧
     (allProjectiveMasks.filter (fun m => maskCard m == 7 && !(isZDFreeSupport m))).length = 14 ∧
     (allProjectiveMasks.filter (fun m => maskCard m == 15 && isZDFreeSupport m)).length = 0 ∧
-    (allProjectiveMasks.filter (fun m => maskCard m == 15 && !(isZDFreeSupport m))).length = 1 := by
-  decide +kernel
+    (allProjectiveMasks.filter (fun m => maskCard m == 15 && !(isZDFreeSupport m))).length = 1 :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel,
+   by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-- Corollary 9.2 of [1]: Trichotomy of the 32,767 nonzero imaginary bitmasks:
     `|T_good| = 30`, `|T_ghost| = 36`, and `|T_bad| = 32701`, with `30 + 36 + 32701 = 32767`. -/
@@ -177,25 +181,27 @@ theorem bitmask_universe_trichotomy_32767 :
     goodCount = 30 ∧
     ghostCount = 36 ∧
     badCount = 32701 ∧
-    goodCount + ghostCount + badCount = totalNonzeroMasks := by decide +kernel
+    goodCount + ghostCount + badCount = totalNonzeroMasks :=
+  ⟨rfl, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-- Section 10 of [1]: Machine-checked verification of Examples 10.1 through 10.5. -/
 theorem paper1_examples_10_1_to_10_5 :
     -- Example 10.1: Octonion line {1,2,3} -> RREF {1,2}, ZD-free
     let p1 := listToMask [1, 2, 3]
-    geomTriangularRoot p1 == some (listToMask [1, 2]) ∧ isZDFreeSupport p1 = true ∧
+    geomTriangularRoot p1 = some (listToMask [1, 2]) ∧ isZDFreeSupport p1 = true ∧
     -- Example 10.2: Vertical quaternion line {1,8,9} -> RREF {1,8}, ZD-free
     let p2 := listToMask [1, 8, 9]
-    geomTriangularRoot p2 == some (listToMask [1, 8]) ∧ isZDFreeSupport p2 = true ∧
+    geomTriangularRoot p2 = some (listToMask [1, 8]) ∧ isZDFreeSupport p2 = true ∧
     -- Example 10.3: Ghost line {1,10,11} -> RREF {1,10}, ZD-degenerate
     let p3 := listToMask [1, 10, 11]
-    geomTriangularRoot p3 == some (listToMask [1, 10]) ∧ isZDFreeSupport p3 = false ∧
+    geomTriangularRoot p3 = some (listToMask [1, 10]) ∧ isZDFreeSupport p3 = false ∧
     -- Example 10.4: Ghost Fano plane {1,2,3,12,13,14,15} -> RREF {1,2,12}, ZD-degenerate
     let p4 := listToMask [1, 2, 3, 12, 13, 14, 15]
-    geomTriangularRoot p4 == some (listToMask [1, 2, 12]) ∧ isZDFreeSupport p4 = false ∧
+    geomTriangularRoot p4 = some (listToMask [1, 2, 12]) ∧ isZDFreeSupport p4 = false ∧
     -- Example 10.5: Geometric failure {1,2,4} -> ∅_geo
     let p5 := listToMask [1, 2, 4]
-    geomTriangularRoot p5 == none := by decide +kernel
+    geomTriangularRoot p5 = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-! ### Theorems from [2]: Zero-Divisor-Free Coordinate Cells in the Cayley–Dickson Tower -/
 
@@ -223,17 +229,17 @@ theorem order_ideal_and_ghost_filter_duality_all_66 :
     (allProjectiveMasks.all fun m =>
       isZDFreeSupport m == maximalFreeBlocksA4.any (isSubMask m)) = true ∧
     (allProjectiveMasks.all fun m =>
-      (!(isZDFreeSupport m)) == ghostLinesA4.any (fun g => isSubMask g m)) = true := by
-  decide +kernel
+      (!(isZDFreeSupport m)) == ghostLinesA4.any (fun g => isSubMask g m)) = true :=
+  ⟨rfl, by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-- Lemma 5.2 of [2]: Every one of the 21 ghost lines `L = {p, q, r}` in `A_4` (where `p, q ≥ 8`
     and `r = p ⊕ q < 8`) contains the zero divisor `e_r + e_p` whose number of basis-pair
     annihilating indices `c ∈ {0..7}` is a positive multiple of 4 (specifically 4 in `A_4`). -/
 def ghostLineAnnihilatorCount (lMask : Nat) : Nat :=
   let pts := maskSupport lMask
-  let r := (pts.filter (· < 8)).headD 0
-  let p := (pts.filter (· >= 8)).headD 0
-  let q := (pts.filter (fun x => x >= 8 && x != p)).headD 0
+  let r := (pts.filter (fun x => Nat.blt x 8)).headD 0
+  let p := (pts.filter (fun x => Nat.ble 8 x)).headD 0
+  let q := (pts.filter (fun x => Nat.ble 8 x && x != p)).headD 0
   let qPrime := q ^^^ 8
   let x := add (basis r) (basis p)
   ((List.range 8).filter fun c =>
@@ -244,7 +250,7 @@ def ghostLineAnnihilatorCount (lMask : Nat) : Nat :=
 theorem ghost_line_annihilator_multiples_of_four :
     (ghostLinesA4.all fun lMask =>
       let cnt := ghostLineAnnihilatorCount lMask
-      cnt > 0 && cnt % 4 == 0) = true := by decide +kernel
+      Nat.blt 0 cnt && cnt % 4 == 0) = true := by decide +kernel
 
 /-- Closed-form Cayley–Dickson tower census formulas from Corollary 1.2, Proposition 5.4,
     Corollary 6.3, and Corollary 8.3 of [2] for level `n ≥ 4`. -/
@@ -266,7 +272,8 @@ theorem cayley_dickson_tower_census_n4_n5_n6 :
     -- Ghost lines: 21, 126, 591
     (towerGhostLines 4, towerGhostLines 5, towerGhostLines 6) = (21, 126, 591) ∧
     -- Free GL(3,2)-orbits: 6, 13, 28
-    (towerFreeOrbits 4, towerFreeOrbits 5, towerFreeOrbits 6) = (6, 13, 28) := by decide +kernel
+    (towerFreeOrbits 4, towerFreeOrbits 5, towerFreeOrbits 6) = (6, 13, 28) :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Theorem 8.1 of [2]: Doubling-generator incidence degree separation verified across all
     tower levels `n ∈ {4..10}` and generator bit positions `3 ≤ j ≤ n - 1`, proving
@@ -277,12 +284,13 @@ def generatorIncidenceDeg (n j : Nat) : Nat := 2^j - 1 + (n - 1 - j)
 def checkDegreeSeparationUpTo10 : Bool :=
   ((List.range 7).map (· + 4)).all fun n =>
     ((List.range (n - 3)).map (· + 3)).all fun j =>
-      generatorIncidenceDeg n j > n - 3 &&
-      generatorIncidenceDeg n j < generatorIncidenceDeg n (j + 1)
+      Nat.blt (n - 3) (generatorIncidenceDeg n j) &&
+      Nat.blt (generatorIncidenceDeg n j) (generatorIncidenceDeg n (j + 1))
 
 theorem doubling_generator_degree_separation :
     checkDegreeSeparationUpTo10 = true ∧
-    (2^3 - 1) * (2^3 - 2) * (2^3 - 4) = 168 := by decide +kernel
+    (2^3 - 1) * (2^3 - 2) * (2^3 - 4) = 168 :=
+  ⟨by decide +kernel, rfl⟩
 
 /-- Proposition 7.1 of [2] (Tower Absoluteness `F_n = ι_n⁻¹ F_{n+1}`):
     A coordinate cell `U ≤ V_4 ↪ V_5` is contained in the maximal free blocks of `A_5`
@@ -316,12 +324,12 @@ def seqChunkTriangularize (u : List Bool) : List Bool :=
     exhausts cleanly at some chunk `m`, and every chunk is constant (`all true` or `all false`),
     returning the `m`-bit root word `u`. -/
 def seqChunkCut : Nat → List Bool → Nat → List Bool → Option (List Bool)
-  | 0, rem, r, acc => if rem.isEmpty && r > 1 then some acc.reverse else none
+  | 0, rem, r, acc => if rem.isEmpty && Nat.blt 1 r then some acc.reverse else none
   | fuel + 1, rem, r, acc =>
     match rem with
     | [] => if r == 1 then none else some acc.reverse
     | _ =>
-      if rem.length < r then none
+      if Nat.blt rem.length r then none
       else
         let chunk := rem.take r
         let rest  := rem.drop r
@@ -352,7 +360,8 @@ theorem sequential_prefix_chunk_root_left_inverse_and_62_domain :
     allRoots.length = 62 ∧
     (mRange.map (fun m => (seqChunkTriangularize (List.replicate m true)).length)) = [1, 3, 6, 10, 15] ∧
     (allRoots.all fun u =>
-      seqChunkTriangularRoot (seqChunkTriangularize u) == some u) = true := by decide +kernel
+      seqChunkTriangularRoot (seqChunkTriangularize u) == some u) = true :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-! ### 8.C Explicit GL(3,2) 6-Orbit Decomposition of the 30 Free Cells of A_4 (Sec. 8 & Table 2 of [2]) -/
 
@@ -378,7 +387,8 @@ theorem gl32_six_free_orbits_decomposition_a4 :
     (gl32FreeOrbitsA4.foldl (· ++ ·) []).eraseDups.length = 30 ∧
     ((gl32FreeOrbitsA4.foldl (· ++ ·) []).all isZDFreeSupport) = true ∧
     ((allProjectiveMasks.filter isZDFreeSupport).all fun m =>
-      (gl32FreeOrbitsA4.foldl (· ++ ·) []).contains m) = true := by decide +kernel
+      (gl32FreeOrbitsA4.foldl (· ++ ·) []).contains m) = true :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-! ### 8.D Pathion (32D, A_5, PG(4,2)) Exact 155-Line, 23-Block & 61-Free-Cell Verification -/
 
@@ -395,8 +405,8 @@ def maskSupport31 (m : Nat) : List Nat :=
     • `P` is a vertical quaternion line `Q_{u,4} = {u, 16, 16 ⊕ u}` (`A(P) = B(P) = {u}`). -/
 def isZDFreeSupportA5 (m : Nat) : Bool :=
   let P := maskSupport31 m
-  if P.length <= 1 then !(P.isEmpty)
-  else if m < (1 <<< 16) then isZDFreeSupport m
+  if Nat.ble P.length 1 then !(P.isEmpty)
+  else if Nat.blt m (1 <<< 16) then isZDFreeSupport m
   else
     let A := ((List.range 15).map (· + 1)).filter (inMask m)
     let B := ((List.range 15).map (· + 1)).filter (fun u => inMask m (16 ^^^ u))
@@ -406,9 +416,9 @@ def isZDFreeSupportA5 (m : Nat) : Bool :=
 def allLinesA5 : List Nat :=
   let pts := (List.range 31).map (· + 1)
   (pts.flatMap fun a =>
-    (pts.filter (· > a)).flatMap fun b =>
+    (pts.filter (fun b => Nat.blt a b)).flatMap fun b =>
       let c := a ^^^ b
-      if b < c then [listToMask [a, b, c]] else [])
+      if Nat.blt b c then [listToMask [a, b, c]] else [])
 
 /-- All `2^5 - 5 - 4 = 23` maximal zero-divisor-free blocks of `A_5` (Theorem 1.1 & Cor. 1.2 of [2]):
     1 octonion plane `O = {1..7}`, 7 sedenion vertical blocks `Q_{u,3}`, and
@@ -433,8 +443,9 @@ theorem pathion_a5_pg42_155_lines_29_free_126_ghost_and_23_blocks :
     (allLinesA5.filter (fun m => !(isZDFreeSupportA5 m))).length = 126 ∧
     (allLinesA5.all fun m =>
       isZDFreeSupportA5 m == maximalFreeBlocksA5.any (isSubMask m)) = true ∧
-    31 + (allLinesA5.filter isZDFreeSupportA5).length + 1 = towerFreeCells 5 := by
-  decide +kernel
+    31 + (allLinesA5.filter isZDFreeSupportA5).length + 1 = towerFreeCells 5 :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel,
+   by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-! ### 8.E Universal Step-Recurrence Identities in the Cayley–Dickson Tower (All `n`) -/
 
@@ -498,8 +509,8 @@ def maskSupport63 (m : Nat) : List Nat :=
     • `P` is a vertical quaternion line `Q_{u,5} = {u, 32, 32 ⊕ u}` (`1 ≤ u ≤ 31`). -/
 def isZDFreeSupportA6 (m : Nat) : Bool :=
   let P := maskSupport63 m
-  if P.length <= 1 then !(P.isEmpty)
-  else if m < (1 <<< 32) then isZDFreeSupportA5 m
+  if Nat.ble P.length 1 then !(P.isEmpty)
+  else if Nat.blt m (1 <<< 32) then isZDFreeSupportA5 m
   else
     let A := ((List.range 31).map (· + 1)).filter (inMask m)
     let B := ((List.range 31).map (· + 1)).filter (fun u => inMask m (32 ^^^ u))
@@ -509,9 +520,9 @@ def isZDFreeSupportA6 (m : Nat) : Bool :=
 def allLinesA6 : List Nat :=
   let pts := (List.range 63).map (· + 1)
   (pts.flatMap fun a =>
-    (pts.filter (· > a)).flatMap fun b =>
+    (pts.filter (fun b => Nat.blt a b)).flatMap fun b =>
       let c := a ^^^ b
-      if b < c then [listToMask [a, b, c]] else [])
+      if Nat.blt b c then [listToMask [a, b, c]] else [])
 
 /-- All `2^6 - 6 - 4 = 54` maximal zero-divisor-free blocks of `A_6` (Theorem 1.1 & Cor. 1.2 of [2]):
     the 23 maximal blocks of `A_5` plus the 31 chingon vertical blocks `Q_{u,5} = {u, 32, 32 ⊕ u}`. -/
@@ -533,8 +544,9 @@ theorem chingon_a6_pg52_651_lines_60_free_591_ghost_and_54_blocks :
     (allLinesA6.filter (fun m => !(isZDFreeSupportA6 m))).length = 591 ∧
     (allLinesA6.all fun m =>
       isZDFreeSupportA6 m == maximalFreeBlocksA6.any (isSubMask m)) = true ∧
-    63 + (allLinesA6.filter isZDFreeSupportA6).length + 1 = towerFreeCells 6 := by
-  decide +kernel
+    63 + (allLinesA6.filter isZDFreeSupportA6).length + 1 = towerFreeCells 6 :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel,
+   by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-! ### 8.G GL(3,2) Orbit-Size Decompositions for A_5 (13 Orbits) and A_6 (28 Orbits) (Sec. 8 of [2]) -/
 
@@ -561,8 +573,9 @@ theorem gl32_orbit_decomposition_a4_a5_a6 :
     (gl32AllFreeOrbitSizes 6).length = towerFreeOrbits 6 ∧
     (gl32AllFreeOrbitSizes 4).foldl (· + ·) 0 = towerFreeCells 4 ∧
     (gl32AllFreeOrbitSizes 5).foldl (· + ·) 0 = towerFreeCells 5 ∧
-    (gl32AllFreeOrbitSizes 6).foldl (· + ·) 0 = towerFreeCells 6 := by
-  decide +kernel
+    (gl32AllFreeOrbitSizes 6).foldl (· + ·) 0 = towerFreeCells 6 :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel,
+   by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 /-! ### 8.H Algebraic Verification of the 8 Maximal Free Blocks vs. 21 Ghost Lines in SedenionPG32 -/
 
@@ -582,7 +595,7 @@ theorem all_8_maximal_free_blocks_algebraic_and_ghost_dichotomy :
     ((List.range 8).all fun i => (List.range 8).all fun j =>
       assocSign i i j == 0 && assocSign j i i == 0) = true ∧
     -- (3) Every one of the 21 ghost lines carries an explicit basis-pair zero divisor in S
-    (ghostLinesA4.all hasBasisPairZeroDivisor) = true := by
-  decide +kernel
+    (ghostLinesA4.all hasBasisPairZeroDivisor) = true :=
+  ⟨by decide +kernel, by decide +kernel, by decide +kernel⟩
 
 end SedenionPG32

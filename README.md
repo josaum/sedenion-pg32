@@ -4,7 +4,7 @@
 [![DOI: GNSS Anti-Jamming](https://zenodo.org/badge/DOI/10.5281/zenodo.23603006.svg)](https://doi.org/10.5281/zenodo.23603006)
 [![DOI: Sedenion Triangular Root](https://zenodo.org/badge/DOI/10.5281/zenodo.21246673.svg)](https://doi.org/10.5281/zenodo.21246673)
 
-Reference implementation, Lean 4 formalisations (135 machine-checked theorems, zero `sorry`), and benchmark suite for:
+Reference implementation, Lean 4 formalisations (256 machine-checked theorems in `lean/` — 116 in `lean/pg32/` and 140 in `lean/real/` — plus 105 companion hardware/RF theorems in `v3sp3r/proofs/MaxwellExterior.lean`, 361 total, zero `sorry`), and benchmark suite for:
 
 1. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 7, 2026). *The Sedenion Triangular Root: A Child-Originated Partial Desimplicialization Operator on Cayley–Dickson Bitmasks*. Zenodo. [`10.5281/zenodo.21246673`](https://doi.org/10.5281/zenodo.21246673)
 2. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 29, 2026). *Zero-Divisor-Free Coordinate Cells in the Cayley–Dickson Tower*. Preprint v1.0.
@@ -21,12 +21,12 @@ tests/             pytest suite for the package
 benchmarks/        algebraic_baselines.py (Table 2), track_a/ (Yang–Mills BCJ), track_b/ (deontic
                    multi-hop pruning, No-FFN ablation), ext/ (ProofWriter, ListOps), gps_jamming/
                    (CRPA null steering, phase-2 defences, dual-pol excision, Q1.14 RTL)
-lean/pg32/         finite development: Lean 4.15 core only (76 theorems across Core, Geometry, Census,
-                   TriangularRootFreeCells), every theorem by decide +kernel, no Classical.choice
-lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0 (59 theorems)
-                   SedenionReal.lean   — Theorem 5.1 nullspace, Hurwitz composition, CRPA theorems
+lean/pg32/         finite development: Lean 4.15 core only (116 theorems across Core, Geometry, Census,
+                   TriangularRootFreeCells; 80 top-level #print axioms checks), propext at most, no Classical.choice or Quot.sound
+lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0 (140 theorems; 60 top-level #print axioms checks)
+                   SedenionReal.lean   — Theorem 5.1 nullspace, Hurwitz composition, vertical quaternion blocks Q_{u,3}, SO(2) bivector invariance, CRPA theorems
                    SedenionAlt/Rank/Dim — alternativity, kernel characterisation, rank L(u) = 12 (rank–nullity)
-                   SedenionRobust.lean — leakage bounds, 8⊕4⊕4 transceiver, dual-pol RHCP/LHCP excision
+                   SedenionRobust.lean — universal adjoint L(w)^T = L(w*), R(x)^T = R(x*), leakage bounds, 8⊕4⊕4 transceiver, dual-pol RHCP/LHCP excision
 reports/           analysis notes that back numbers in the papers
 zenodo/            deposit metadata, package and upload script for the dual-pol supplement
 ```

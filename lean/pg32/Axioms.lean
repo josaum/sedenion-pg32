@@ -1,17 +1,35 @@
 import SedenionPG32
 open SedenionPG32
+#print axioms eps_unit_left
+#print axioms eps_unit_right
+#print axioms eps_square
 #print axioms eps_values
 #print axioms adjoint_left_identity
 #print axioms adjoint_right_identity
 #print axioms epsT_eq_eps
 #print axioms basis_mul
+#print axioms zero_divisor_1_10
 #print axioms zero_divisor_in_A9
 #print axioms kernel_witness_4
+#print axioms H_card
 #print axioms H_closed
+#print axioms apex_in_alt_planes
+#print axioms H8_is_octonion_core
+#print axioms apex_not_in_zd_planes
+#print axioms polar_line_contains_p_iff_even
 #print axioms zd_plane_octonion_part_is_polar
+#print axioms zd_plane_twist_part
+#print axioms lines_card
 #print axioms line_counts
+#print axioms seven_lines_per_plane
 #print axioms mixed_lines_per_plane
 #print axioms hinge_card
+#print axioms morenoPartner_eq_basis
+#print axioms term_scale_left
+#print axioms term_scale_right
+#print axioms sq_scale
+#print axioms mul_scale_right
+#print axioms vnormSq_mul_scale_left
 #print axioms internal_pair_15
 #print axioms collinear_row_7
 #print axioms associator_census
