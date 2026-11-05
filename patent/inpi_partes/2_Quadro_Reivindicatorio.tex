@@ -1,0 +1,70 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\sloppy
+
+\begin{document}
+\section*{REIVINDICA\c{C}\~OES}
+\begin{enumerate}[leftmargin=20pt,itemsep=4pt]
+    \item \textbf{Aparelho de cancelamento eletromagn\'etico de interfer\^encia pr\'e-ADC}, compreendendo um barramento anal\'ogico diferencial de 16 canais para receber um campo de onda $R(t) \in \mathbb{S} \cong \mathbb{R}^{16}$, \textbf{caracterizado pelo fato de que} compreende: (a) um controlador de interfer\^encia configurado para selecionar uma l\^amina divisora de zero primitiva $W_J = \frac{1}{\sqrt{2}}(e_c + s_d e_d) \in \ker L_{\mathbb{S}}(U_J)$ no cone de Moreno $V_2(\mathbb{R}^7) \subset \mathbb{S}$; (b) uma rede multiplexadora crossbar anal\'ogica livre de multiplicadores e chaves de invers\~ao de polaridade diferencial controlada por uma mem\'oria ROM de 256 bits armazenando os sinais de Cayley--Dickson $\sigma(i, j) \in \{+1, -1\}$, roteando para cada canal $k \in \{0,\dots,15\}$ os canais $k \oplus c$ e $k \oplus d$ com polaridades $\sigma(k \oplus c, c)$ e $s_d \sigma(k \oplus d, d)$; (c) amplificadores somadores diferenciais anal\'ogicos produzindo $Z_{\mathrm{out}}(t) = R(t) \cdot W_J$; e (d) um banco de conversores anal\'ogico-digitais (ADC) a jusante dos amplificadores somadores.
+
+    \item \textbf{Aparelho, de acordo com a reivindica\c{c}\~ao 1}, \textbf{caracterizado pelo fato de que} os amplificadores somadores diferenciais compreendem resistores de filme fino ou folha met\'alica com toler\^ancia $\le 0.1\%$, provendo $\ge 60\text{ dB}$ de rejei\c{c}\~ao anal\'ogica pr\'e-ADC.
+
+    \item \textbf{Aparelho, de acordo com a reivindica\c{c}\~ao 1}, \textbf{caracterizado pelo fato de que} o controlador seleciona a l\^amina dentre 84 l\^aminas divisoras de zero primitivas particionadas nos 7 hiperplanos de Fano n\~ao-apicais $H_\omega$ ($\omega \in \{9,\dots,15\}$) do espa\c{c}o projetivo finito $\mathrm{PG}(3,2)$.
+
+    \item \textbf{M\'etodo para detec\c{c}\~ao de spoofing coerente ou multipercurso em amostra \'unica e mitiga\c{c}\~ao de interfer\^encia}, \textbf{caracterizado pelo fato de que} compreende: (a) adquirir uma \'unica amostra 16D $R = (a, b) \in \mathrm{Im}(\mathbb{O}) \times \mathrm{Im}(\mathbb{O})$; (b) calcular o vetor associador $\mathcal{A}_{\mathrm{native}}(R) = (R \cdot \pi_{\mathbb{O}}(R)) \cdot e_8 - R \cdot (\pi_{\mathbb{O}}(R) \cdot e_8) = (ba - ab, 0)$; (c) calcular a curvatura n\~ao-associativa normalizada $\kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0, 1]$; (d) detectar a presen\c{c}a de um spoofer coerente quando $\kappa_{\mathbb{S}}(R)$ exceder um limiar predeterminado mesmo sob colapso de Posto 1 da matriz de covari\^ancia amostral; e (e) configurar um peso de beamforming ou matriz crossbar anal\'ogica para direcionar um nulo divisor de zero ao spoofer.
+
+    \item \textbf{M\'etodo, de acordo com a reivindica\c{c}\~ao 4}, \textbf{caracterizado pelo fato de que} compreende adicionalmente extrair $q_3 = a \times_{\mathbb{O}} b = -\frac{1}{2}\pi_{\mathbb{O}}(\mathcal{A}_{\mathrm{native}}(R))$, selecionar um vetor unit\'ario $c \in \mathrm{Im}(\mathbb{O})$ ortogonal a $\mathrm{span}\{\tilde{a}, \tilde{b}, q_3\}$ e construir o peso anulador de Moreno $W = (c, (\tilde{a}c)\tilde{b})/\sqrt{2}$ satisfazendo $(\tilde{a}, \tilde{b}) \cdot W = 0$ sem decomposi\c{c}\~ao em valores singulares (SVD).
+
+    \item \textbf{Arranjo sensor eletromagn\'etico nativo em sedeni\~oes}, \textbf{caracterizado pelo fato de que} compreende elementos de antena duplamente polarizados sensoriando $(\mathbf{E}_\theta, \mathbf{E}_\phi)$ e uma rede h\'ibrida passiva acoplando $\mathbf{E}_\theta$ nos 7 canais inferiores $a \in \mathrm{Im}(\mathbb{O})$ e $\mathbf{E}_\phi$ nos 7 canais superiores $b \in \mathrm{Im}(\mathbb{O})e_8$, mapeando ondas circularmente polarizadas diretamente no cone de Moreno $V_2(\mathbb{R}^7) = \{(a,b) : \|a\|_2 = \|b\|_2,\, \langle a, b \rangle = 0\}$.
+
+    \item \textbf{Sistema de cancelamento de interfer\^encia}, compreendendo o arranjo da reivindica\c{c}\~ao 6 e o aparelho da reivindica\c{c}\~ao 1, \textbf{caracterizado pelo fato de que} um sinal aut\^entico $U_{\mathrm{sat}} = (\tilde{a}, -\tilde{b})/\sqrt{2}$ com polariza\c{c}\~ao circular oposta \`a interfer\^encia $U_J = (\tilde{a}, +\tilde{b})/\sqrt{2}$ recebe ganho coerente de $+3.01\text{ dB}$ ($\|U_{\mathrm{sat}}\cdot W_J\|_2 = \sqrt{2}$) simultaneamente \`a aniquila\c{c}\~ao do jammer ($\|U_J\cdot W_J\|_2 = 0$).
+
+    \item \textbf{Sistema de comunica\c{c}\~ao LPI/LPD por Modula\c{c}\~ao Chaveada por Divisores de Zero (ZDKM)}, \textbf{caracterizado pelo fato de que} compreende um transmissor que salta por uma sequ\^encia chaveada de estados no cone de Moreno $(\tilde{a}_k, \tilde{b}_k) \in V_2(\mathbb{R}^7)$, codificando o bit \texttt{0} como $U_0[k] = (\tilde{a}_k, +\tilde{b}_k)/\sqrt{2}$ e o bit \texttt{1} como $U_1[k] = (\tilde{a}_k, -\tilde{b}_k)/\sqrt{2}$, e um receptor autorizado aplicando $W_{\mathrm{key}}[k] = (c_k, (\tilde{a}_k c_k)\tilde{b}_k)/\sqrt{2}$ tal que $\|U_0[k] \cdot W_{\mathrm{key}}[k]\|_2 = 0$ e $\|U_1[k] \cdot W_{\mathrm{key}}[k]\|_2 = \sqrt{2}$ com covari\^ancia espacial isotr\'opica para interceptadores sem chave.
+
+    \item \textbf{Sistema, de acordo com a reivindica\c{c}\~ao 8}, \textbf{caracterizado pelo fato de que} compreende um projetor de dobradi\c{c}a quaterni\^onica $\mathrm{PG}(3,2)$ projetando a sa\'ida em uma das 35 sub\'algebras quaterni\^onicas associativas $\mathbb{H}_{\ell} = \mathrm{span}\{e_0, e_i, e_j, e_{i\oplus j}\} \subset \mathbb{S}$.
+
+    \item \textbf{Processador digital de beamforming em sedeni\~oes de ponto fixo}, \textbf{caracterizado pelo fato de que} compreende um n\'ucleo aritm\'etico de ciclo \'unico livre de multiplicadores executando o produto $R \cdot W$ por meio de 16 unidades *butterfly* paralelas controladas por uma tabela de sinais de Cayley--Dickson de 256 bits, atingindo $\ge 70\text{ dB}$ de profundidade de nulo sem invers\~ao de matriz.
+
+    \item \textbf{Beamformer hier\'arquico multi-painel de Kronecker}, compreendendo $M=16$ sub-arranjos fornecendo um tensor $R(t) \in \mathbb{R}^{16 \times 16}$, \textbf{caracterizado pelo fato de que} compreende um processador intra-painel de est\'agio 1 multiplicando cada sub-arranjo por $W_{\mathrm{micro}} \in \ker L_{\mathbb{S}}(u_{\mathrm{micro}})$ e um processador inter-painel de est\'agio 2 multiplicando por $W_{\mathrm{macro}} \in \ker L_{\mathbb{S}}(u_{\mathrm{macro}})$, provendo $+6.02\text{ dB}$ de ganho coerente em dois est\'agios.
+
+    \item \textbf{M\'etodo de descascamento em cascata (*cascaded peeler*) para m\'ultiplos jammers}, \textbf{caracterizado pelo fato de que} compreende iterativamente, para cada est\'agio $s \in \{1,\dots,K\}$, selecionar $W_s \in \ker L_{\mathbb{S}}(J_s)$ que aniquila $J_s$ maximizando $\sum_{r=s+1}^K \kappa_{\mathbb{S}}(J_r \cdot W_s)$ e atualizar $R \leftarrow R \cdot W_s$ e $J_r \leftarrow J_r \cdot W_s$.
+
+    \item \textbf{Sistema interferom\'etrico de navega\c{c}\~ao e estimativa de atitude em amostra \'unica}, compreendendo $M$ pain\'eis de antena sedeni\^onicos, \textbf{caracterizado pelo fato de que} compreende um correlacionador cruzado avaliando $C_{m,0} = R_m \cdot \overline{R_0}$, um estimador de dobradi\c{c}a quaterni\^onica extraindo fases $\phi_m = \mathrm{atan2}(\langle C_{m,0}[e_1..e_3], \hat{u}_{\mathrm{hinge}}\rangle, C_{m,0}[e_0])$ e um m\'odulo monitor de curvatura $\kappa_{\mathbb{S}}(R_m)$.
+
+    \item \textbf{Co-processador embarcado bare-metal em sedeni\~oes com zero aloca\c{c}\~ao de heap}, \textbf{caracterizado pelo fato de que} compreende um microcontrolador ou SoC armazenando em ROM Flash uma tabela de sinais de 256 bytes, uma tabela XOR de 256 bytes e uma tabela de incid\^encia $\mathrm{PG}(3,2)$ de 105 bytes, e uma unidade aritm\'etica em pilha sintetizando um anulador de Moreno de 16 bits em ponto fixo (\texttt{Q1.14}) com $\ge 84\text{ dB}$ de profundidade de nulo sem aloca\c{c}\~ao din\^amica de mem\'oria.
+
+    \item \textbf{M\'etodo de condicionamento temporal em dois est\'agios por coalesc\^encia de glitches e dobradi\c{c}a quaterni\^onica 4D}, \textbf{caracterizado pelo fato de que} compreende: (a) um coalescedor de primeiro est\'agio que funde pares sub-$T_E$ ($\min(h_i, l_i) < 0.42\,T_E$) no intervalo baixo adjacente $l_{i-1} \leftarrow l_{i-1} + h_i + l_i$ conservando a dura\c{c}\~ao total do quadro; e (b) um projetor de segundo est\'agio que mapeia $d = q\cdot T_E + \varepsilon$ em $d \mapsto q\cdot T_E$ sobre $\mathbb{H}_a = \mathrm{span}\{e_0, e_a, e_8, e_{a\oplus 8}\} \subset \mathbb{S}$.
+
+    \item \textbf{M\'etodo para preven\c{c}\~ao de underflow de temporizador DMA de hardware em bobinas indutivas LF-RFID ($125\text{ kHz}$)}, onde o registrador auto-reload calcula $\mathrm{ARR} = \lfloor d / 8\,\mu\text{s} \rfloor - 1$, \textbf{caracterizado pelo fato de que} compreende coalescer glitches $d \in \{0,\dots,7\}\,\mu\text{s}$ (que causariam underflow para $\mathtt{0xFFFFFFFF}$) e projetar cada par de pulsos na grade de $8\,\mu\text{s}$ via $d' = 8(k_p + k_n + 2) \ge 16\,\mu\text{s}$ garantindo $d' \bmod 8 = 0$ e $\mathrm{ARR} \ge 1$.
+
+    \item \textbf{M\'etodo para discrimina\c{c}\~ao de anomalias de acoplamento indutivo e capacitivo entre bandas ($125\text{ kHz}$ vs.\ $13.56\text{ MHz}$)}, \textbf{caracterizado pelo fato de que} compreende mapear pulsos da bobina indutiva em $R = (a, b) \in \mathbb{S}$, avaliar $\kappa_{\mathbb{S}}(R) = \|[R, \pi_{\mathbb{O}}(R), e_8]\|_2 / \|R\|_2^2$ e rejeitar falsas emula\c{c}\~oes quando $\kappa_{\mathbb{S}}(R)$ indicar acoplamento no cone n\~ao-associativo de Moreno.
+
+    \item \textbf{M\'etodo para remo\c{c}\~ao de desvanecimento por multipercurso 802.11 e correla\c{c}\~ao de trajet\'orias sob MAC randomizado}, \textbf{caracterizado pelo fato de que} compreende aplicar um filtro de dobradi\c{c}a quaterni\^onica em s\'eries temporais de RSSI para remover excurs\~oes n\~ao-associativas de multipercurso e correlacionar m\'ascaras de Information Elements (IE) e listas PNL com as trajet\'orias condicionadas.
+
+    \item \textbf{Aparelho front-end de RF passivo e rec\'iproco de 32 portas em linha de transmiss\~ao (stripline) para excis\~ao de jammer co-linear duplamente polarizado}, \textbf{caracterizado pelo fato de que} compreende: (a) uma interface de antena duplamente polarizada conectando as portas RHCP $(I/Q)$ em $(e_1, e_2) \subset \mathrm{Im}(\mathbb{O})$ e as portas LHCP $(I/Q)$ em $(e_5, e_6) \subset \mathrm{Im}(\mathbb{O})$ e suas contrapartes superiores em $\mathrm{Im}(\mathbb{O})e_8$, mapeando ondas de interfer\^encia linearmente polarizadas (inclina\c{c}\~ao $\psi$) no cone de Moreno $V_2(\mathbb{R}^7)$; e (b) uma rede de espalhamento de acopladores direcionais RF stripline de 32 portas passiva, rec\'iproca e livre de ferrites $S_{32} = S_{32}^T$ ($\|S_{21}\|_2 \le 1$, consumo DC zero) posicionada antes do LNA e configurada para implementar multiplica\c{c}\~ao \`a direita por $v_{\mathrm{rf}}(\psi) = \frac{1}{2}(e_3 + \sin 2\psi\,e_{12} - \cos 2\psi\,e_{15})$ usando dois acopladores direcionais passivos por canal com coeficientes $\{1/2, \pm\frac{1}{2}\sin 2\psi, \mp\frac{1}{2}\cos 2\psi\}$, aniquilando jammers co-lineares ($\Delta\theta = 0.0^\circ$) enquanto preserva o sinal de sat\'elite RHCP sem distor\c{c}\~ao.
+
+    \item \textbf{Transceptor de comunica\c{c}\~ao em sedeni\~oes $8\oplus 4\oplus 4$ co-projetado e livre de multiplicadores}, \textbf{caracterizado pelo fato de que} compreende: (a) um roteador de subespa\c{c}os ortogonais particionando $\mathbb{S} = \mathbb{R}^8_{\mathrm{uncal}} \oplus \mathbb{R}^4_{\mathrm{sig}} \oplus \mathbb{R}^4_{\mathrm{jam}}$; e (b) um decodificador e anulador conjunto livre de multiplicadores configurado para aplicar um operador anti-sim\'etrico $J$ satisfazendo $J^2 = -4\mathbf{I}_4$ via deslocamento bin\'ario de 2 bits e nega\c{c}\~ao de sinal para decodificar 4 fluxos de s\'imbolos desejados em $\mathbb{R}^4_{\mathrm{sig}}$ enquanto aniquila simultaneamente 4 fluxos interferidores em $\mathbb{R}^4_{\mathrm{jam}}$ ($u_J \cdot v_k = 0$).
+\end{enumerate}
+
+
+\end{document}

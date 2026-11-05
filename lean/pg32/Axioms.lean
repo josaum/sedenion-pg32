@@ -41,3 +41,15 @@ open SedenionPG32
 #print axioms nfc_1356mhz_subcarrier_and_uid_bcc_invariants
 #print axioms kronecker_multitile_16x16_two_stage_gain
 #print axioms wifi_multipath_peeler_step_energy_reduction
+#print axioms pedro_toy_triangular_root_identities
+#print axioms geometric_root_domain_66_and_ranks
+#print axioms geometric_root_left_inverse_all_66
+#print axioms support_zd_criterion_equivalence_all_66
+#print axioms zd_filtered_domain_30_plus_36_by_rank
+#print axioms bitmask_universe_trichotomy_32767
+#print axioms paper1_examples_10_1_to_10_5
+#print axioms order_ideal_and_ghost_filter_duality_all_66
+#print axioms ghost_line_annihilator_multiples_of_four
+#print axioms cayley_dickson_tower_census_n4_n5_n6
+#print axioms doubling_generator_degree_separation
+#print axioms tower_absoluteness_n4_in_n5_all_66

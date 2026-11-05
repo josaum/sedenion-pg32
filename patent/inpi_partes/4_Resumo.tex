@@ -1,0 +1,30 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\sloppy
+
+\begin{document}
+\section*{RESUMO}
+\textbf{APARELHO, SISTEMAS E M\'ETODOS PARA PROCESSAMENTO DE SINAIS NATIVO EM SEDENI\~OES DE 16 DIMENS\~OES, CANCELAMENTO ANAL\'OGICO PR\'E-ADC DE INTERFER\^ENCIA POR DIVISORES DE ZERO, DETEC\c{C}\~AO DE SPOOFING EM AMOSTRA \'UNICA POR CURVATURA N\~AO-ASSOCIATIVA E MODULA\c{C}\~AO CHAVEADA POR DIVISORES DE ZERO.} A presente inven\c{c}\~ao descreve um aparelho, sistema e m\'etodo para processamento eletromagn\'etico de sinais nativo na \'algebra de sedeni\~oes de Cayley--Dickson de 16 dimens\~oes ($\mathbb{S} \cong \mathbb{O} \oplus \mathbb{O}e_8$) e conforma\c{c}\~ao de feixe na geometria projetiva finita $\mathrm{PG}(3,2)$. Antes do amplificador de baixo ru\'ido (LNA), uma alimenta\c{c}\~ao de antena duplamente polarizada e uma matriz passiva rec\'iproca de acopladores direcionais RF stripline de 32 portas sem ferrites ($S_{32} = S_{32}^T$, $\|S_{21}\|_2 \le 1$, $0\text{ mW}$ DC) mapeiam interferidores linearmente polarizados no cone divisor de zero de Moreno $V_2(\mathbb{R}^7)$ e aniquilam jammers co-lineares ($\Delta\theta = 0.0^\circ$) com $0.0000\text{ dB}$ de perda no sat\'elite RHCP. Antes dos ADCs, uma matriz crossbar anal\'ogica diferencial livre de multiplicadores controlada por uma ROM de sinais de 256 bits executa $Z(t) = R(t)\cdot W_J$ via invers\~ao de fios $\pm 1$ e soma resistiva de filme fino, prevenindo satura\c{c}\~ao do ADC sob jamming de $+80\text{ dB}$ JSR. Um detector de curvatura do associador em amostra \'unica $\mathcal{A}_{\mathrm{native}}(R) = [R, \pi_{\mathbb{O}}(R), e_8]$ detecta spoofers repetidores coerentes sob colapso de Posto 1, enquanto um n\'ucleo FPGA sem DSP48 e um projetor quaterni\^onico $\mathrm{PG}(3,2)$ preservam o rastreamento de fase.
+
+
+\end{document}
