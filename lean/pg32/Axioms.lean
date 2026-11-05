@@ -53,3 +53,12 @@ open SedenionPG32
 #print axioms cayley_dickson_tower_census_n4_n5_n6
 #print axioms doubling_generator_degree_separation
 #print axioms tower_absoluteness_n4_in_n5_all_66
+#print axioms sequential_prefix_chunk_root_left_inverse_and_62_domain
+#print axioms gl32_six_free_orbits_decomposition_a4
+#print axioms pathion_a5_pg42_155_lines_29_free_126_ghost_and_23_blocks
+#print axioms two_pow_succ_add
+#print axioms generator_degree_step_difference_all_n
+#print axioms cayley_dickson_tower_step_recurrences_n4_to_n12
+#print axioms chingon_a6_pg52_651_lines_60_free_591_ghost_and_54_blocks
+#print axioms gl32_orbit_decomposition_a4_a5_a6
+#print axioms all_8_maximal_free_blocks_algebraic_and_ghost_dichotomy

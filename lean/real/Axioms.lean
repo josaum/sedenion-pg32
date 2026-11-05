@@ -54,3 +54,10 @@ import SedenionDim
 #print axioms SedenionRobust.rf_smatrix_passivity_bound
 #print axioms SedenionRobust.weight_quantization_leakage_bound
 #print axioms SedenionRobust.wifi_multipath_peeler_energy_reduction_real
+#print axioms SedenionReal.sedenion_quadratic_norm_conjugate_identity
+#print axioms SedenionReal.vertical_quaternion_norm_composition
+#print axioms SedenionReal.vertical_quaternion_associative
+#print axioms SedenionReal.vertical_quaternion_zd_free
+#print axioms SedenionReal.moreno_stiefel_so2_bivector_invariance
+#print axioms SedenionRobust.left_mul_adjoint
+#print axioms SedenionRobust.sedenion_universal_adjoint_backprop

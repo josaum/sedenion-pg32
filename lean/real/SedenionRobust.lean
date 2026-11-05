@@ -499,4 +499,25 @@ theorem wifi_multipath_peeler_energy_reduction_real (r δ : ℝ) :
     0 ≤ 2 * δ ^ 2 := by
   refine ⟨by ring, by ring, by positivity⟩
 
+/-- **Left-multiplication adjoint identity (`L(u)ᵀ = L(u*)`) over `ℝ¹⁶`.**
+    `⟨u · x, y⟩ = ⟨x, u* · y⟩` for all `u, x, y ∈ S`. -/
+theorem left_mul_adjoint (u x y : O × O) :
+    sdot (smul u x) y = sdot x (smul (sconj u) y) := by
+  obtain ⟨⟨u0, u1, u2, u3, u4, u5, u6, u7⟩, ⟨u8, u9, u10, u11, u12, u13, u14, u15⟩⟩ := u
+  obtain ⟨⟨x0, x1, x2, x3, x4, x5, x6, x7⟩, ⟨x8, x9, x10, x11, x12, x13, x14, x15⟩⟩ := x
+  obtain ⟨⟨y0, y1, y2, y3, y4, y5, y6, y7⟩, ⟨y8, y9, y10, y11, y12, y13, y14, y15⟩⟩ := y
+  simp only [sconj, oscal, sdot, smul, omul, conj, osub, oadd, dot]
+  ring
+
+/-- **Universal Cayley–Dickson Adjoint Backpropagation Theorem over `ℝ¹⁶`
+    (Theorem 2.1 of `Agourakis 2026` & Patent Claims 9, 20).**
+    For any forward sedenion product `z = u · v` and upstream gradient `g ∈ ℝ¹⁶`, the exact
+    directional derivatives along perturbations `(δu, δv)` satisfy
+      `⟨δu · v, g⟩ = ⟨δu, g · v*⟩`  and  `⟨u · δv, g⟩ = ⟨δv, u* · g⟩`,
+    proving that `∇_u L = g · v*` and `∇_v L = u* · g` without materializing any `16×16` Jacobian. -/
+theorem sedenion_universal_adjoint_backprop (u v δu δv g : O × O) :
+    sdot (smul δu v) g = sdot δu (smul g (sconj v)) ∧
+    sdot (smul u δv) g = sdot δv (smul (sconj u) g) :=
+  ⟨right_mul_adjoint δu g v, left_mul_adjoint u δv g⟩
+
 end SedenionRobust
