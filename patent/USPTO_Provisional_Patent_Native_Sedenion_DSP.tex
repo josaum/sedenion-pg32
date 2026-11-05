@@ -318,6 +318,18 @@ What is claimed is:
         \item applying a sedenion quaternion-hinge multipath peeler to strip non-associative single-frame RSSI fading excursions exceeding a predetermined dB threshold while preserving true spatial motion trajectories; and
         \item correlating invariant 802.11 Information Element (IE) bitmasks and Preferred Network List (PNL) sets with the conditioned RSSI trajectories to associate ephemeral randomized LAA MAC bursts with a single physical transceiver.
     \end{enumerate}
+
+    \item \textbf{(Apparatus --- Passive Reciprocal 32-Port RF Stripline Sedenion Coupler Network for Co-Linear Dual-Pol Jammer Excision)} A passive radio-frequency (RF) front-end interference excision apparatus comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item a dual-polarized antenna interface configured to wire right-hand circularly polarized (RHCP) in-phase and quadrature ($I/Q$) ports into basis coordinates $(e_1, e_2)$ of the lower octonion subalgebra $\mathrm{Im}(\mathbb{O})$ and left-hand circularly polarized (LHCP) $I/Q$ ports into partner basis coordinates $(e_5, e_6) \subset \mathrm{Im}(\mathbb{O})$ along with their corresponding upper sedenion ports in $\mathrm{Im}(\mathbb{O})e_8$, such that every complex sample $X_J(\psi, s)$ of a linearly polarized interference wave with polarization tilt angle $\psi$ resides on the Moreno zero-divisor cone $V_2(\mathbb{R}^7)$; and
+        \item a ferrite-free, passive, reciprocal 32-port RF stripline directional-coupler scattering network $S_{32} = S_{32}^T$ ($\|S_{21}\|_2 \le 1$, zero DC power consumption) positioned ahead of a low-noise amplifier (LNA) and configured to implement right-multiplication by a scaled tilt zero-divisor blade $v_{\mathrm{rf}}(\psi) = \frac{1}{2}(e_3 + \sin 2\psi\,e_{12} - \cos 2\psi\,e_{15})$ using two passive directional couplers per lane with coupling coefficients $\{1/2, \pm\frac{1}{2}\sin 2\psi, \mp\frac{1}{2}\cos 2\psi\}$, thereby annihilating the entire complex waveform of a co-linear ($\Delta\theta = 0.0^\circ$) linearly polarized jammer ($X_J(\psi, s)\cdot v_{\mathrm{rf}}(\psi) = 0$) while preserving an authentic RHCP satellite signal $X_{\mathrm{sat}} = (a_{\mathrm{sat}}, 0)$ with distortionless response.
+    \end{enumerate}
+
+    \item \textbf{(Apparatus \& Method --- Co-Designed $8\oplus 4\oplus 4$ Multiplier-Free Sedenion Transceiver)} A co-designed sedenion communication transceiver comprising:
+    \begin{enumerate}[leftmargin=16pt,itemsep=1pt]
+        \item an orthogonal subspace router configured to partition the 16-dimensional sedenion space $\mathbb{S} = \mathbb{R}^8_{\mathrm{uncal}} \oplus \mathbb{R}^4_{\mathrm{sig}} \oplus \mathbb{R}^4_{\mathrm{jam}}$ into an 8-dimensional uncalibrated multipath complement $\mathbb{R}^8_{\mathrm{uncal}}$, a 4-dimensional desired signal subspace $\mathbb{R}^4_{\mathrm{sig}}$, and a 4-dimensional zero-divisor interference subspace $\mathbb{R}^4_{\mathrm{jam}}$; and
+        \item a multiplier-free joint decoder and nuller configured to apply a skew-symmetric operator $J$ satisfying $J^2 = -4\mathbf{I}_4$ via a 2-bit binary shift and sign negation to decode 4 desired symbol streams in $\mathbb{R}^4_{\mathrm{sig}}$ while simultaneously annihilating 4 co-channel zero-divisor interferer streams in $\mathbb{R}^4_{\mathrm{jam}}$ ($u_J \cdot v_k = 0$).
+    \end{enumerate}
 \end{enumerate}
 
 \vspace{10pt}
