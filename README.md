@@ -2,11 +2,14 @@
 
 [![DOI: Main Paper (latest)](https://zenodo.org/badge/DOI/10.5281/zenodo.23588273.svg)](https://doi.org/10.5281/zenodo.23588273)
 [![DOI: GNSS Anti-Jamming](https://zenodo.org/badge/DOI/10.5281/zenodo.23603006.svg)](https://doi.org/10.5281/zenodo.23603006)
+[![DOI: Sedenion Triangular Root](https://zenodo.org/badge/DOI/10.5281/zenodo.21246673.svg)](https://doi.org/10.5281/zenodo.21246673)
 
-Reference implementation, Lean 4 formalisations (zero `sorry`), and benchmark suite for:
+Reference implementation, Lean 4 formalisations (135 machine-checked theorems, zero `sorry`), and benchmark suite for:
 
-1. **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. Concept DOI [`10.5281/zenodo.23588273`](https://doi.org/10.5281/zenodo.23588273) (v2026.10.25: [`10.5281/zenodo.23652148`](https://doi.org/10.5281/zenodo.23652148); v1: [`10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274))
-2. **Dionisio Chiuratto Agourakis** (2026). *Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming and Anti-Spoofing: Matrix-Inversion-Free Null Steering, Associative Quaternion Phase Hinges, and Neural CRPA Validation*. Zenodo. [`10.5281/zenodo.23603006`](https://doi.org/10.5281/zenodo.23603006)
+1. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 7, 2026). *The Sedenion Triangular Root: A Child-Originated Partial Desimplicialization Operator on Cayley–Dickson Bitmasks*. Zenodo. [`10.5281/zenodo.21246673`](https://doi.org/10.5281/zenodo.21246673)
+2. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 29, 2026). *Zero-Divisor-Free Coordinate Cells in the Cayley–Dickson Tower*. Preprint v1.0.
+3. **Dionisio Chiuratto Agourakis** (2026). *Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation*. Zenodo. Concept DOI [`10.5281/zenodo.23588273`](https://doi.org/10.5281/zenodo.23588273) (v2026.10.25: [`10.5281/zenodo.23652148`](https://doi.org/10.5281/zenodo.23652148); v1: [`10.5281/zenodo.23588274`](https://doi.org/10.5281/zenodo.23588274))
+4. **Dionisio Chiuratto Agourakis** (2026). *Sedenion PG(3,2) Zero-Divisor Beamforming for GNSS Anti-Jamming and Anti-Spoofing: Matrix-Inversion-Free Null Steering, Associative Quaternion Phase Hinges, and Neural CRPA Validation*. Zenodo. [`10.5281/zenodo.23603006`](https://doi.org/10.5281/zenodo.23603006)
 
 ## Layout
 
@@ -18,8 +21,9 @@ tests/             pytest suite for the package
 benchmarks/        algebraic_baselines.py (Table 2), track_a/ (Yang–Mills BCJ), track_b/ (deontic
                    multi-hop pruning, No-FFN ablation), ext/ (ProofWriter, ListOps), gps_jamming/
                    (CRPA null steering, phase-2 defences, dual-pol excision, Q1.14 RTL)
-lean/pg32/         finite development: Lean 4.15 core only, every theorem by decide +kernel, no axioms
-lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0
+lean/pg32/         finite development: Lean 4.15 core only (76 theorems across Core, Geometry, Census,
+                   TriangularRootFreeCells), every theorem by decide +kernel, no Classical.choice
+lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0 (59 theorems)
                    SedenionReal.lean   — Theorem 5.1 nullspace, Hurwitz composition, CRPA theorems
                    SedenionAlt/Rank/Dim — alternativity, kernel characterisation, rank L(u) = 12 (rank–nullity)
                    SedenionRobust.lean — leakage bounds, 8⊕4⊕4 transceiver, dual-pol RHCP/LHCP excision
@@ -36,7 +40,8 @@ zenodo/            deposit metadata, package and upload script for the dual-pol 
 | **Foundational PG(3,2) & Non-Associative GDL Manuscript (16 pp.)** | [`papers/Agourakis_2026_Sedenion_PG32.tex`](papers/Agourakis_2026_Sedenion_PG32.tex) | [**PDF**](papers/Agourakis_2026_Sedenion_PG32.pdf) |
 | **Pre-ADC Analog Crossbar Schematic, KiCad, SPICE & BOM** | [`hardware/Native_Sedenion_Hardware_BOM_and_Schematic.md`](hardware/Native_Sedenion_Hardware_BOM_and_Schematic.md) | [**Schematic PDF**](hardware/schematic/Sedenion_PreADC_Analog_Crossbar_Schematic.pdf) · [KiCad](hardware/schematic/sedenion_analog_crossbar.kicad_sch) · [SPICE](hardware/schematic/sedenion_analog_crossbar.cir) · [84-Blade ROM](hardware/crossbar_84_blades_rom.json) |
 | **Single-Cycle `Q1.14` SystemVerilog RTL Core (`512 LUT / 0 DSP48 / 1 cyc`)** | [`benchmarks/gps_jamming/rtl/sedenion_crpa_beamformer.sv`](benchmarks/gps_jamming/rtl/sedenion_crpa_beamformer.sv) | [Verification JSON](benchmarks/gps_jamming/results_phase2_defense.json) |
-| **Background IP & 20-Claim Hardware Specification** | [`patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex`](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex) | [**PDF**](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.pdf) |
+| **Background IP & 21-Claim USPTO Provisional Patent Specification** | [`patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex`](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex) | [**USPTO PDF**](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.pdf) · [Cover PTO/SB/16](patent/PTO_SB_16_Provisional_Cover_Sheet.pdf) · [Micro-Entity PTO/SB/15A](patent/PTO_SB_15A_Micro_Entity_Certification.pdf) |
+| **INPI Brazil 21-Claim Patent Specification (Convenção de Paris Art. 4)** | [`patent/INPI_Pedido_Patente_Sedenion_DSP_PTBR.tex`](patent/INPI_Pedido_Patente_Sedenion_DSP_PTBR.tex) | [**INPI PDF**](patent/INPI_Pedido_Patente_Sedenion_DSP_PTBR.pdf) · [Partes `e-Patentes`](patent/inpi_partes/) |
 | **Dual-Pol Pivot 1 & Pivot 2 Report (Passive $S_{32}$ & $\Delta\theta=0^\circ$ Excision)** | [`reports/DUALPOL_PIVOT12_REPORT.md`](reports/DUALPOL_PIVOT12_REPORT.md) | [Results JSON](benchmarks/gps_jamming/results_dualpol_pivot12.json) |
 
 ## Quick start
@@ -74,6 +79,24 @@ cd lean/real && lake exe cache get && lake build && lake env lean Axioms.lean   
 ## Citation
 
 ```bibtex
+@misc{agourakis2026triangular,
+  author       = {Agourakis, Pedro Barone and Agourakis, Dionisio Chiuratto},
+  title        = {{The Sedenion Triangular Root: A Child-Originated Partial Desimplicialization Operator on Cayley--Dickson Bitmasks}},
+  year         = {2026},
+  month        = jul,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.21246673},
+  url          = {https://doi.org/10.5281/zenodo.21246673}
+}
+
+@misc{agourakis2026freecells,
+  author       = {Agourakis, Pedro Barone and Agourakis, Dionisio Chiuratto},
+  title        = {{Zero-Divisor-Free Coordinate Cells in the Cayley--Dickson Tower}},
+  year         = {2026},
+  month        = jul,
+  note         = {Preprint v1.0, July 29, 2026}
+}
+
 @misc{agourakis2026sedenion,
   author       = {Agourakis, Dionisio Chiuratto},
   title        = {{Sedenion Algebras and PG(3,2) Incidence Structures for Non-Associative Geometric Deep Learning: Algebraic Foundations, Machine-Checked Theorems, and Dual-Track Validation}},
