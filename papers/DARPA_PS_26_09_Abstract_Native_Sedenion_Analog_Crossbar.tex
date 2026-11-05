@@ -45,7 +45,7 @@
 \textbf{Date \& PI:} & October 26, 2026 \quad | \quad Dionisio Chiuratto Agourakis \\
 \textbf{E-Mail \& Phone:} & \href{mailto:dionisio.ca@gmail.com}{dionisio.ca@gmail.com} \quad | \quad +55 11 98787-4110 \\
 \textbf{Mailing Address:} & Rua Joaquim Floriano 1125, apt 102, S\~ao Paulo, SP 04534-002, Brazil \\
-\textbf{CAGE / NCAGE Code:} & N/A (Foreign Entity -- NCAGE Pending; USPTO Patent Pending) \\
+\textbf{CAGE / NCAGE Code:} & N/A (Foreign Entity -- NCAGE In Process; GPR Offered to U.S.\ Gov.) \\
 \textbf{Proposed ROM \& Period:} & \$485,000.00 USD (12 Months) \\
 \bottomrule
 \end{tabular}
@@ -81,7 +81,7 @@ Modern tactical Electronic Warfare (EW), Assured PNT, and covert C2 links face t
 \end{itemize}
 
 \section{Revolutionary Technical Approach: Native 16D Sedenion DSP (NSSP)}
-Building upon our machine-checked $\mathrm{PG}(3,2)$ sedenion algebra framework (Lean~4 verified with \texttt{0 sorry}; DOIs \texttt{10.5281/zenodo.23588274} and \texttt{10.5281/zenodo.23603006}; USPTO Provisional Patent Pending), we introduce \textbf{Native 16-Dimensional Sedenion Signal Processing (NSSP)}. Instead of treating 16 receiver channels as an unstructured vector in $\mathbb{C}^8$, NSSP implements the non-associative Cayley--Dickson sedenion product $\mathbb{S} = \mathbb{O} \oplus \mathbb{O}e_8$ directly inside the passive antenna feed, the pre-ADC analog crossbar circuit, the single-snapshot spoofer detector, and the LPI/LPD waveform:
+Building upon our machine-checked $\mathrm{PG}(3,2)$ sedenion algebra framework (Lean~4 verified with \texttt{0 sorry}; DOIs \texttt{10.5281/zenodo.23588274} and \texttt{10.5281/zenodo.23603006}; Background IP Specification \& RTL Documented), we introduce \textbf{Native 16-Dimensional Sedenion Signal Processing (NSSP)}. Instead of treating 16 receiver channels as an unstructured vector in $\mathbb{C}^8$, NSSP implements the non-associative Cayley--Dickson sedenion product $\mathbb{S} = \mathbb{O} \oplus \mathbb{O}e_8$ directly inside the passive antenna feed, the pre-ADC analog crossbar circuit, the single-snapshot spoofer detector, and the LPI/LPD waveform:
 
 \subsection{Pre-ADC Passive Analog Differential Sedenion Crossbar (68.4--82.8 dB Nulling)}
 In $\mathrm{PG}(3,2)$, the 7 quasi-octonion Fano hyperplanes contain 84 primitive zero-divisor blades $U_J = \frac{1}{\sqrt{2}}(e_a + s_b e_b)$, each annihilated identically ($U_J \cdot W_J = 0$) by 4 primitive partner blades $W_J = \frac{1}{\sqrt{2}}(e_c + s_d e_d) \in \ker L_{\mathbb{S}}(U_J)$. Crucially, because $W_J$ has non-zero support at \textit{only two indices} $(c, d)$ with discrete signs in $\{+1, -1\}$, the $k$-th channel of $Z(t) = R(t)\cdot W_J$ is given by the exact 2-tap XOR formula:
