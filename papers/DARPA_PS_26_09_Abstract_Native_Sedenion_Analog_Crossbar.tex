@@ -15,12 +15,12 @@
     citecolor=black
 }
 
-\titlespacing*{\section}{0pt}{6pt}{3pt}
-\titlespacing*{\subsection}{0pt}{4pt}{2pt}
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+\titlespacing*{\subsection}{0pt}{3pt}{1pt}
 \titleformat{\section}{\normalfont\large\bfseries}{\thesection.}{0.5em}{}
 \titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{3pt}
+\setlength{\parskip}{1.5pt}
 \sloppy
 
 \begin{document}
@@ -103,27 +103,30 @@ We proved and formally verified in Lean~4 (\texttt{native\_associator\_commutato
 \]
 Thus the normalized curvature $\kappa_{\mathbb{S}}(R) = \|\mathcal{A}_{\mathrm{native}}(R)\|_2 / \|R\|_2^2 \in [0, 1]$ vanishes ($\kappa_{\mathbb{S}}=0$) in an associative quaternion channel ($a \parallel b$) and peaks ($\kappa_{\mathbb{S}}=1$) on the Moreno zero-divisor cone. Under a zero-lag coherent repeater spoofer ($\mathrm{SSR}=+6\text{ dB}$), $K=64$ covariance eigenvalue ratio detection collapses ($\mathrm{AUROC} = 0.2055$, $P_{\mathrm{det}} = 9.38\%$), whereas our \textbf{$K=1$ single-snapshot associator detector achieves $P_{\mathrm{det}} = 99.80\%$ ($\mathrm{AUROC} = 0.9999$)} and directly isolates $q_3 = a\times_{\mathbb{O}} b$ to project onto $\mathrm{span}\{a, b, q_3\}^\perp$ and obtain $c$ without SVD.
 
-\subsection{Calibration-Free Dyadic TEM Vector Array \& ZDKM LPI/LPD Transceiver}
-By coupling the $(\mathbf{E}_\theta, \mathbf{E}_\phi)$ ports of a $2\times 2$ dual-polarized patch array through passive $90^\circ/180^\circ$ quadrature hybrids (\texttt{QCN-19+} / \texttt{TC1-1-13M+}) into $\mathrm{Im}(\mathbb{O})$ and $\mathrm{Im}(\mathbb{O})e_8$, Maxwell's circularly polarized (or $45^\circ$ slant-linear) TEM relations enforce $\|a\|_2=\|b\|_2$ and $\langle a,b\rangle=0$ physically across all angles $(\theta,\phi)$ with \textbf{zero calibration LUTs} ($\kappa_{\mathbb{S}} = 1.000000$). Conversely, transmitting keyed hops $U_0[k] = (a_k, +b_k)/\sqrt{2}$ (bit 0) vs.\ $U_1[k] = (a_k, -b_k)/\sqrt{2}$ (bit 1) on $V_2(\mathbb{R}^7)$ creates our \textbf{Zero-Divisor Keyed Modulation (ZDKM)} LPI/LPD waveform: both symbols have constant unit energy ($\|U_{0,1}\|_2=1$) and white covariance $\mathbf{I}_{16}$ to eavesdroppers ($49.76\%$ radiometer / $50.49\%$ blind interceptor accuracy), while the keyed receiver achieves \textbf{99.90\% accuracy} ($\mathrm{BER} = 9.8\times 10^{-4}$ at $+6\text{ dB}$ SNR).
+\subsection{Calibration-Free Dyadic TEM Array, Co-Linear ($\Delta\theta=0^\circ$) Dual-Pol Stripline S-Matrix \& ZDKM}
+By coupling the $(\mathbf{E}_\theta, \mathbf{E}_\phi)$ ports of a $2\times 2$ dual-polarized patch array through passive $90^\circ/180^\circ$ quadrature hybrids (\texttt{QCN-19+} / \texttt{TC1-1-13M+}) into $\mathrm{Im}(\mathbb{O})$ and $\mathrm{Im}(\mathbb{O})e_8$, Maxwell's circularly polarized TEM relations enforce $\|a\|_2=\|b\|_2$ and $\langle a,b\rangle=0$ physically across all angles $(\theta,\phi)$ with \textbf{zero calibration LUTs} ($\kappa_{\mathbb{S}} = 1.000000$). Furthermore, we proved in Lean~4 (\texttt{dualpol\_tilt\_colinear\_preservation} and \texttt{dualpol\_tilt\_passive\_rf\_stage} in \texttt{SedenionRobust.lean}) that under the fixed wiring $\mathrm{RHCP}\to(e_1,e_2)$ and $\mathrm{LHCP}\to(e_5,e_6)$, a single closed-form zero divisor $v(\psi) = e_3 + \sin 2\psi\,e_{12} - \cos 2\psi\,e_{15}$ annihilates the \textit{entire complex waveform} of a tilt-$\psi$ linearly polarized jammer (\textbf{321.6 dB} in FP64; \textbf{79.8 dB} at $10^{-4}$ coupler tolerance) even at \textbf{co-linear incidence ($\Delta\theta = 0.0^\circ$)} where spatial 8-element MVDR collapses ($-80.0\text{ dB}$ SINR, $126{,}997\text{ m}$ code-phase CRLB), while passing the RHCP satellite at \textbf{0.0000 dB distortionless insertion loss} and restoring a \textbf{17.96 m CRLB} at $\Delta\theta = 0.0^\circ$. Scaling $v_{\mathrm{rf}}(\psi)=v(\psi)/2$ yields a \textbf{strictly passive ($\|S_{21}\|_2\le 1$), reciprocal ($S_{32}=S_{32}^T$, zero ferrites, $0\text{ mW}$ DC) 32-port RF stripline directional-coupler network} requiring only 2 couplers per lane. Finally, transmitting keyed hops $U_{0,1}[k] = (a_k, \pm b_k)/\sqrt{2} \in V_2(\mathbb{R}^7)$ creates our \textbf{Zero-Divisor Keyed Modulation (ZDKM)} LPI/LPD waveform (\textbf{99.90\%} keyed Rx vs.\ $49.76\%$ radiometer) alongside our co-designed $8\oplus 4\oplus 4$ multiplier-free transceiver ($J^2 = -4\mathbf{I}_4$).
 
 \begin{table}[h!]
 \centering
 \caption{Verified Baseline Performance Across Native 16D Sedenion Hardware Primitives}
-\vspace{2pt}
+\vspace{1pt}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}llll@{}}
 \toprule
 \textbf{NSSP Hardware Primitive} & \textbf{Classical Baseline} & \textbf{Native Sedenion (Ours)} & \textbf{Verification Status} \\
 \midrule
-Pre-ADC Crossbar ($+80\text{ dB}$ JSR) & $-46.3\text{ dB}$ SINR (Clipped) & \textbf{+21.3 dB SINR ($68.4\text{ dB}$ Null)} & 84-Blade SPICE Sim \\
+Pre-ADC Crossbar ($+80\text{ dB}$ JSR) & $-46.3\text{ dB}$ SINR ($98.7\%$ Clipped) & \textbf{+21.3 dB SINR ($68.4\text{--}82.8\text{ dB}$ Null)} & 84-Blade SPICE Sim \\
+Co-Linear Jammer ($\Delta\theta=0.0^\circ$, $+80\text{ dB}$) & $-80.0\text{ dB}$ SINR / $126{,}997\text{ m}$ CRLB & \textbf{0.0000 dB Sat Loss / 17.96 m CRLB} & Lean 4 + Passive $S_{32}$ \\
 Coherent Spoofer Det.\ ($\mathrm{Rank}=1$) & $9.38\%$ $P_{\mathrm{det}}$ ($K=64$ Cov) & \textbf{99.80\% $P_{\mathrm{det}}$ ($K=1$ Snap)} & Lean 4 + Monte Carlo \\
-Dyadic $2\times 2$ TEM Vector Array & Direction LUT Required & \textbf{0 LUTs ($\kappa_{\mathbb{S}}=1.0000$)} & Full-Sphere EM Sim \\
-ZDKM LPI/LPD Waveform & Radiometer Detectable & \textbf{99.90\% Auth / 49.8\% Intercept} & 4,096-Symbol Sim \\
+Xilinx RFSoC \texttt{XCZU28DR} \texttt{Q1.14} Core & $18{,}400$ LUTs / $64$ DSP48 / $140$ cyc & \textbf{512 LUTs / 0 DSP48 / 1 cyc ($75.1\text{ dB}$)} & SystemVerilog RTL \\
+Bare-Metal MCU \& 4D Hinge Conditioner & $1.46\text{ / }71.2\,\mu\text{s}$ Jitter; DMA Bug & \textbf{$0.27\text{ / }6.9\,\mu\text{s}$ Jitter ($5.4\text{--}10.3\times$); $84.9\text{ dB}$} & \textbf{Live \texttt{STM32WB55} + \texttt{ESP32-S2}} \\
 \bottomrule
 \end{tabular}%
 }
-\vspace{-4pt}
+\vspace{-5pt}
 \end{table}
+
+\textbf{Live Multi-Band Bare-Metal Hardware Reduction to Practice:} Beyond SPICE and RTL, we deployed a zero-heap ($0\text{ B}$ \texttt{malloc}, $1.4\text{ KB}$ Flash ROM) bare-metal C/Rust NSSP engine on physical \texttt{STM32WB55RG} (Cortex-M4F @ $64\text{ MHz}$), \texttt{ESP32-S2-WROVER} (Xtensa LX7 @ $240\text{ MHz}$), and ARM64 NEON ($2.44\,\mu\text{s}$/Moreno call, $84.2\text{--}87.0\text{ dB}$ \texttt{Q1.14} null depth). Tested across \textbf{2,797 live Sub-GHz \texttt{CC1101} captures ($71{,}454$ pulse pairs)}, \textbf{1,258 Optical IR bursts ($83{,}377$ pulses)}, \textbf{2,738 802.11 Wi-Fi trajectories}, and \textbf{$125\text{ kHz}/13.56\text{ MHz}$ inductive coils}, our Lean~4-certified 2-Stage Glitch Coalescer and 4D Quaternion Hinge Projector (\texttt{MaxwellExterior.lean} \S 5.D) cuts Sub-GHz RMS timing jitter by $\mathbf{5.41\times}$ ($1.46 \to 0.27\,\mu\text{s}$), cuts IR jitter by $\mathbf{10.28\times}$ ($71.15 \to 6.92\,\mu\text{s}$), eliminates $\mathtt{0xFFFFFFFF}$ DMA timer reload underflow on $<8\,\mu\text{s}$ inductive glitches, and discriminates cross-band $13.56\text{ MHz}$ reader leakage ($\kappa_{\mathbb{S}} \in [0.098, 0.523]$) in $K=1$ snapshot.
 
 \section{12-Month Hardware Build Plan, Deliverables, and Transition}
 \textbf{Why Proposed Work Is Not Yet Completed:} While the Lean~4 theorems, 84-blade SPICE netlist (\texttt{crossbar\_84\_blades\_rom.json}), and \texttt{Q1.14} SystemVerilog RTL (\texttt{sedenion\_crpa\_beamformer.sv}, $75.14\text{ dB}$ digital null depth) are complete, fabricating and testing the physical RF/analog boards requires three 12-month R\&D tasks:

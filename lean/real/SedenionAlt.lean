@@ -291,4 +291,20 @@ theorem adjoint_identity (a b c : O)
   rw [T1_eq_Pi_Rt a b _ ha0 hb0 haa hbb, T2_eq_R_Pi a b c ha0 hb0 haa hbb,
       Rt_R a b _ ha0 hb0, haa, hbb, one_mul, scale_one, Pi_Pi a b c ha0 hb0 hab haa hbb]
 
+/-- **Unconditional Closed-Form SVD-Free Associator-to-Moreno Projector Nuller over `ℝ` (Section III-A, Claim 5).**
+    For any unit Stiefel frame `(a, b) ∈ V₂(ℝ⁷)` (`a₀ = b₀ = 0`, `‖a‖² = ‖b‖² = 1`, `⟨a, b⟩ = 0`)
+    and ANY arbitrary octonion seed `c ∈ O` (requiring no prior orthogonalization of `c`),
+    projecting `c` via the closed-form triad projector `Π(a,b,c)` yields the Moreno partner
+    `W(a,b,c) = (Π(a,b,c), (a · Π(a,b,c)) · b)` which:
+      (1) annihilates `(a, b)` identically (`(a, b) · W(a,b,c) = (0, 0)`), and
+      (2) boosts the orthogonal anti-partner `(a, -b)` to `‖(a, -b) · W(a,b,c)‖² = 8 ‖Π(a,b,c)‖²` (`+3.01 dB`). -/
+theorem svd_free_moreno_projector_null_and_gain (a b c : O)
+    (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) (hab : dot a b = 0) (haa : dot a a = 1) (hbb : dot b b = 1) :
+    smul (a, b) (Pi a b c, partner a b (Pi a b c)) = (ozero, ozero) ∧
+    snormSq (smul (a, scale (-1) b) (Pi a b c, partner a b (Pi a b c))) =
+      8 * dot (Pi a b c) (Pi a b c) := by
+  obtain ⟨hc0, hac, hbc, habc⟩ := Pi_orth a b c ha0 hb0 hab haa hbb
+  exact ⟨nullspace a b (Pi a b c) ha0 hb0 hc0 hab hac hbc habc haa hbb,
+         crpa_antipartner_gain_norm a b (Pi a b c) ha0 hb0 hc0 hab hac hbc habc haa hbb⟩
+
 end SedenionReal

@@ -601,4 +601,22 @@ theorem native_associator_cone_upper_bound
     ring
   linarith
 
+/-- **Single-Snapshot Associator Quaternion Triad Orthogonality over `ℝ` (Theorem 1 of `Agourakis 2026`, Claim 5).**
+    For any purely imaginary octonions `a, b ∈ Im(O)` (`a₀ = b₀ = 0`), the octonion projection
+    `q_assoc = ba - ab` of `[R, π_O(R), e₈]` is purely imaginary and strictly orthogonal to both
+    `a` and `b`, and when `⟨a, b⟩ = 0` on the Moreno cone satisfies `ba - ab = -2(ab)`. -/
+theorem native_associator_triad_orthogonality
+    (a b : O) (ha0 : a.c0 = 0) (hb0 : b.c0 = 0) :
+    (osub (omul b a) (omul a b)).c0 = 0 ∧
+    dot a (osub (omul b a) (omul a b)) = 0 ∧
+    dot b (osub (omul b a) (omul a b)) = 0 ∧
+    (dot a b = 0 → osub (omul b a) (omul a b) = scale (-2) (omul a b)) := by
+  obtain ⟨a0, a1, a2, a3, a4, a5, a6, a7⟩ := a
+  obtain ⟨b0, b1, b2, b3, b4, b5, b6, b7⟩ := b
+  simp only at ha0 hb0
+  subst ha0; subst hb0
+  simp only [osub, omul, dot, scale, O.mk.injEq]
+  refine ⟨by ring, by ring, by ring, fun hab => ?_⟩
+  refine ⟨by linear_combination -2 * hab, by ring, by ring, by ring, by ring, by ring, by ring, by ring⟩
+
 end SedenionReal

@@ -465,4 +465,38 @@ theorem dualpol_tilt_passive_rf_stage (cψ sψ sI sQ : ℝ) (a_sat : O) (h : cψ
   · rw [smul_sscal_right, dualpol_tilt_annihilation cψ sψ sI sQ h, sscal_zero]
   · rw [rhcp_satellite_norm_preservation, hv]; ring
 
+/-! ### Fixed-Point Weight Quantization Leakage Bounds & Multipath Peeler over `ℝ` (Claims 10, 14, 18) -/
+
+/-- Bilinearity in the second (weight) argument: `u · (v + δ_v) = u · v + u · δ_v`. -/
+theorem smul_add_right (u v w : O × O) : smul u (sadd v w) = sadd (smul u v) (smul u w) := by
+  obtain ⟨⟨u0, u1, u2, u3, u4, u5, u6, u7⟩, ⟨u8, u9, u10, u11, u12, u13, u14, u15⟩⟩ := u
+  obtain ⟨⟨v0, v1, v2, v3, v4, v5, v6, v7⟩, ⟨v8, v9, v10, v11, v12, v13, v14, v15⟩⟩ := v
+  obtain ⟨⟨w0, w1, w2, w3, w4, w5, w6, w7⟩, ⟨w8, w9, w10, w11, w12, w13, w14, w15⟩⟩ := w
+  simp only [smul, sadd, omul, conj, osub, oadd, Prod.mk.injEq, O.mk.injEq]
+  refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩ <;> ring
+
+/-- **Fixed-Point Weight Quantization Leakage Bound (Claims 10 & 14).**
+    If the exact Moreno zero-divisor partner `v` annihilates jammer `u` (`u · v = 0`) and `v` is
+    quantized in fixed-point hardware (e.g., 16-bit `Q1.14`) to `v + δ_v`, the residual jammer
+    leakage is exactly `u · δ_v` and satisfies `‖u · (v + δ_v)‖² ≤ 2 ‖u‖² ‖δ_v‖²`. -/
+theorem weight_quantization_leakage_bound (u v δ_v : O × O)
+    (h : smul u v = (ozero, ozero)) :
+    smul u (sadd v δ_v) = smul u δ_v ∧
+    snorm2 (smul u (sadd v δ_v)) ≤ 2 * snorm2 u * snorm2 δ_v := by
+  have hres : smul u (sadd v δ_v) = smul u δ_v := by
+    rw [smul_add_right, h, sadd_zero_left]
+  refine ⟨hres, ?_⟩
+  rw [hres]
+  exact snorm_smul_le u δ_v
+
+/-- **Continuous `ℝ` Multipath Fade Peeler Step-Energy Reduction (Claim 18).**
+    For any real RSSI baseline `r ∈ ℝ` and single-frame non-associative multipath spike `δ ∈ ℝ`,
+    peeling `(r, r + δ, r) mapsto (r, r, r)` reduces the 3-point squared step-difference energy
+    from `2 δ² ≥ 0` to `0`. -/
+theorem wifi_multipath_peeler_energy_reduction_real (r δ : ℝ) :
+    ((r + δ) - r) ^ 2 + (r - (r + δ)) ^ 2 = 2 * δ ^ 2 ∧
+    (r - r) ^ 2 + (r - r) ^ 2 = 0 ∧
+    0 ≤ 2 * δ ^ 2 := by
+  refine ⟨by ring, by ring, by positivity⟩
+
 end SedenionRobust

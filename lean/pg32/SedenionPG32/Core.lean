@@ -367,6 +367,18 @@ def basis (i : Nat) : Vec := fun k => if k == i then 1 else 0
 def sbasis (c : Int) (m : Nat) : Vec := fun k => if k == m then c else 0
 def add (u v : Vec) : Vec := fun k => u k + v k
 def sub (u v : Vec) : Vec := fun k => u k - v k
+def scale (c : Int) (u : Vec) : Vec := fun k => c * u k
+
+/-- Pure constructor-level equality on `Int` (zero `Decidable` / `propext` overhead). -/
+def intEq : Int → Int → Bool
+  | Int.ofNat m,   Int.ofNat n   => Nat.beq m n
+  | Int.negSucc m, Int.negSucc n => Nat.beq m n
+  | _,             _             => false
+
+/-- Pure `cond`/`Nat.beq` basis vector for zero-axiom kernel `rfl` evaluation. -/
+def cbasis (i : Nat) : Vec := fun k => cond (Nat.beq k i) 1 0
+def cveq (u v : Vec) : Bool := all16 fun k => intEq (u k) (v k)
+def cisZero (u : Vec) : Bool := all16 fun k => intEq (u k) 0
 
 /-- y_k = Σ_j ε_{(k⊕j), j} · u_{k⊕j} · v_j   (the L(w) / R(x) contraction of Sec. 2.1) -/
 def mul (u v : Vec) : Vec := fun k => sum16 fun j => epsT (k ^^^ j) j * u (k ^^^ j) * v j
