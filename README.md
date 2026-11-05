@@ -27,13 +27,17 @@ reports/           analysis notes that back numbers in the papers
 zenodo/            deposit metadata, package and upload script for the dual-pol supplement
 ```
 
-| Document | Source | PDF |
+| Document / Hardware Artifact | Source | PDF / Netlist |
 |---|---|---|
-| Main manuscript | [`papers/Agourakis_2026_Sedenion_PG32.tex`](papers/Agourakis_2026_Sedenion_PG32.tex) | [PDF](papers/Agourakis_2026_Sedenion_PG32.pdf) |
-| GNSS anti-jamming companion paper | [`papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.tex`](papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.tex) | [PDF](papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf) |
-| DARPA / ONR Global BAA white paper | [`papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.tex`](papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.tex) | [PDF](papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.pdf) |
-| DARPA-PS-26-09 STO abstract | [`papers/DARPA_PS_26_09_Abstract_Sedenion_GNSS.tex`](papers/DARPA_PS_26_09_Abstract_Sedenion_GNSS.tex) | [PDF](papers/DARPA_PS_26_09_Abstract_Sedenion_GNSS.pdf) |
-| Dual-pol excision report (Lean + simulation) | [`reports/DUALPOL_PIVOT12_REPORT.md`](reports/DUALPOL_PIVOT12_REPORT.md) | |
+| **DARPA-PS-26-09 STO Proposal Abstract (5 pp.)** | [`papers/DARPA_PS_26_09_Abstract_Native_Sedenion_Analog_Crossbar.tex`](papers/DARPA_PS_26_09_Abstract_Native_Sedenion_Analog_Crossbar.tex) | [**PDF**](papers/DARPA_PS_26_09_Abstract_Native_Sedenion_Analog_Crossbar.pdf) |
+| **DARPA STO / MTO / DSO & ONR Global Heilmeier White Paper (2 pp.)** | [`papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.tex`](papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.tex) | [**PDF**](papers/DARPA_ONR_WhitePaper_Sedenion_GNSS.pdf) |
+| **Native 16D Sedenion Signal Processing (IEEE TSP Manuscript, 6 pp.)** | [`papers/Agourakis_2026_Native_Sedenion_Signal_Processing.tex`](papers/Agourakis_2026_Native_Sedenion_Signal_Processing.tex) | [**PDF**](papers/Agourakis_2026_Native_Sedenion_Signal_Processing.pdf) |
+| **GNSS CRPA Anti-Jamming & Anti-Spoofing (IEEE TAES Manuscript)** | [`papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.tex`](papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.tex) | [**PDF**](papers/Agourakis_2026_Sedenion_GNSS_AntiJamming.pdf) |
+| **Foundational PG(3,2) & Non-Associative GDL Manuscript (16 pp.)** | [`papers/Agourakis_2026_Sedenion_PG32.tex`](papers/Agourakis_2026_Sedenion_PG32.tex) | [**PDF**](papers/Agourakis_2026_Sedenion_PG32.pdf) |
+| **Pre-ADC Analog Crossbar Schematic, KiCad, SPICE & BOM** | [`hardware/Native_Sedenion_Hardware_BOM_and_Schematic.md`](hardware/Native_Sedenion_Hardware_BOM_and_Schematic.md) | [**Schematic PDF**](hardware/schematic/Sedenion_PreADC_Analog_Crossbar_Schematic.pdf) · [KiCad](hardware/schematic/sedenion_analog_crossbar.kicad_sch) · [SPICE](hardware/schematic/sedenion_analog_crossbar.cir) · [84-Blade ROM](hardware/crossbar_84_blades_rom.json) |
+| **Single-Cycle `Q1.14` SystemVerilog RTL Core (`512 LUT / 0 DSP48 / 1 cyc`)** | [`benchmarks/gps_jamming/rtl/sedenion_crpa_beamformer.sv`](benchmarks/gps_jamming/rtl/sedenion_crpa_beamformer.sv) | [Verification JSON](benchmarks/gps_jamming/results_phase2_defense.json) |
+| **Background IP & 20-Claim Hardware Specification** | [`patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex`](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.tex) | [**PDF**](patent/USPTO_Provisional_Patent_Native_Sedenion_DSP.pdf) |
+| **Dual-Pol Pivot 1 & Pivot 2 Report (Passive $S_{32}$ & $\Delta\theta=0^\circ$ Excision)** | [`reports/DUALPOL_PIVOT12_REPORT.md`](reports/DUALPOL_PIVOT12_REPORT.md) | [Results JSON](benchmarks/gps_jamming/results_dualpol_pivot12.json) |
 
 ## Quick start
 
@@ -46,8 +50,9 @@ python benchmarks/track_b/train.py                     # Table 3: Track B multi-
 python benchmarks/ext/proofwriter.py                   # Table 4: ProofWriter OOD depth & Birds-Electricity
 python benchmarks/ext/listops.py                       # Table 4: Long-Range Arena ListOps OOD tree reduction
 python benchmarks/gps_jamming/run_gps_bench.py         # companion paper: +80 dB JSR CRPA null steering, RTK hinges, anti-spoofing
-python benchmarks/gps_jamming/run_phase2_defense.py    # mutual-coupling / LSMI defences
-python benchmarks/gps_jamming/run_dualpol_pivot12.py out.json   # dual-pol RHCP/LHCP excision, S-matrix, CRLB (numpy only)
+python benchmarks/gps_jamming/run_native_sedenion_dsp.py # NSSP: K=1 associator spoofer detector, 84-blade SPICE crossbar, ZDKM, Q1.14 RTL
+python benchmarks/gps_jamming/run_phase2_defense.py    # mutual-coupling gauge, LSMI K=4..64 comparison, M=1..4 multi-jammer, XCZU28DR RTL
+python benchmarks/gps_jamming/run_dualpol_pivot12.py out.json   # dual-pol RHCP/LHCP excision, passive S32-matrix, Δθ=0° CRLB (numpy only)
 ```
 
 Benchmark scripts write their `results_*.json` next to themselves; the committed JSON files are the runs reported in the papers.

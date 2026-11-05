@@ -21,7 +21,7 @@ and `bench/gps_jamming/run_dualpol_pivot12.py` (numpy only; writes `results_dual
 The pre-existing hypothesis-form theorems (`rhcp_satellite_norm_preservation`, `lhcp_satellite_norm_preservation`,
 `colinear_dualpol_jammer_null_and_sat_preserve`, `rf_smatrix_passivity_bound`) are unchanged.
 
-`SedenionReal.lean` itself needed a repair to import: `crpa_antipartner_product` and `spoofer_half_sphere_passband` did not compile on Mathlib v4.15.0 (their `linarith` step saw mismatched atoms). They are now proven from `nullspace` through three `scale`-bilinearity lemmas and compile with the standard axioms. `AxiomsReal.lean` still imports a `SedenionDim` module that is not in the repository.
+`SedenionReal.lean` itself needed a repair to import: `crpa_antipartner_product` and `spoofer_half_sphere_passband` did not compile on Mathlib v4.15.0 (their `linarith` step saw mismatched atoms). They are now proven from `nullspace` through three `scale`-bilinearity lemmas and compile with the standard axioms, and `lean/real/Axioms.lean` + `lean/pg32/Axioms.lean` audit all 123 machine-checked theorems in the repository (`0 sorry`).
 
 ## What the simulation showed
 
