@@ -4,7 +4,7 @@
 [![DOI: GNSS Anti-Jamming](https://zenodo.org/badge/DOI/10.5281/zenodo.23603006.svg)](https://doi.org/10.5281/zenodo.23603006)
 [![DOI: Sedenion Triangular Root](https://zenodo.org/badge/DOI/10.5281/zenodo.21246673.svg)](https://doi.org/10.5281/zenodo.21246673)
 
-Reference implementation, Lean 4 formalisations (256 machine-checked theorems in `lean/` — 116 in `lean/pg32/` and 140 in `lean/real/` — plus 105 companion hardware/RF theorems in `v3sp3r/proofs/MaxwellExterior.lean`, 361 total, zero `sorry`), and benchmark suite for:
+Reference implementation, Lean 4 formalisations (256 machine-checked theorems in `lean/` — 116 in `lean/pg32/` and 140 in `lean/real/` — plus 116 companion hardware/RF theorems in `v3sp3r/proofs/MaxwellExterior.lean`, 372 total, zero `sorry`), and benchmark suite for:
 
 1. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 7, 2026). *The Sedenion Triangular Root: A Child-Originated Partial Desimplicialization Operator on Cayley–Dickson Bitmasks*. Zenodo. [`10.5281/zenodo.21246673`](https://doi.org/10.5281/zenodo.21246673)
 2. **Pedro Barone Agourakis & Dionisio Chiuratto Agourakis** (July 29, 2026). *Zero-Divisor-Free Coordinate Cells in the Cayley–Dickson Tower*. Preprint v1.0.
