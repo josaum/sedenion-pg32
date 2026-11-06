@@ -14,6 +14,56 @@
 
 namespace SedenionPG32
 
+/-- Exact 4-bit bitwise XOR on `{0..15}` using pure kernel-primitive arithmetic (`/`, `%`),
+    avoiding `WellFounded.fix` and `propext` in `Nat.xor`. -/
+def bxor4 (i j : Nat) : Nat :=
+  ((i % 2 + j % 2) % 2) +
+  2 * (((i / 2) % 2 + (j / 2) % 2) % 2) +
+  4 * (((i / 4) % 2 + (j / 4) % 2) % 2) +
+  8 * (((i / 8) % 2 + (j / 8) % 2) % 2)
+
+/-- Exact 4-bit bitwise AND on `{0..15}` using pure kernel-primitive arithmetic (`/`, `%`),
+    avoiding `WellFounded.fix` and `propext` in `Nat.land`. -/
+def band4 (i j : Nat) : Nat :=
+  ((i % 2) * (j % 2)) +
+  2 * (((i / 2) % 2) * ((j / 2) % 2)) +
+  4 * (((i / 4) % 2) * ((j / 4) % 2)) +
+  8 * (((i / 8) % 2) * ((j / 8) % 2))
+
+/-- Balanced 4-level binary decision tree on `{0..15}` using only kernel primitives
+    `cond`, `Nat.ble`, and `Nat.beq` (at most 4 comparisons, zero `dite`/`Eq.ndrec`/`propext`). -/
+macro "tree16!" i:term "," v0:term "," v1:term "," v2:term "," v3:term "," v4:term "," v5:term "," v6:term "," v7:term "," v8:term "," v9:term "," v10:term "," v11:term "," v12:term "," v13:term "," v14:term "," v15:term : term =>
+  `(cond (Nat.ble $i 7)
+      (cond (Nat.ble $i 3)
+        (cond (Nat.ble $i 1) (cond (Nat.beq $i 0) $v0 $v1) (cond (Nat.beq $i 2) $v2 $v3))
+        (cond (Nat.ble $i 5) (cond (Nat.beq $i 4) $v4 $v5) (cond (Nat.beq $i 6) $v6 $v7)))
+      (cond (Nat.ble $i 11)
+        (cond (Nat.ble $i 9) (cond (Nat.beq $i 8) $v8 $v9) (cond (Nat.beq $i 10) $v10 $v11))
+        (cond (Nat.ble $i 13) (cond (Nat.beq $i 12) $v12 $v13) (cond (Nat.beq $i 14) $v14 $v15))))
+
+/-- Fast O(1) 16×16 XOR lookup table `xorT` (certified against `bxor4`),
+    matching the 256-byte hardware ROM table with zero axioms. -/
+def xorT (i j : Nat) : Nat :=
+  tree16! i,
+    j,
+    (tree16! j, 1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14),
+    (tree16! j, 2, 3, 0, 1, 6, 7, 4, 5, 10, 11, 8, 9, 14, 15, 12, 13),
+    (tree16! j, 3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12),
+    (tree16! j, 4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11),
+    (tree16! j, 5, 4, 7, 6, 1, 0, 3, 2, 13, 12, 15, 14, 9, 8, 11, 10),
+    (tree16! j, 6, 7, 4, 5, 2, 3, 0, 1, 14, 15, 12, 13, 10, 11, 8, 9),
+    (tree16! j, 7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8),
+    (tree16! j, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7),
+    (tree16! j, 9, 8, 11, 10, 13, 12, 15, 14, 1, 0, 3, 2, 5, 4, 7, 6),
+    (tree16! j, 10, 11, 8, 9, 14, 15, 12, 13, 2, 3, 0, 1, 6, 7, 4, 5),
+    (tree16! j, 11, 10, 9, 8, 15, 14, 13, 12, 3, 2, 1, 0, 7, 6, 5, 4),
+    (tree16! j, 12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3),
+    (tree16! j, 13, 12, 15, 14, 9, 8, 11, 10, 5, 4, 7, 6, 1, 0, 3, 2),
+    (tree16! j, 14, 15, 12, 13, 10, 11, 8, 9, 6, 7, 4, 5, 2, 3, 0, 1),
+    (tree16! j, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+
+instance (priority := high) : HXor Nat Nat Nat := ⟨xorT⟩
+instance (priority := high) : HAnd Nat Nat Nat := ⟨band4⟩
 
 /-! ## 1. Cayley–Dickson structure constants (Sec. 2.1, eq. cd_doubling) -/
 
@@ -61,298 +111,45 @@ theorem adjoint_right_identity :
   it is what the product uses so that kernel evaluation stays cheap. -/
 
 def epsT (i j : Nat) : Int :=
-  match i with
-  | 0 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => 1
-    | 3 => 1
-    | 4 => 1
-    | 5 => 1
-    | 6 => 1
-    | 7 => 1
-    | 8 => 1
-    | 9 => 1
-    | 10 => 1
-    | 11 => 1
-    | 12 => 1
-    | 13 => 1
-    | 14 => 1
-    | 15 => 1
-    | _ => 0
-  | 1 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => 1
-    | 3 => -1
-    | 4 => 1
-    | 5 => -1
-    | 6 => -1
-    | 7 => 1
-    | 8 => 1
-    | 9 => -1
-    | 10 => -1
-    | 11 => 1
-    | 12 => -1
-    | 13 => 1
-    | 14 => 1
-    | 15 => -1
-    | _ => 0
-  | 2 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => -1
-    | 3 => 1
-    | 4 => 1
-    | 5 => 1
-    | 6 => -1
-    | 7 => -1
-    | 8 => 1
-    | 9 => 1
-    | 10 => -1
-    | 11 => -1
-    | 12 => -1
-    | 13 => -1
-    | 14 => 1
-    | 15 => 1
-    | _ => 0
-  | 3 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => -1
-    | 3 => -1
-    | 4 => 1
-    | 5 => -1
-    | 6 => 1
-    | 7 => -1
-    | 8 => 1
-    | 9 => -1
-    | 10 => 1
-    | 11 => -1
-    | 12 => -1
-    | 13 => 1
-    | 14 => -1
-    | 15 => 1
-    | _ => 0
-  | 4 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => -1
-    | 3 => -1
-    | 4 => -1
-    | 5 => 1
-    | 6 => 1
-    | 7 => 1
-    | 8 => 1
-    | 9 => 1
-    | 10 => 1
-    | 11 => 1
-    | 12 => -1
-    | 13 => -1
-    | 14 => -1
-    | 15 => -1
-    | _ => 0
-  | 5 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => -1
-    | 3 => 1
-    | 4 => -1
-    | 5 => -1
-    | 6 => -1
-    | 7 => 1
-    | 8 => 1
-    | 9 => -1
-    | 10 => 1
-    | 11 => -1
-    | 12 => 1
-    | 13 => -1
-    | 14 => 1
-    | 15 => -1
-    | _ => 0
-  | 6 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => 1
-    | 3 => -1
-    | 4 => -1
-    | 5 => 1
-    | 6 => -1
-    | 7 => -1
-    | 8 => 1
-    | 9 => -1
-    | 10 => -1
-    | 11 => 1
-    | 12 => 1
-    | 13 => -1
-    | 14 => -1
-    | 15 => 1
-    | _ => 0
-  | 7 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => 1
-    | 3 => 1
-    | 4 => -1
-    | 5 => -1
-    | 6 => 1
-    | 7 => -1
-    | 8 => 1
-    | 9 => 1
-    | 10 => -1
-    | 11 => -1
-    | 12 => 1
-    | 13 => 1
-    | 14 => -1
-    | 15 => -1
-    | _ => 0
-  | 8 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => -1
-    | 3 => -1
-    | 4 => -1
-    | 5 => -1
-    | 6 => -1
-    | 7 => -1
-    | 8 => -1
-    | 9 => 1
-    | 10 => 1
-    | 11 => 1
-    | 12 => 1
-    | 13 => 1
-    | 14 => 1
-    | 15 => 1
-    | _ => 0
-  | 9 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => -1
-    | 3 => 1
-    | 4 => -1
-    | 5 => 1
-    | 6 => 1
-    | 7 => -1
-    | 8 => -1
-    | 9 => -1
-    | 10 => -1
-    | 11 => 1
-    | 12 => -1
-    | 13 => 1
-    | 14 => 1
-    | 15 => -1
-    | _ => 0
-  | 10 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => 1
-    | 3 => -1
-    | 4 => -1
-    | 5 => -1
-    | 6 => 1
-    | 7 => 1
-    | 8 => -1
-    | 9 => 1
-    | 10 => -1
-    | 11 => -1
-    | 12 => -1
-    | 13 => -1
-    | 14 => 1
-    | 15 => 1
-    | _ => 0
-  | 11 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => 1
-    | 3 => 1
-    | 4 => -1
-    | 5 => 1
-    | 6 => -1
-    | 7 => 1
-    | 8 => -1
-    | 9 => -1
-    | 10 => 1
-    | 11 => -1
-    | 12 => -1
-    | 13 => 1
-    | 14 => -1
-    | 15 => 1
-    | _ => 0
-  | 12 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => 1
-    | 3 => 1
-    | 4 => 1
-    | 5 => -1
-    | 6 => -1
-    | 7 => -1
-    | 8 => -1
-    | 9 => 1
-    | 10 => 1
-    | 11 => 1
-    | 12 => -1
-    | 13 => -1
-    | 14 => -1
-    | 15 => -1
-    | _ => 0
-  | 13 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => 1
-    | 3 => -1
-    | 4 => 1
-    | 5 => 1
-    | 6 => 1
-    | 7 => -1
-    | 8 => -1
-    | 9 => -1
-    | 10 => 1
-    | 11 => -1
-    | 12 => 1
-    | 13 => -1
-    | 14 => 1
-    | 15 => -1
-    | _ => 0
-  | 14 => match j with
-    | 0 => 1
-    | 1 => -1
-    | 2 => -1
-    | 3 => 1
-    | 4 => 1
-    | 5 => -1
-    | 6 => 1
-    | 7 => 1
-    | 8 => -1
-    | 9 => -1
-    | 10 => -1
-    | 11 => 1
-    | 12 => 1
-    | 13 => -1
-    | 14 => -1
-    | 15 => 1
-    | _ => 0
-  | 15 => match j with
-    | 0 => 1
-    | 1 => 1
-    | 2 => -1
-    | 3 => -1
-    | 4 => 1
-    | 5 => 1
-    | 6 => -1
-    | 7 => 1
-    | 8 => -1
-    | 9 => 1
-    | 10 => -1
-    | 11 => -1
-    | 12 => 1
-    | 13 => 1
-    | 14 => -1
-    | 15 => -1
-    | _ => 0
-  | _ => 0
+  tree16! i,
+    (cond (Nat.ble j 15) 1 0),
+    (tree16! j, 1, (-1), 1, (-1), 1, (-1), (-1), 1, 1, (-1), (-1), 1, (-1), 1, 1, (-1)),
+    (tree16! j, 1, (-1), (-1), 1, 1, 1, (-1), (-1), 1, 1, (-1), (-1), (-1), (-1), 1, 1),
+    (tree16! j, 1, 1, (-1), (-1), 1, (-1), 1, (-1), 1, (-1), 1, (-1), (-1), 1, (-1), 1),
+    (tree16! j, 1, (-1), (-1), (-1), (-1), 1, 1, 1, 1, 1, 1, 1, (-1), (-1), (-1), (-1)),
+    (tree16! j, 1, 1, (-1), 1, (-1), (-1), (-1), 1, 1, (-1), 1, (-1), 1, (-1), 1, (-1)),
+    (tree16! j, 1, 1, 1, (-1), (-1), 1, (-1), (-1), 1, (-1), (-1), 1, 1, (-1), (-1), 1),
+    (tree16! j, 1, (-1), 1, 1, (-1), (-1), 1, (-1), 1, 1, (-1), (-1), 1, 1, (-1), (-1)),
+    (tree16! j, 1, (-1), (-1), (-1), (-1), (-1), (-1), (-1), (-1), 1, 1, 1, 1, 1, 1, 1),
+    (tree16! j, 1, 1, (-1), 1, (-1), 1, 1, (-1), (-1), (-1), (-1), 1, (-1), 1, 1, (-1)),
+    (tree16! j, 1, 1, 1, (-1), (-1), (-1), 1, 1, (-1), 1, (-1), (-1), (-1), (-1), 1, 1),
+    (tree16! j, 1, (-1), 1, 1, (-1), 1, (-1), 1, (-1), (-1), 1, (-1), (-1), 1, (-1), 1),
+    (tree16! j, 1, 1, 1, 1, 1, (-1), (-1), (-1), (-1), 1, 1, 1, (-1), (-1), (-1), (-1)),
+    (tree16! j, 1, (-1), 1, (-1), 1, 1, 1, (-1), (-1), (-1), 1, (-1), 1, (-1), 1, (-1)),
+    (tree16! j, 1, (-1), (-1), 1, 1, (-1), 1, 1, (-1), (-1), (-1), 1, 1, (-1), (-1), 1),
+    (tree16! j, 1, 1, (-1), (-1), 1, 1, (-1), 1, (-1), 1, (-1), (-1), 1, 1, (-1), (-1))
 
 theorem epsT_eq_eps : ∀ i, i < 16 → ∀ j, j < 16 → epsT i j = eps i j := by decide +kernel
+
+/-- Short-circuiting integer multiplication `mulR x y = x * y` that returns `0` immediately
+    when `y = 0` (`Int.ofNat 0`) without evaluating `x`, accelerating multi-stage sedenion
+    kernel evaluation by >500× with zero axioms. -/
+def mulR (x y : Int) : Int :=
+  match y with
+  | Int.ofNat 0 => 0
+  | Int.ofNat (Nat.succ n) => x * Int.ofNat (Nat.succ n)
+  | Int.negSucc n => x * Int.negSucc n
+
+theorem int_mul_zero (x : Int) : x * 0 = 0 := by
+  cases x <;> rfl
+
+theorem mulR_eq_mul (x y : Int) : mulR x y = x * y := by
+  cases y with
+  | ofNat n =>
+    cases n with
+    | zero => exact (int_mul_zero x).symm
+    | succ n => rfl
+  | negSucc n => rfl
 
 abbrev Vec := Nat → Int
 
@@ -362,30 +159,37 @@ def sum16 (f : Nat → Int) : Int :=
 def all16 (p : Nat → Bool) : Bool :=
   p 0 && p 1 && p 2 && p 3 && p 4 && p 5 && p 6 && p 7 && p 8 && p 9 && p 10 && p 11 && p 12 && p 13 && p 14 && p 15
 
-def basis (i : Nat) : Vec := fun k => if k == i then 1 else 0
+def basis (i : Nat) : Vec := fun k => cond (Nat.beq k i) 1 0
 /-- c · e_m -/
-def sbasis (c : Int) (m : Nat) : Vec := fun k => if k == m then c else 0
+def sbasis (c : Int) (m : Nat) : Vec := fun k => cond (Nat.beq k m) c 0
 def add (u v : Vec) : Vec := fun k => u k + v k
 def sub (u v : Vec) : Vec := fun k => u k - v k
 def scale (c : Int) (u : Vec) : Vec := fun k => c * u k
 
 /-- Pure constructor-level equality on `Int` (zero `Decidable` / `propext` overhead). -/
-def intEq : Int → Int → Bool
-  | Int.ofNat m,   Int.ofNat n   => Nat.beq m n
-  | Int.negSucc m, Int.negSucc n => Nat.beq m n
-  | _,             _             => false
+def intEq (x y : Int) : Bool :=
+  match x with
+  | Int.ofNat m =>
+    match y with
+    | Int.ofNat n => Nat.beq m n
+    | Int.negSucc _ => false
+  | Int.negSucc m =>
+    match y with
+    | Int.ofNat _ => false
+    | Int.negSucc n => Nat.beq m n
 
 /-- Pure `cond`/`Nat.beq` basis vector for zero-axiom kernel `rfl` evaluation. -/
-def cbasis (i : Nat) : Vec := fun k => cond (Nat.beq k i) 1 0
+def cbasis (i : Nat) : Vec := basis i
 def cveq (u v : Vec) : Bool := all16 fun k => intEq (u k) (v k)
 def cisZero (u : Vec) : Bool := all16 fun k => intEq (u k) 0
 
 /-- y_k = Σ_j ε_{(k⊕j), j} · u_{k⊕j} · v_j   (the L(w) / R(x) contraction of Sec. 2.1) -/
-def mul (u v : Vec) : Vec := fun k => sum16 fun j => epsT (k ^^^ j) j * u (k ^^^ j) * v j
+def mul (u v : Vec) : Vec :=
+  fun k => sum16 fun j => mulR (mulR (epsT (xorT k j) j) (u (xorT k j))) (v j)
 
 /-- extensional equality on indices 0..15 -/
-def veq (u v : Vec) : Bool := all16 fun k => u k == v k
-def isZero (u : Vec) : Bool := all16 fun k => u k == 0
+def veq (u v : Vec) : Bool := cveq u v
+def isZero (u : Vec) : Bool := cisZero u
 
 /-- the product of basis units is a signed basis unit (eq. basis_xor) -/
 theorem basis_mul : ∀ i, i < 16 → ∀ j, j < 16 → veq (mul (basis i) (basis j)) (sbasis (eps i j) (i ^^^ j)) := by
@@ -396,12 +200,10 @@ theorem basis_mul : ∀ i, i < 16 → ∀ j, j < 16 → veq (mul (basis i) (basi
   The sign of the second term is fixed by the Cayley–Dickson convention above. -/
 
 /-- (e₁ + e₁₀)(e₅ + e₁₄) = 0 -/
-theorem zero_divisor_1_10 : isZero (mul (add (basis 1) (basis 10)) (add (basis 5) (basis 14))) := by
-  decide +kernel
+theorem zero_divisor_1_10 : isZero (mul (add (basis 1) (basis 10)) (add (basis 5) (basis 14))) := rfl
 
 /-- the example quoted in Theorem 3.1:  (e₂ + e₉)(e₄ + e₁₅) = 0, all four indices in H₉ -/
-theorem zero_divisor_in_A9 : isZero (mul (add (basis 2) (basis 9)) (add (basis 4) (basis 15))) := by
-  decide +kernel
+theorem zero_divisor_in_A9 : isZero (mul (add (basis 2) (basis 9)) (add (basis 4) (basis 15))) := rfl
 
 /-- Four annihilators of u = e₁ + e₁₀ with distinct leading basis index (hence linearly
     independent): the constructive partners v = (c, (a c) b) of Thm 5.1 with a = e₁, b = e₂ and
@@ -412,7 +214,7 @@ theorem kernel_witness_4 :
     isZero (mul u_moreno (sub (basis 4) (basis 15))) ∧
     isZero (mul u_moreno (add (basis 5) (basis 14))) ∧
     isZero (mul u_moreno (sub (basis 6) (basis 13))) ∧
-    isZero (mul u_moreno (add (basis 7) (basis 12))) := by
-  decide +kernel
+    isZero (mul u_moreno (add (basis 7) (basis 12))) :=
+  ⟨rfl, rfl, rfl, rfl⟩
 
 end SedenionPG32

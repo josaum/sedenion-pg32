@@ -6,12 +6,34 @@ set_option maxHeartbeats 0
 namespace SedenionPG32
 /-! ## 5. PG(3,2): Fano hyperplanes and the 8+7 bifurcation (Sec. 3) -/
 
-/-- popcount parity of a 4-bit index (structural, so the kernel can evaluate it) -/
+/-- popcount parity of a 4-bit index (O(1) lookup, zero axioms) -/
 def parity (x : Nat) : Nat :=
-  (((x >>> 0) &&& 1) + ((x >>> 1) &&& 1) + ((x >>> 2) &&& 1) + ((x >>> 3) &&& 1)) % 2
+  match x with
+  | 1=>1 | 2=>1 | 4=>1 | 7=>1 | 8=>1 | 11=>1 | 13=>1 | 14=>1 | _=>0
+
+/-- F₂ inner-product parity `⟨v_ω, v_i⟩_{F₂}` (O(1) 16×16 lookup, zero axioms) -/
+def andParityT (ω i : Nat) : Nat :=
+  match ω with
+  | 0 => 0
+  | 1 => match i with | 1=>1 | 3=>1 | 5=>1 | 7=>1 | 9=>1 | 11=>1 | 13=>1 | 15=>1 | _=>0
+  | 2 => match i with | 2=>1 | 3=>1 | 6=>1 | 7=>1 | 10=>1 | 11=>1 | 14=>1 | 15=>1 | _=>0
+  | 3 => match i with | 1=>1 | 2=>1 | 5=>1 | 6=>1 | 9=>1 | 10=>1 | 13=>1 | 14=>1 | _=>0
+  | 4 => match i with | 4=>1 | 5=>1 | 6=>1 | 7=>1 | 12=>1 | 13=>1 | 14=>1 | 15=>1 | _=>0
+  | 5 => match i with | 1=>1 | 3=>1 | 4=>1 | 6=>1 | 9=>1 | 11=>1 | 12=>1 | 14=>1 | _=>0
+  | 6 => match i with | 2=>1 | 3=>1 | 4=>1 | 5=>1 | 10=>1 | 11=>1 | 12=>1 | 13=>1 | _=>0
+  | 7 => match i with | 1=>1 | 2=>1 | 4=>1 | 7=>1 | 9=>1 | 10=>1 | 12=>1 | 15=>1 | _=>0
+  | 8 => match i with | 8=>1 | 9=>1 | 10=>1 | 11=>1 | 12=>1 | 13=>1 | 14=>1 | 15=>1 | _=>0
+  | 9 => match i with | 1=>1 | 3=>1 | 5=>1 | 7=>1 | 8=>1 | 10=>1 | 12=>1 | 14=>1 | _=>0
+  | 10 => match i with | 2=>1 | 3=>1 | 6=>1 | 7=>1 | 8=>1 | 9=>1 | 12=>1 | 13=>1 | _=>0
+  | 11 => match i with | 1=>1 | 2=>1 | 5=>1 | 6=>1 | 8=>1 | 11=>1 | 12=>1 | 15=>1 | _=>0
+  | 12 => match i with | 4=>1 | 5=>1 | 6=>1 | 7=>1 | 8=>1 | 9=>1 | 10=>1 | 11=>1 | _=>0
+  | 13 => match i with | 1=>1 | 3=>1 | 4=>1 | 6=>1 | 8=>1 | 10=>1 | 13=>1 | 15=>1 | _=>0
+  | 14 => match i with | 2=>1 | 3=>1 | 4=>1 | 5=>1 | 8=>1 | 9=>1 | 14=>1 | 15=>1 | _=>0
+  | 15 => match i with | 1=>1 | 2=>1 | 4=>1 | 7=>1 | 8=>1 | 11=>1 | 13=>1 | 14=>1 | _=>0
+  | _ => 0
 
 /-- i ∈ H_ω  ⟺  ⟨v_ω, v_i⟩_{F₂} = 0   (eq. fano_hyperplane) -/
-def inH (ω i : Nat) : Bool := 0 < i && i < 16 && parity (ω &&& i) = 0
+def inH (ω i : Nat) : Bool := Nat.ble 1 i && Nat.ble i 15 && Nat.beq (andParityT ω i) 0
 
 def H (ω : Nat) : List Nat := (List.range 16).filter (inH ω)
 
@@ -48,19 +70,19 @@ theorem zd_plane_twist_part :
 /-- unordered lines {i, j, i⊕j} with i < j < i⊕j -/
 def lines : List (Nat × Nat × Nat) :=
   ((List.range 16).flatMap fun i => (List.range 16).map fun j => (i, j, i ^^^ j)).filter
-    fun ⟨i, j, k⟩ => 0 < i && i < j && j < k && k < 16
+    fun ⟨i, j, k⟩ => Nat.ble 1 i && Nat.ble (i + 1) j && Nat.ble (j + 1) k && Nat.ble k 15
 
-theorem lines_card : lines.length = 35 := by decide +kernel
+theorem lines_card : lines.length = 35 := rfl
 
-def isPure  : Nat × Nat × Nat → Bool := fun ⟨i, j, k⟩ => i < 8 && j < 8 && k < 8
-def isApex  : Nat × Nat × Nat → Bool := fun ⟨i, j, k⟩ => i = 8 || j = 8 || k = 8
+def isPure  : Nat × Nat × Nat → Bool := fun ⟨i, j, k⟩ => Nat.ble i 7 && Nat.ble j 7 && Nat.ble k 7
+def isApex  : Nat × Nat × Nat → Bool := fun ⟨i, j, k⟩ => Nat.beq i 8 || Nat.beq j 8 || Nat.beq k 8
 def isMixed : Nat × Nat × Nat → Bool := fun ⟨i, j, k⟩ =>
-  (decide (i < 8)).toNat + (decide (j < 8)).toNat + (decide (k < 8)).toNat = 1 && !(isApex (i, j, k))
+  Nat.beq ((Nat.ble i 7).toNat + (Nat.ble j 7).toNat + (Nat.ble k 7).toNat) 1 && !(isApex (i, j, k))
 
 theorem line_counts :
     (lines.filter isPure).length = 7 ∧
     (lines.filter isApex).length = 7 ∧
-    (lines.filter isMixed).length = 21 := by decide +kernel
+    (lines.filter isMixed).length = 21 := ⟨rfl, rfl, rfl⟩
 
 /-- lines inside hyperplane ω -/
 def linesIn (ω : Nat) : List (Nat × Nat × Nat) :=
@@ -394,6 +416,322 @@ theorem quaternion_hinge_associativity_all_7_lines :
       let eb := cbasis (a ^^^ 8)
       cveq (mul (mul ea e8) eb) (mul ea (mul e8 eb))) = true) := ⟨rfl, rfl⟩
 
+section ZArith
+set_option linter.deprecated false
+
+namespace Z
+
+theorem S_succ (m n : Nat) : Int.subNatNat (m + 1) (n + 1) = Int.subNatNat m n := by
+  unfold Int.subNatNat
+  rw [Nat.succ_sub_succ, Nat.succ_sub_succ]
+
+theorem S_add (m n : Nat) : ∀ k : Nat, Int.subNatNat (m + k) (n + k) = Int.subNatNat m n
+  | 0 => rfl
+  | k + 1 => (S_succ (m + k) (n + k)).trans (S_add m n k)
+
+theorem S_zero_right (m : Nat) : Int.subNatNat m 0 = Int.ofNat m := by
+  unfold Int.subNatNat
+  rw [Nat.zero_sub, Nat.sub_zero]
+
+theorem S_zero_left : ∀ n : Nat, Int.subNatNat 0 n = Int.negOfNat n
+  | 0 => rfl
+  | _ + 1 => rfl
+
+theorem repr : ∀ x : Int, ∃ a b : Nat, x = Int.subNatNat a b
+  | Int.ofNat a => ⟨a, 0, (S_zero_right a).symm⟩
+  | Int.negSucc a => ⟨0, a + 1, rfl⟩
+
+theorem canon (a b : Nat) : ∃ x1 x2 t : Nat, a = x1 + t ∧ b = x2 + t ∧ (x1 = 0 ∨ x2 = 0) :=
+  (Nat.le_total a b).elim
+    (fun h => match Nat.le.dest h with
+      | ⟨k, hk⟩ => ⟨0, k, a, (Nat.zero_add a).symm, hk.symm.trans (Nat.add_comm a k), Or.inl rfl⟩)
+    (fun h => match Nat.le.dest h with
+      | ⟨k, hk⟩ => ⟨k, 0, b, hk.symm.trans (Nat.add_comm b k), (Nat.zero_add b).symm, Or.inr rfl⟩)
+
+theorem S_canon (a b : Nat) : ∃ x1 x2 : Nat, Int.subNatNat a b = Int.subNatNat x1 x2 ∧
+    (x1 = 0 ∨ x2 = 0) ∧ ∃ t, a = x1 + t ∧ b = x2 + t :=
+  match canon a b with
+  | ⟨x1, x2, t, ha, hb, hz⟩ =>
+    ⟨x1, x2, by rw [ha, hb]; exact S_add x1 x2 t, hz, t, ha, hb⟩
+
+theorem zero_add_negOfNat : ∀ q : Nat, (0 : Int) + Int.negOfNat q = Int.negOfNat q
+  | 0 => rfl
+  | _ + 1 => rfl
+
+theorem negOfNat_add_negOfNat : ∀ p q : Nat, Int.negOfNat p + Int.negOfNat q = Int.negOfNat (p + q)
+  | 0, q => (zero_add_negOfNat q).trans (congrArg Int.negOfNat (Nat.zero_add q).symm)
+  | _ + 1, 0 => rfl
+  | p + 1, q + 1 => by
+    show Int.negSucc (Nat.succ (p + q)) = Int.negOfNat (p + 1 + (q + 1))
+    rw [Nat.add_succ, Nat.succ_add]
+    rfl
+
+theorem ofNat_add_negOfNat (p : Nat) : ∀ q : Nat, Int.ofNat p + Int.negOfNat q = Int.subNatNat p q
+  | 0 => (S_zero_right p).symm
+  | _ + 1 => rfl
+
+theorem negOfNat_add_ofNat : ∀ p q : Nat, Int.negOfNat p + Int.ofNat q = Int.subNatNat q p
+  | 0, q => by
+    show Int.ofNat (0 + q) = _
+    rw [Nat.zero_add, S_zero_right]
+  | _ + 1, _ => rfl
+
+theorem add_canon (x1 x2 y1 y2 : Nat) (hx : x1 = 0 ∨ x2 = 0) (hy : y1 = 0 ∨ y2 = 0) :
+    Int.subNatNat x1 x2 + Int.subNatNat y1 y2 = Int.subNatNat (x1 + y1) (x2 + y2) := by
+  cases hx with
+  | inl h1 =>
+    subst h1
+    cases hy with
+    | inl h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_left, negOfNat_add_negOfNat, S_zero_left]
+    | inr h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_right, negOfNat_add_ofNat, Nat.zero_add, Nat.add_zero]
+  | inr h1 =>
+    subst h1
+    cases hy with
+    | inl h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_right, ofNat_add_negOfNat, Nat.zero_add, Nat.add_zero]
+    | inr h2 =>
+      subst h2
+      rw [S_zero_right, S_zero_right, S_zero_right]
+      rfl
+
+theorem S_add_S (a b c d : Nat) :
+    Int.subNatNat a b + Int.subNatNat c d = Int.subNatNat (a + c) (b + d) :=
+  match S_canon a b, S_canon c d with
+  | ⟨x1, x2, hx, hzx, t, ha, hb⟩, ⟨y1, y2, hy, hzy, u, hc, hd⟩ => by
+    rw [hx, hy, add_canon x1 x2 y1 y2 hzx hzy, ha, hb, hc, hd,
+        Nat.add_add_add_comm x1 t y1 u, Nat.add_add_add_comm x2 t y2 u, S_add]
+
+theorem add_comm (x y : Int) : x + y = y + x :=
+  match repr x, repr y with
+  | ⟨a, b, hx⟩, ⟨c, d, hy⟩ => by
+    rw [hx, hy, S_add_S, S_add_S, Nat.add_comm a c, Nat.add_comm b d]
+
+theorem add_assoc (x y z : Int) : x + y + z = x + (y + z) :=
+  match repr x, repr y, repr z with
+  | ⟨a, b, hx⟩, ⟨c, d, hy⟩, ⟨e, f, hz⟩ => by
+    rw [hx, hy, hz, S_add_S, S_add_S, S_add_S, S_add_S, Nat.add_assoc a c e, Nat.add_assoc b d f]
+
+theorem add_zero (x : Int) : x + 0 = x := Int.add_zero x
+theorem zero_add (x : Int) : 0 + x = x := (add_comm 0 x).trans (Int.add_zero x)
+
+theorem neg_canon (x1 x2 : Nat) (hx : x1 = 0 ∨ x2 = 0) :
+    -Int.subNatNat x1 x2 = Int.subNatNat x2 x1 := by
+  cases hx with
+  | inl h =>
+    subst h
+    rw [S_zero_left, S_zero_right]
+    cases x2 with
+    | zero => rfl
+    | succ n => rfl
+  | inr h =>
+    subst h
+    rw [S_zero_left, S_zero_right]
+    rfl
+
+theorem neg_S (a b : Nat) : -Int.subNatNat a b = Int.subNatNat b a :=
+  match S_canon a b with
+  | ⟨x1, x2, hx, hz, t, ha, hb⟩ => by
+    rw [hx, neg_canon x1 x2 hz, ha, hb, S_add]
+
+theorem add_right_neg (a : Int) : a + -a = 0 :=
+  match repr a with
+  | ⟨m, n, h⟩ => by
+    rw [h, neg_S, S_add_S, Nat.add_comm n m]
+    exact Int.subNatNat_self (m + n)
+
+theorem neg_add {a b : Int} : -(a + b) = -a + -b :=
+  match repr a, repr b with
+  | ⟨m, n, ha⟩, ⟨p, q, hb⟩ => by
+    rw [ha, hb, S_add_S, neg_S, neg_S, neg_S, S_add_S]
+
+theorem sub_self (a : Int) : a - a = 0 := by
+  rw [Int.sub_eq_add_neg]
+  exact add_right_neg a
+
+theorem sub_zero (a : Int) : a - 0 = a := Int.add_zero a
+
+theorem add_sub_cancel (a b : Int) : a + b - b = a := by
+  rw [Int.sub_eq_add_neg, add_assoc, add_right_neg, Int.add_zero]
+
+theorem nat_add_mul (a b c : Nat) : (a + b) * c = a * c + b * c := by
+  rw [Nat.mul_comm, Nat.mul_add, Nat.mul_comm c a, Nat.mul_comm c b]
+
+theorem nat_mul_assoc : ∀ a b c : Nat, (a * b) * c = a * (b * c)
+  | _, _, 0 => rfl
+  | a, b, c + 1 => by
+    rw [Nat.mul_succ, Nat.mul_succ, Nat.mul_add, nat_mul_assoc a b c]
+
+theorem negOfNat_mul_ofNat : ∀ a b : Nat, Int.negOfNat a * Int.ofNat b = Int.negOfNat (a * b)
+  | 0, b => by
+    show Int.ofNat (0 * b) = Int.negOfNat (0 * b)
+    rw [Nat.zero_mul]
+    rfl
+  | _ + 1, _ => rfl
+
+theorem negOfNat_mul_negOfNat : ∀ a b : Nat, Int.negOfNat a * Int.negOfNat b = Int.ofNat (a * b)
+  | 0, 0 => rfl
+  | 0, b + 1 => by
+    show Int.negOfNat (0 * Nat.succ b) = Int.ofNat (0 * (b + 1))
+    rw [Nat.zero_mul]
+    rfl
+  | a + 1, 0 => by
+    show Int.negOfNat (Nat.succ a * 0) = Int.ofNat ((a + 1) * 0)
+    rfl
+  | _ + 1, _ + 1 => rfl
+
+theorem ofNat_mul_negOfNat' (a b : Nat) : Int.ofNat a * Int.negOfNat b = Int.negOfNat (a * b) :=
+  Int.ofNat_mul_negOfNat a b
+
+theorem mul_canon (x1 x2 y1 y2 : Nat) (hx : x1 = 0 ∨ x2 = 0) (hy : y1 = 0 ∨ y2 = 0) :
+    Int.subNatNat x1 x2 * Int.subNatNat y1 y2 =
+      Int.subNatNat (x1 * y1 + x2 * y2) (x1 * y2 + x2 * y1) := by
+  cases hx with
+  | inl h1 =>
+    subst h1
+    cases hy with
+    | inl h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_left, negOfNat_mul_negOfNat, Nat.zero_mul, Nat.zero_mul,
+          Nat.zero_add, Nat.mul_zero, Nat.add_zero, S_zero_right]
+    | inr h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_right, negOfNat_mul_ofNat, Nat.zero_mul, Nat.zero_add,
+          Nat.zero_add]
+      exact (S_zero_left _).symm
+  | inr h1 =>
+    subst h1
+    cases hy with
+    | inl h2 =>
+      subst h2
+      rw [S_zero_left, S_zero_right, ofNat_mul_negOfNat', Nat.zero_mul, Nat.add_zero]
+      exact (S_zero_left _).symm
+    | inr h2 =>
+      subst h2
+      rw [S_zero_right, S_zero_right, Nat.mul_zero, Nat.mul_zero, Nat.zero_mul, Nat.add_zero,
+          Nat.add_zero, S_zero_right]
+      rfl
+
+theorem shift_left (a b c d t : Nat) :
+    Int.subNatNat ((a + t) * c + (b + t) * d) ((a + t) * d + (b + t) * c) =
+      Int.subNatNat (a * c + b * d) (a * d + b * c) := by
+  rw [nat_add_mul, nat_add_mul, nat_add_mul, nat_add_mul,
+      Nat.add_add_add_comm (a * c) (t * c) (b * d) (t * d),
+      Nat.add_add_add_comm (a * d) (t * d) (b * c) (t * c),
+      Nat.add_comm (t * d) (t * c), S_add]
+
+theorem shift_right (a b c d u : Nat) :
+    Int.subNatNat (a * (c + u) + b * (d + u)) (a * (d + u) + b * (c + u)) =
+      Int.subNatNat (a * c + b * d) (a * d + b * c) := by
+  rw [Nat.mul_add, Nat.mul_add, Nat.mul_add, Nat.mul_add,
+      Nat.add_add_add_comm (a * c) (a * u) (b * d) (b * u),
+      Nat.add_add_add_comm (a * d) (a * u) (b * c) (b * u), S_add]
+
+theorem S_mul_S (a b c d : Nat) :
+    Int.subNatNat a b * Int.subNatNat c d = Int.subNatNat (a * c + b * d) (a * d + b * c) :=
+  match S_canon a b, S_canon c d with
+  | ⟨x1, x2, hx, hzx, t, ha, hb⟩, ⟨y1, y2, hy, hzy, u, hc, hd⟩ => by
+    rw [hx, hy, mul_canon x1 x2 y1 y2 hzx hzy, ha, hb, hc, hd, shift_left, shift_right]
+
+theorem mul_comm (x y : Int) : x * y = y * x :=
+  match repr x, repr y with
+  | ⟨a, b, hx⟩, ⟨c, d, hy⟩ => by
+    rw [hx, hy, S_mul_S, S_mul_S, Nat.mul_comm a c, Nat.mul_comm b d, Nat.mul_comm a d,
+        Nat.mul_comm b c, Nat.add_comm (d * a)]
+
+theorem mul_add (x y z : Int) : x * (y + z) = x * y + x * z :=
+  match repr x, repr y, repr z with
+  | ⟨a, b, hx⟩, ⟨c, d, hy⟩, ⟨e, f, hz⟩ => by
+    rw [hx, hy, hz, S_add_S, S_mul_S, S_mul_S, S_mul_S, S_add_S, Nat.mul_add, Nat.mul_add,
+        Nat.mul_add, Nat.mul_add, Nat.add_add_add_comm (a * c) (a * e) (b * d) (b * f),
+        Nat.add_add_add_comm (a * d) (a * f) (b * c) (b * e)]
+
+theorem add_mul (x y z : Int) : (x + y) * z = x * z + y * z := by
+  rw [mul_comm, mul_add, mul_comm z x, mul_comm z y]
+
+theorem negOfNat_mul_negSucc : ∀ a b : Nat, Int.negOfNat a * Int.negSucc b = Int.ofNat (a * b.succ)
+  | 0, b => by
+    show Int.negOfNat (0 * b.succ) = Int.ofNat (0 * b.succ)
+    rw [Nat.zero_mul]
+    rfl
+  | _ + 1, _ => rfl
+
+theorem mul_assoc : ∀ x y z : Int, (x * y) * z = x * (y * z)
+  | Int.ofNat a, Int.ofNat b, Int.ofNat c => congrArg Int.ofNat (nat_mul_assoc a b c)
+  | Int.ofNat a, Int.ofNat b, Int.negSucc c =>
+    (congrArg Int.negOfNat (nat_mul_assoc a b c.succ)).trans (Int.ofNat_mul_negOfNat a (b * c.succ)).symm
+  | Int.ofNat a, Int.negSucc b, Int.ofNat c =>
+    (negOfNat_mul_ofNat (a * b.succ) c).trans
+      ((congrArg Int.negOfNat (nat_mul_assoc a b.succ c)).trans (Int.ofNat_mul_negOfNat a (b.succ * c)).symm)
+  | Int.ofNat a, Int.negSucc b, Int.negSucc c =>
+    (negOfNat_mul_negSucc (a * b.succ) c).trans (congrArg Int.ofNat (nat_mul_assoc a b.succ c.succ))
+  | Int.negSucc a, Int.ofNat b, Int.ofNat c =>
+    (negOfNat_mul_ofNat (a.succ * b) c).trans (congrArg Int.negOfNat (nat_mul_assoc a.succ b c))
+  | Int.negSucc a, Int.ofNat b, Int.negSucc c =>
+    (negOfNat_mul_negSucc (a.succ * b) c).trans
+      ((congrArg Int.ofNat (nat_mul_assoc a.succ b c.succ)).trans (Int.negSucc_mul_negOfNat a (b * c.succ)).symm)
+  | Int.negSucc a, Int.negSucc b, Int.ofNat c =>
+    (congrArg Int.ofNat (nat_mul_assoc a.succ b.succ c)).trans (Int.negSucc_mul_negOfNat a (b.succ * c)).symm
+  | Int.negSucc a, Int.negSucc b, Int.negSucc c =>
+    congrArg Int.negOfNat (nat_mul_assoc a.succ b.succ c.succ)
+
+theorem neg_mul (a b : Int) : -a * b = -(a * b) :=
+  match repr a, repr b with
+  | ⟨m, n, ha⟩, ⟨p, q, hb⟩ => by
+    rw [ha, hb, neg_S, S_mul_S, S_mul_S, neg_S, Nat.add_comm (n * p), Nat.add_comm (n * q)]
+
+theorem mul_neg (a b : Int) : a * -b = -(a * b) := by
+  rw [mul_comm, neg_mul, mul_comm]
+
+theorem neg_mul_neg (a b : Int) : -a * -b = a * b := by
+  rw [neg_mul, mul_neg, Int.neg_neg]
+
+theorem nat_add_sub_cancel (n : Nat) : ∀ m : Nat, n + m - m = n
+  | 0 => rfl
+  | m + 1 => (Nat.succ_sub_succ (n + m) m).trans (nat_add_sub_cancel n m)
+
+theorem zero_div (n : Nat) : 0 / n = 0 := by
+  rw [Nat.div_eq]
+  cases n with
+  | zero => exact if_neg (fun h => Nat.lt_irrefl 0 h.1)
+  | succ k => exact if_neg (fun h => Nat.not_succ_le_zero k h.2)
+
+theorem zero_mod (n : Nat) : 0 % n = 0 := by
+  rw [Nat.mod_eq]
+  cases n with
+  | zero => exact if_neg (fun h => Nat.lt_irrefl 0 h.1)
+  | succ k => exact if_neg (fun h => Nat.not_succ_le_zero k h.2)
+
+/-- `(m · n) / n = m` for `n > 0` with zero axioms via `Nat.div_eq`. -/
+theorem mul_div_cancel : ∀ (m : Nat) {n : Nat}, 0 < n → (m * n) / n = m
+  | 0, n, _ => by rw [Nat.zero_mul]; exact zero_div n
+  | m + 1, n, hn => by
+    rw [Nat.div_eq (m.succ * n) n]
+    have hle : n ≤ m.succ * n := by
+      rw [Nat.succ_mul]
+      exact Nat.le_add_left n (m * n)
+    rw [if_pos ⟨hn, hle⟩, Nat.succ_mul, nat_add_sub_cancel (m * n) n, mul_div_cancel m hn]
+
+/-- `(m · n) % n = 0` with zero axioms via `Nat.mod_eq`. -/
+theorem mul_mod_left : ∀ (m : Nat) (n : Nat), (m * n) % n = 0
+  | 0, n => by rw [Nat.zero_mul]; exact zero_mod n
+  | _ + 1, 0 => rfl
+  | m + 1, k + 1 => by
+    rw [Nat.mod_eq (m.succ * k.succ) k.succ]
+    have hle : k.succ ≤ m.succ * k.succ := by
+      rw [Nat.succ_mul]
+      exact Nat.le_add_left k.succ (m * k.succ)
+    rw [if_pos ⟨Nat.succ_pos k, hle⟩, Nat.succ_mul, nat_add_sub_cancel (m * k.succ) k.succ]
+    exact mul_mod_left m k.succ
+
+end Z
+
+end ZArith
+
 /-- Canonical 4D Quaternion Hinge duration projection `snapToHinge q te = q * te`. -/
 def snapToHinge (q te : Nat) : Nat := q * te
 
@@ -401,7 +739,7 @@ def snapToHinge (q te : Nat) : Nat := q * te
 theorem hinge_snap_zero_te_residual_and_exact_recovery (q te : Nat) (hte : 0 < te) :
     (snapToHinge q te) % te = 0 ∧ (snapToHinge q te) / te = q := by
   dsimp [snapToHinge]
-  exact ⟨Nat.mul_mod_left q te, Nat.mul_div_cancel q hte⟩
+  exact ⟨Z.mul_mod_left q te, Z.mul_div_cancel q hte⟩
 
 /-- Theorem 3.8 (Idempotence of the 4D Quaternion Hinge Projection — Claim 15): -/
 theorem hinge_snap_idempotent (q te : Nat) (hte : 0 < te) :
@@ -418,7 +756,7 @@ def pairDuration (p : Int × Int) : Int := p.1 + p.2
 theorem glitch_coalesce_preserves_total_duration (h1 l1 h2 l2 : Int) :
     pairDuration (coalesceGlitchPair h1 l1 h2 l2) = (h1 + l1) + (h2 + l2) := by
   dsimp [pairDuration, coalesceGlitchPair]
-  rw [← Int.add_assoc, ← Int.add_assoc]
+  rw [← Z.add_assoc, ← Z.add_assoc]
 
 /-- Total elapsed duration across an arbitrary list of comparator glitch pairs. -/
 def sumPairDurations : List (Int × Int) → Int
@@ -442,7 +780,7 @@ theorem multi_glitch_cascade_duration_conservation (gs : List (Int × Int)) (p0 
     rw [ih (coalesceGlitchPair p0.1 p0.2 g.1 g.2)]
     rw [glitch_coalesce_preserves_total_duration]
     dsimp [pairDuration]
-    rw [Int.add_assoc (p0.1 + p0.2) (g.1 + g.2) (sumPairDurations rest)]
+    rw [Z.add_assoc (p0.1 + p0.2) (g.1 + g.2) (sumPairDurations rest)]
 
 /-- Stock `STM32WB55` LFRFID DMA timer reload formula (`lfrfid_raw_worker.c:263-264`):
     `arr = (duration / 8) - 1` (evaluated in signed arithmetic before 32-bit unsigned cast). -/
@@ -477,51 +815,77 @@ theorem lfrfid_pg32_dma_underflow_immune (kp kn : Nat) :
     rw [Nat.mul_add 8 (kp + kn) 2]
     exact Nat.le_add_left 16 (8 * (kp + kn))
   have hdiv : (8 * (kp + kn + 2)) / 8 - 1 = kp + kn + 1 := by
-    rw [Nat.mul_comm 8 (kp + kn + 2), Nat.mul_div_left (kp + kn + 2) (by decide : 0 < 8)]
+    rw [Nat.mul_comm 8 (kp + kn + 2), Z.mul_div_cancel (kp + kn + 2) (Nat.succ_pos 7)]
     rfl
-  refine ⟨h16, Nat.mul_mod_right 8 (kp + kn + 2), ?_⟩
+  have hmod : (8 * (kp + kn + 2)) % 8 = 0 := by
+    rw [Nat.mul_comm 8 (kp + kn + 2)]
+    exact Z.mul_mod_left (kp + kn + 2) 8
+  refine ⟨h16, hmod, ?_⟩
   rw [hdiv]
   exact Nat.le_add_left 1 (kp + kn)
 
 /-- Signed 16-bit `Q1.14` fixed-point unit scaling factor (`2¹⁴ = 16384`). -/
 def scaleQ14 : Int := 16384
 
-/-- Helper: factor integer scalar `q` out of a single Cayley–Dickson product term `e * (q * u) * w`. -/
-theorem term_scale_left (e q u w : Int) : e * (q * u) * w = q * (e * u * w) := by
-  rw [← Int.mul_assoc e q u, Int.mul_comm e q, Int.mul_assoc q e u, ← Int.mul_assoc q (e * u) w]
+/-- Helper: factor integer scalar `q` out of a single Cayley–Dickson product term `mulR (mulR e (q * u)) w`. -/
+theorem term_scale_left (e q u w : Int) : mulR (mulR e (q * u)) w = q * mulR (mulR e u) w := by
+  rw [mulR_eq_mul, mulR_eq_mul, mulR_eq_mul, mulR_eq_mul,
+      ← Z.mul_assoc e q u, Z.mul_comm e q, Z.mul_assoc q e u, ← Z.mul_assoc q (e * u) w]
 
-/-- Helper: factor integer scalar `q` out of `e * u * (q * w)`. -/
-theorem term_scale_right (e q u w : Int) : e * u * (q * w) = q * (e * u * w) := by
-  rw [← Int.mul_assoc (e * u) q w, Int.mul_comm (e * u) q, Int.mul_assoc q (e * u) w]
+/-- Helper: factor integer scalar `q` out of `mulR (mulR e u) (q * w)`. -/
+theorem term_scale_right (e q u w : Int) : mulR (mulR e u) (q * w) = q * mulR (mulR e u) w := by
+  rw [mulR_eq_mul, mulR_eq_mul, mulR_eq_mul,
+      ← Z.mul_assoc (e * u) q w, Z.mul_comm (e * u) q, Z.mul_assoc q (e * u) w]
 
 /-- Helper: factor `q²` out of `(q * x) * (q * x)`. -/
 theorem sq_scale (q x : Int) : (q * x) * (q * x) = (q * q) * (x * x) := by
-  rw [← Int.mul_assoc (q * x) q x, Int.mul_assoc q x q, Int.mul_comm x q, ← Int.mul_assoc q q x,
-      Int.mul_assoc (q * q) x x]
+  rw [← Z.mul_assoc (q * x) q x, Z.mul_assoc q x q, Z.mul_comm x q, ← Z.mul_assoc q q x,
+      Z.mul_assoc (q * q) x x]
+
+theorem sum16_scale_left (q : Int) (e u w : Nat → Int) :
+    sum16 (fun j => mulR (mulR (e j) (q * u j)) (w j)) = q * sum16 (fun j => mulR (mulR (e j) (u j)) (w j)) := by
+  dsimp only [sum16]
+  repeat rw [term_scale_left]
+  repeat rw [← Z.mul_add]
+
+theorem sum16_scale_right (q : Int) (e u w : Nat → Int) :
+    sum16 (fun j => mulR (mulR (e j) (u j)) (q * w j)) = q * sum16 (fun j => mulR (mulR (e j) (u j)) (w j)) := by
+  dsimp only [sum16]
+  repeat rw [term_scale_right]
+  repeat rw [← Z.mul_add]
 
 /-- Left-scaling factorization of 16D Sedenion multiplication: `((q u) · w)_k = q (u · w)_k`. -/
 theorem mul_scale_left (q : Int) (u w : Vec) (k : Nat) :
-    mul (scale q u) w k = q * mul u w k := by
-  dsimp [mul, sum16, scale]
-  simp only [term_scale_left, ← Int.mul_add]
+    mul (scale q u) w k = q * mul u w k :=
+  sum16_scale_left q (fun j => epsT (xorT k j) j) (fun j => u (xorT k j)) w
 
 /-- Right-scaling factorization of 16D Sedenion multiplication: `(u · (q w))_k = q (u · w)_k`. -/
 theorem mul_scale_right (q : Int) (u w : Vec) (k : Nat) :
-    mul u (scale q w) k = q * mul u w k := by
-  dsimp [mul, sum16, scale]
-  simp only [term_scale_right, ← Int.mul_add]
+    mul u (scale q w) k = q * mul u w k :=
+  sum16_scale_right q (fun j => epsT (xorT k j) j) (fun j => u (xorT k j)) w
 
 /-- Bilinear scaling factorization of 16D Sedenion multiplication over integer fixed-point scales `q₁, q₂ ∈ ℤ`. -/
 theorem mul_scale_left_right (q1 q2 : Int) (u w : Vec) (k : Nat) :
     mul (scale q1 u) (scale q2 w) k = (q1 * q2) * mul u w k := by
-  rw [mul_scale_left, mul_scale_right, Int.mul_assoc]
+  rw [mul_scale_left, mul_scale_right, Z.mul_assoc]
+
+theorem sum16_sq_scale (q : Int) (f : Nat → Int) :
+    sum16 (fun k => (q * f k) * (q * f k)) = (q * q) * sum16 (fun k => f k * f k) := by
+  dsimp only [sum16]
+  repeat rw [sq_scale]
+  repeat rw [← Z.mul_add]
 
 /-- Quadratic norm-squared scaling under fixed-point input quantization `scale q u`:
     `‖(q u) · w‖² = q² ‖u · w‖²`. -/
 theorem vnormSq_mul_scale_left (q : Int) (u w : Vec) :
     vnormSq (mul (scale q u) w) = (q * q) * vnormSq (mul u w) := by
-  dsimp [vnormSq, vdot, sum16]
-  simp only [mul_scale_left, sq_scale, ← Int.mul_add]
+  have h := sum16_sq_scale q (mul u w)
+  dsimp only [vnormSq, vdot, sum16] at h ⊢
+  rw [mul_scale_left q u w 0, mul_scale_left q u w 1, mul_scale_left q u w 2, mul_scale_left q u w 3,
+      mul_scale_left q u w 4, mul_scale_left q u w 5, mul_scale_left q u w 6, mul_scale_left q u w 7,
+      mul_scale_left q u w 8, mul_scale_left q u w 9, mul_scale_left q u w 10, mul_scale_left q u w 11,
+      mul_scale_left q u w 12, mul_scale_left q u w 13, mul_scale_left q u w 14, mul_scale_left q u w 15]
+  exact h
 
 /-- Theorem 3.13 (`Q1.14` Fixed-Point Moreno Nuller Exact `0 LSB` Identity — Claims 10 & 14): -/
 theorem q14_fixed_point_moreno_zero_lsb_identity (q1 q2 : Int) (u w : Vec) (k : Nat)
@@ -548,9 +912,21 @@ theorem cross_band_inductive_associator_dichotomy :
         (intEq (vnormSq (nativeAssociator (add (cbasis a) (cbasis b)))) 4))) = true :=
   ⟨rfl, rfl, native_associator_moreno_curvature_dichotomy⟩
 
+/-- Exact 8-bit bitwise XOR on `{0..255}` using pure kernel-primitive arithmetic (`/`, `%`),
+    avoiding `WellFounded.fix` and `propext`. -/
+def bxor8 (i j : Nat) : Nat :=
+  ((i % 2 + j % 2) % 2) +
+  2 * (((i / 2) % 2 + (j / 2) % 2) % 2) +
+  4 * (((i / 4) % 2 + (j / 4) % 2) % 2) +
+  8 * (((i / 8) % 2 + (j / 8) % 2) % 2) +
+  16 * (((i / 16) % 2 + (j / 16) % 2) % 2) +
+  32 * (((i / 32) % 2 + (j / 32) % 2) % 2) +
+  64 * (((i / 64) % 2 + (j / 64) % 2) % 2) +
+  128 * (((i / 128) % 2 + (j / 128) % 2) % 2)
+
 /-- ISO14443A (`13.56 MHz` HF-NFC) 4-byte Cascade Level 1 UID Block Check Character (`BCC`). -/
 def iso14443aBcc (u0 u1 u2 u3 : Nat) : Nat :=
-  u0 ^^^ u1 ^^^ u2 ^^^ u3
+  bxor8 (bxor8 (bxor8 u0 u1) u2) u3
 
 /-- Theorem 3.15 (`13.56 MHz` HF-NFC / `125 kHz` LF-RFID Frequency Division & UID `BCC` Invariants — Claims 16 & 17): -/
 theorem nfc_1356mhz_subcarrier_and_uid_bcc_invariants :
@@ -558,9 +934,9 @@ theorem nfc_1356mhz_subcarrier_and_uid_bcc_invariants :
     125 * 8 = 1000 ∧
     15625 * 64 = 1000000 ∧
     iso14443aBcc 0x04 0xC5 0x4F 0x83 = 0x0D ∧
-    (0x04 ^^^ 0xC5 ^^^ 0x4F ^^^ 0x83 ^^^ iso14443aBcc 0x04 0xC5 0x4F 0x83) = 0 ∧
+    bxor8 (iso14443aBcc 0x04 0xC5 0x4F 0x83) (iso14443aBcc 0x04 0xC5 0x4F 0x83) = 0 ∧
     iso14443aBcc 0x04 0x08 0xA5 0x49 = 0xE0 ∧
-    (0x04 ^^^ 0x08 ^^^ 0xA5 ^^^ 0x49 ^^^ iso14443aBcc 0x04 0x08 0xA5 0x49) = 0 :=
+    bxor8 (iso14443aBcc 0x04 0x08 0xA5 0x49) (iso14443aBcc 0x04 0x08 0xA5 0x49) = 0 :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Theorem 3.16 (`16×16` Kronecker Multi-Tile Array Two-Stage Coherent Gain — Claim 11): -/
@@ -585,14 +961,14 @@ theorem wifi_multipath_peeler_step_energy_reduction (r δ : Int) :
     stepDiffEnergy3 r r r = 0 ∧
     stepDiffEnergy3 r (r + δ) r - stepDiffEnergy3 r r r = 2 * (δ * δ) := by
   dsimp [stepDiffEnergy3]
-  have h1 : (r + δ) - r = δ := by rw [Int.add_comm r δ, Int.add_sub_cancel]
+  have h1 : (r + δ) - r = δ := by rw [Z.add_comm r δ, Z.add_sub_cancel]
   have h2 : r - (r + δ) = -δ := by
-    rw [Int.sub_eq_add_neg, Int.neg_add, ← Int.add_assoc, Int.add_right_neg, Int.zero_add]
-  have h3 : r - r = 0 := Int.sub_self r
+    rw [Int.sub_eq_add_neg, Z.neg_add, ← Z.add_assoc, Z.add_right_neg, Z.zero_add]
+  have h3 : r - r = 0 := Z.sub_self r
   have hsq : δ * δ + (-δ) * (-δ) = 2 * (δ * δ) := by
     change δ * δ + (-δ) * (-δ) = (1 + 1) * (δ * δ)
-    rw [Int.neg_mul_neg, Int.add_mul, Int.one_mul]
+    rw [Z.neg_mul_neg, Z.add_mul, Int.one_mul]
   rw [h1, h2, h3, hsq]
-  exact ⟨rfl, rfl, Int.sub_zero (2 * (δ * δ))⟩
+  exact ⟨rfl, rfl, Z.sub_zero (2 * (δ * δ))⟩
 
 end SedenionPG32
