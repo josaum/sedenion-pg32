@@ -22,7 +22,7 @@ benchmarks/        algebraic_baselines.py (Table 2), track_a/ (Yang–Mills BCJ)
                    multi-hop pruning, No-FFN ablation), ext/ (ProofWriter, ListOps), gps_jamming/
                    (CRPA null steering, phase-2 defences, dual-pol excision, Q1.14 RTL)
 lean/pg32/         finite development: Lean 4.15 core only (116 theorems across Core, Geometry, Census,
-                   TriangularRootFreeCells; 80 top-level #print axioms checks), propext at most, no Classical.choice or Quot.sound
+                   TriangularRootFreeCells; 80 top-level #print axioms checks), propext at most (27 theorems with zero axioms, incl. all 21 in TriangularRootFreeCells), no Classical.choice or Quot.sound
 lean/real/         real-analytic development: Lean 4.15 + Mathlib v4.15.0 (140 theorems; 60 top-level #print axioms checks)
                    SedenionReal.lean   — Theorem 5.1 nullspace, Hurwitz composition, vertical quaternion blocks Q_{u,3}, SO(2) bivector invariance, CRPA theorems
                    SedenionAlt/Rank/Dim — alternativity, kernel characterisation, rank L(u) = 12 (rank–nullity)
@@ -66,7 +66,7 @@ Benchmark scripts write their `results_*.json` next to themselves; the committed
 
 ```bash
 # finite PG(3,2) development: 8+7 Fano bifurcation, 672/2520 associator census, BCJ stratum theorems
-cd lean/pg32 && lake build SedenionPG32 && LEAN_PATH=.lake/build/lib lean Axioms.lean     # propext at most; several "does not depend on any axioms"
+cd lean/pg32 && lake build SedenionPG32 && LEAN_PATH=.lake/build/lib lean Axioms.lean     # propext at most; 27 theorems (all 21 in TriangularRootFreeCells) "does not depend on any axioms"
 
 # real-analytic development (Mathlib): nullspace, CRPA gains, leakage bounds, dual-pol excision
 cd lean/real && lake exe cache get && lake build && lake env lean Axioms.lean            # propext, Classical.choice, Quot.sound only

@@ -90,7 +90,7 @@ Crossing the Hurwitz threshold to $\Se = \Oc \oplus \Oc e_8 \cong \R^{16}$ unloc
 % ==============================================================================
 % PAGE 2: FORMAL ASSURANCE, IMPACT, RISKS, COST/SCHEDULE & EXAMS
 % ==============================================================================
-\textbf{4. High-Assurance Mathematical Verification in Lean~4 (\texttt{0 sorry}, $170+$ Theorems)}\\
+\textbf{4. High-Assurance Mathematical Verification in Lean~4 (\texttt{0 sorry}, $361$ Theorems)}\\
 Every algebraic, electromagnetic, circuit-level, and bare-metal firmware invariant is machine-checked in \textbf{Lean~4} (\texttt{v4.15.0} + Mathlib, zero \texttt{sorry}, zero user axioms across \texttt{SedenionReal.lean}, \texttt{SedenionRobust.lean}, \texttt{Geometry.lean}, and \texttt{MaxwellExterior.lean}):
 
 \vspace{0.15em}
@@ -149,7 +149,7 @@ We propose a \textbf{12-month, \$485k Seedling effort} (TRL $4 \to$ TRL $6$) str
 \vspace{0.2em}
 
 \textbf{8. Immediate Reproducibility (Available Today for DARPA / ONR Evaluators)}\\
-All Lean~4 proofs ($170+$ theorems, \texttt{0 sorry}), SPICE Monte Carlo suites, SystemVerilog RTL, and benchmark scripts execute in $<2$ minutes:
+All Lean~4 proofs ($361$ theorems across \texttt{lean/} and \texttt{MaxwellExterior.lean}, \texttt{0 sorry}), SPICE Monte Carlo suites, SystemVerilog RTL, and benchmark scripts execute in $<2$ minutes:
 \begin{itemize}
     \item \textbf{Zenodo DOIs \& GitHub:} \href{https://doi.org/10.5281/zenodo.23588274}{\texttt{10.5281/zenodo.23588274}} \& \href{https://doi.org/10.5281/zenodo.23603006}{\texttt{10.5281/zenodo.23603006}} --- \url{https://github.com/josaum/sedenion-pg32}
     \item \textbf{Benchmarks \& Lean~4 Kernel:} \texttt{python3 benchmarks/gps\_jamming/run\_native\_sedenion\_dsp.py}, \texttt{run\_dualpol\_pivot12.py}, \texttt{run\_phase2\_defense.py}, and \texttt{lake build \&\& lake env lean Axioms.lean}.

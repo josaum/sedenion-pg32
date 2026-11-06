@@ -37,8 +37,24 @@ theorem pedro_toy_triangular_root_identities :
     seqTriangularRoot [true, false, false] = none :=
   ⟨rfl, rfl, rfl⟩
 
-/-- Test whether imaginary basis index `v ∈ {1..15}` is active in 16-bit support mask `m`. -/
-def inMask (m v : Nat) : Bool := ((m >>> v) &&& 1) == 1
+/-- Exact 6-bit bitwise XOR on `{0..63}` using pure C++ kernel-primitive arithmetic (`/`, `%`, `==`),
+    avoiding `WellFounded.fix` and `propext` in `Nat.xor`. -/
+def bxor6 (i j : Nat) : Nat :=
+  ((i % 2 + j % 2) % 2) +
+  2 * (((i / 2) % 2 + (j / 2) % 2) % 2) +
+  4 * (((i / 4) % 2 + (j / 4) % 2) % 2) +
+  8 * (((i / 8) % 2 + (j / 8) % 2) % 2) +
+  16 * (((i / 16) % 2 + (j / 16) % 2) % 2) +
+  32 * (((i / 32) % 2 + (j / 32) % 2) % 2)
+
+/-- Zero-axiom 16D sedenion multiplication and basis associator sign using `bxor6`. -/
+def zmul (u v : Vec) : Vec := fun k => sum16 fun j => epsT (bxor6 k j) j * u (bxor6 k j) * v j
+
+def zassocSign (i j k : Nat) : Int :=
+  epsT i j * epsT (bxor6 i j) k - epsT j k * epsT i (bxor6 j k)
+
+/-- Test whether imaginary basis index `v` is active in support mask `m` (zero axioms). -/
+def inMask (m v : Nat) : Bool := (m >>> v) % 2 == 1
 
 /-- List of active imaginary indices `P(w) ⊆ {1..15}` of a bitmask `m`. -/
 def maskSupport (m : Nat) : List Nat :=
@@ -51,7 +67,7 @@ def maskCard (m : Nat) : Nat := (maskSupport m).length
     triangularly closed iff `a, b ∈ P` with `a ≠ b` implies `a ⊕ b ∈ P`. -/
 def isTriangularlyClosed (m : Nat) : Bool :=
   let P := maskSupport m
-  !(P.isEmpty) && P.all fun a => P.all fun b => (a == b) || inMask m (a ^^^ b)
+  !(P.isEmpty) && P.all fun a => P.all fun b => (a == b) || inMask m (bxor6 a b)
 
 /-- Canonical F₂-Reduced Row Echelon Form (RREF) basis extractor `rref(U)` over `V = F₂⁴`:
     For a triangularly closed support `P = U \ {0}`, an element `x ∈ P` belongs to the
@@ -67,17 +83,17 @@ def rrefBasisList (m : Nat) : List Nat :=
       if span.contains x then
         build xs span acc
       else
-        let newSpan := span ++ (span.map (· ^^^ x))
+        let newSpan := span ++ (span.map (bxor6 · x))
         build xs newSpan (x :: acc)
   build P [0] []
 
 def listToMask (xs : List Nat) : Nat :=
-  xs.foldl (fun acc v => acc ||| (1 <<< v)) 0
+  xs.foldl (fun acc v => if inMask acc v then acc else acc + (1 <<< v)) 0
 
 /-- Definition 4.1 of [1]: Geometric triangularization `T_S^geo(R) = ⟨R⟩_{F₂} \ {0}`. -/
 def triangularizeList (R : List Nat) : Nat :=
   let span := R.foldl (fun sp x =>
-    sp.foldl (fun acc s => if acc.contains (s ^^^ x) then acc else (s ^^^ x) :: acc) sp
+    sp.foldl (fun acc s => if acc.contains (bxor6 s x) then acc else (bxor6 s x) :: acc) sp
   ) [0]
   listToMask (span.filter (· != 0))
 
@@ -127,7 +143,7 @@ def supportA (m : Nat) : List Nat :=
   ((List.range 7).map (· + 1)).filter (inMask m)
 
 def supportB (m : Nat) : List Nat :=
-  ((List.range 7).map (· + 1)).filter (fun u => inMask m (8 ^^^ u))
+  ((List.range 7).map (· + 1)).filter (fun u => inMask m (bxor6 8 u))
 
 def isZDFreeSupport (m : Nat) : Bool :=
   let A := supportA m
@@ -141,11 +157,11 @@ def hasBasisPairZeroDivisor (m : Nat) : Bool :=
   let A := supportA m
   let B := supportB m
   A.any fun a => B.any fun b => a != b &&
-    let u := add (basis a) (basis (8 ^^^ b))
+    let u := add (basis a) (basis (bxor6 8 b))
     ((List.range 7).map (· + 1)).any fun c =>
       ((List.range 7).map (· + 1)).any fun d =>
-        isZero (mul u (add (basis c) (basis (8 ^^^ d)))) ||
-        isZero (mul u (sub (basis c) (basis (8 ^^^ d))))
+        isZero (zmul u (add (basis c) (basis (bxor6 8 d)))) ||
+        isZero (zmul u (sub (basis c) (basis (bxor6 8 d))))
 
 /-- Lemma 7.2 of [1] & Lemma 5.2 of [2]: Across all 66 projective coordinate cells, the
     combinatorial support criterion `isZDFreeSupport` is equivalent to the absence of
@@ -209,15 +225,22 @@ theorem paper1_examples_10_1_to_10_5 :
     1 octonion block `O = {1..7}` and 7 vertical quaternion blocks `Q_{u,3} = {u, 8, u⊕8}`. -/
 def maximalFreeBlocksA4 : List Nat :=
   let octBlock := listToMask [1, 2, 3, 4, 5, 6, 7]
-  let vertBlocks := ((List.range 7).map (· + 1)).map fun u => listToMask [u, 8, 8 ^^^ u]
+  let vertBlocks := ((List.range 7).map (· + 1)).map fun u => listToMask [u, 8, bxor6 8 u]
   octBlock :: vertBlocks
 
 /-- The 21 ghost lines of `A_4` (Lemma 5.2 & Proposition 5.4 of [2]). -/
 def ghostLinesA4 : List Nat :=
   allProjectiveMasks.filter (fun m => maskCard m == 3 && !(isZDFreeSupport m))
 
-/-- Subset test on bitmasks: `sub ⊆ sup` iff `(sub &&& sup) == sub`. -/
-def isSubMask (sub sup : Nat) : Bool := (sub &&& sup) == sub
+/-- Subset test on bitmasks (`sub ⊆ sup`) via structural recursion with byte-skipping (zero axioms). -/
+def isSubMaskFuel : Nat → Nat → Nat → Bool
+  | 0, _, _ => true
+  | k + 1, sub, sup =>
+    if sub == 0 then true
+    else if sub % 256 == 0 then isSubMaskFuel k (sub >>> 8) (sup >>> 8)
+    else (!(sub % 2 == 1) || (sup % 2 == 1)) && isSubMaskFuel k (sub >>> 1) (sup >>> 1)
+
+def isSubMask (sub sup : Nat) : Bool := isSubMaskFuel 64 sub sup
 
 /-- Theorem 6.2 & Theorem 6.4 of [2] (Order-Ideal and Ghost-Filter Duality):
     Every projective coordinate cell `U` of `A_4` is ZD-free iff `U` is contained in one of the
@@ -240,12 +263,12 @@ def ghostLineAnnihilatorCount (lMask : Nat) : Nat :=
   let r := (pts.filter (fun x => Nat.blt x 8)).headD 0
   let p := (pts.filter (fun x => Nat.ble 8 x)).headD 0
   let q := (pts.filter (fun x => Nat.ble 8 x && x != p)).headD 0
-  let qPrime := q ^^^ 8
+  let qPrime := bxor6 q 8
   let x := add (basis r) (basis p)
   ((List.range 8).filter fun c =>
-    let d := 8 ^^^ (c ^^^ qPrime)
-    isZero (mul x (add (basis c) (basis d))) ||
-    isZero (mul x (sub (basis c) (basis d)))).length
+    let d := bxor6 8 (bxor6 c qPrime)
+    isZero (zmul x (add (basis c) (basis d))) ||
+    isZero (zmul x (sub (basis c) (basis d)))).length
 
 theorem ghost_line_annihilator_multiples_of_four :
     (ghostLinesA4.all fun lMask =>
@@ -300,7 +323,7 @@ def isFreeInTowerLevel (n m : Nat) : Bool :=
   isSubMask m octBlock ||
   ((List.range (n - 3)).map (· + 3)).any fun k =>
     ((List.range (2^k - 1)).map (· + 1)).any fun u =>
-      isSubMask m (listToMask [u, 2^k, u ^^^ (2^k)])
+      isSubMask m (listToMask [u, 2^k, bxor6 u (2^k)])
 
 theorem tower_absoluteness_n4_in_n5_all_66 :
     (allProjectiveMasks.all fun m =>
@@ -375,7 +398,7 @@ def gl32FreeOrbitsA4 : List (List Nat) :=
   let cosetPts := ((List.range 7).map (· + 9)).map (fun v => listToMask [v])
   let octPlane := listToMask [1, 2, 3, 4, 5, 6, 7]
   let octLines := allProjectiveMasks.filter (fun m => maskCard m == 3 && isSubMask m octPlane)
-  let vertLines := ((List.range 7).map (· + 1)).map (fun u => listToMask [u, 8, 8 ^^^ u])
+  let vertLines := ((List.range 7).map (· + 1)).map (fun u => listToMask [u, 8, bxor6 8 u])
   [octPts, apexPt, cosetPts, octLines, vertLines, [octPlane]]
 
 /-- Corollary 8.3 & Table 2 of [2]: The 30 zero-divisor-free projective cells of `A_4` decompose
@@ -409,7 +432,7 @@ def isZDFreeSupportA5 (m : Nat) : Bool :=
   else if Nat.blt m (1 <<< 16) then isZDFreeSupport m
   else
     let A := ((List.range 15).map (· + 1)).filter (inMask m)
-    let B := ((List.range 15).map (· + 1)).filter (fun u => inMask m (16 ^^^ u))
+    let B := ((List.range 15).map (· + 1)).filter (fun u => inMask m (bxor6 16 u))
     inMask m 16 && A.length == 1 && A == B
 
 /-- All `(31 × 30) / 6 = 155` projective lines `{a, b, a ⊕ b}` of `PG(4,2)` in `A_5`. -/
@@ -417,7 +440,7 @@ def allLinesA5 : List Nat :=
   let pts := (List.range 31).map (· + 1)
   (pts.flatMap fun a =>
     (pts.filter (fun b => Nat.blt a b)).flatMap fun b =>
-      let c := a ^^^ b
+      let c := bxor6 a b
       if Nat.blt b c then [listToMask [a, b, c]] else [])
 
 /-- All `2^5 - 5 - 4 = 23` maximal zero-divisor-free blocks of `A_5` (Theorem 1.1 & Cor. 1.2 of [2]):
@@ -425,8 +448,8 @@ def allLinesA5 : List Nat :=
     15 pathion vertical blocks `Q_{u,4} = {u, 16, 16 ⊕ u}` (`1 ≤ u ≤ 15`). -/
 def maximalFreeBlocksA5 : List Nat :=
   let octBlock := listToMask [1, 2, 3, 4, 5, 6, 7]
-  let sedVert  := ((List.range 7).map (· + 1)).map (fun u => listToMask [u, 8, 8 ^^^ u])
-  let patVert  := ((List.range 15).map (· + 1)).map (fun u => listToMask [u, 16, 16 ^^^ u])
+  let sedVert  := ((List.range 7).map (· + 1)).map (fun u => listToMask [u, 8, bxor6 8 u])
+  let patVert  := ((List.range 15).map (· + 1)).map (fun u => listToMask [u, 16, bxor6 16 u])
   octBlock :: (sedVert ++ patVert)
 
 /-- Exhaustive machine-checked census of 32D Pathions `A_5` (`PG(4,2)`, `n = 5`):
@@ -454,6 +477,37 @@ theorem pathion_a5_pg42_155_lines_29_free_126_ghost_and_23_blocks :
 theorem two_pow_succ_add (k : Nat) : 2 ^ k + 2 ^ k = 2 ^ (k + 1) := by
   rw [Nat.pow_succ, Nat.mul_two]
 
+/-- Zero-axiom right-cancellation `(a + b) - b = a` by structural recursion on `b`. -/
+def add_sub_self_right (a : Nat) : ∀ b : Nat, (a + b) - b = a
+  | 0 => rfl
+  | b + 1 => by
+    change Nat.succ (a + b) - Nat.succ b = a
+    rw [Nat.succ_sub_succ]
+    exact add_sub_self_right a b
+
+/-- Zero-axiom predecessor-successor identity `(2^j - 1) + 1 = 2^j` by structural recursion on `j`. -/
+def two_pow_pred_succ : ∀ j : Nat, (2 ^ j - 1) + 1 = 2 ^ j
+  | 0 => rfl
+  | j + 1 => by
+    have ih := two_pow_pred_succ j
+    have h2 : 2 ^ (j + 1) = (2 ^ j + (2 ^ j - 1)) + 1 := by
+      rw [← two_pow_succ_add j]
+      conv => lhs; rhs; rw [← ih]
+      rw [Nat.add_assoc]
+    rw [h2]
+    rfl
+
+/-- Zero-axiom identity `(2^j - 1) + (2^j - 1) + 1 = 2^(j+1) - 1`. -/
+def two_pow_pred_add_self (j : Nat) : (2 ^ j - 1) + (2 ^ j - 1) + 1 = 2 ^ (j + 1) - 1 := by
+  have ih := two_pow_pred_succ j
+  have h2 : 2 ^ (j + 1) = (2 ^ j + (2 ^ j - 1)) + 1 := by
+    rw [← two_pow_succ_add j]
+    conv => lhs; rhs; rw [← ih]
+    rw [Nat.add_assoc]
+  rw [h2]
+  change (2 ^ j - 1) + (2 ^ j - 1) + 1 = 2 ^ j + (2 ^ j - 1)
+  rw [Nat.add_right_comm (2 ^ j - 1) (2 ^ j - 1) 1, ih]
+
 /-- Universal step-recurrence for the doubling-generator incidence degree across the entire
     infinite Cayley–Dickson tower: for every generator index `j : Nat` and tower offset `k : Nat`
     (representing tower level `n = j + 2 + k`),
@@ -463,24 +517,25 @@ theorem generator_degree_step_difference_all_n (j k : Nat) :
     generatorIncidenceDeg (j + 2 + k) j + (2 ^ j - 1) =
       generatorIncidenceDeg (j + 2 + k) (j + 1) := by
   unfold generatorIncidenceDeg
-  have hpow : 1 ≤ 2 ^ j := Nat.one_le_two_pow
   have h1 : j + 2 + k - 1 - j = k + 1 := by
     rw [Nat.add_right_comm j 2 k]
     change (j + k + 1) + 1 - 1 - j = k + 1
-    rw [Nat.add_sub_cancel, Nat.add_assoc j k 1, Nat.add_comm j (k + 1), Nat.add_sub_cancel]
+    change j + k + 1 - j = k + 1
+    rw [Nat.add_assoc j k 1, Nat.add_comm j (k + 1), add_sub_self_right (k + 1) j]
   have h2 : j + 2 + k - 1 - (j + 1) = k := by
     rw [Nat.add_right_comm j 2 k]
     change (j + k + 1) + 1 - 1 - (j + 1) = k
-    rw [Nat.add_sub_cancel, Nat.add_right_comm j k 1, Nat.add_comm (j + 1) k, Nat.add_sub_cancel]
+    change j + k + 1 - (j + 1) = k
+    rw [Nat.add_right_comm j k 1, Nat.add_comm (j + 1) k, add_sub_self_right k (j + 1)]
   rw [h1, h2]
   calc
     2 ^ j - 1 + (k + 1) + (2 ^ j - 1)
-      = (2 ^ j - 1 + 1) + k + (2 ^ j - 1) := by
-          rw [← Nat.add_assoc (2 ^ j - 1) k 1, Nat.add_right_comm (2 ^ j - 1) k 1]
-    _ = 2 ^ j + (2 ^ j - 1) + k := by
-          rw [Nat.sub_add_cancel hpow, Nat.add_right_comm (2 ^ j) k (2 ^ j - 1)]
+      = ((2 ^ j - 1) + (2 ^ j - 1) + 1) + k := by
+          rw [← Nat.add_assoc (2 ^ j - 1) k 1, Nat.add_right_comm (2 ^ j - 1) k 1,
+              Nat.add_right_comm ((2 ^ j - 1) + 1) k (2 ^ j - 1),
+              Nat.add_right_comm (2 ^ j - 1) 1 (2 ^ j - 1)]
     _ = 2 ^ (j + 1) - 1 + k := by
-          rw [← Nat.add_sub_assoc hpow (2 ^ j), two_pow_succ_add j]
+          rw [two_pow_pred_add_self j]
 
 /-- Exact Cayley–Dickson tower step-recurrences verified across levels `n ∈ {4..12}`:
     at every doubling step `n ↦ n + 1`, the tower gains `2^n - 1` new maximal free blocks `Q_{u,n}`,
@@ -513,7 +568,7 @@ def isZDFreeSupportA6 (m : Nat) : Bool :=
   else if Nat.blt m (1 <<< 32) then isZDFreeSupportA5 m
   else
     let A := ((List.range 31).map (· + 1)).filter (inMask m)
-    let B := ((List.range 31).map (· + 1)).filter (fun u => inMask m (32 ^^^ u))
+    let B := ((List.range 31).map (· + 1)).filter (fun u => inMask m (bxor6 32 u))
     inMask m 32 && A.length == 1 && A == B
 
 /-- All `(63 × 62) / 6 = 651` projective lines `{a, b, a ⊕ b}` of `PG(5,2)` in `A_6`. -/
@@ -521,13 +576,13 @@ def allLinesA6 : List Nat :=
   let pts := (List.range 63).map (· + 1)
   (pts.flatMap fun a =>
     (pts.filter (fun b => Nat.blt a b)).flatMap fun b =>
-      let c := a ^^^ b
+      let c := bxor6 a b
       if Nat.blt b c then [listToMask [a, b, c]] else [])
 
 /-- All `2^6 - 6 - 4 = 54` maximal zero-divisor-free blocks of `A_6` (Theorem 1.1 & Cor. 1.2 of [2]):
     the 23 maximal blocks of `A_5` plus the 31 chingon vertical blocks `Q_{u,5} = {u, 32, 32 ⊕ u}`. -/
 def maximalFreeBlocksA6 : List Nat :=
-  let chingonVert := ((List.range 31).map (· + 1)).map (fun u => listToMask [u, 32, 32 ^^^ u])
+  let chingonVert := ((List.range 31).map (· + 1)).map (fun u => listToMask [u, 32, bxor6 32 u])
   maximalFreeBlocksA5 ++ chingonVert
 
 /-- Exhaustive machine-checked census of 64D Chingons `A_6` (`PG(5,2)`, `n = 6`):
@@ -588,12 +643,12 @@ theorem gl32_orbit_decomposition_a4_a5_a6 :
 theorem all_8_maximal_free_blocks_algebraic_and_ghost_dichotomy :
     -- (1) All 7 vertical quaternion blocks Q_{u,3} are strictly associative on all 64 basis triads
     (((List.range 7).map (· + 1)).all fun u =>
-      let pts := [0, u, 8, 8 ^^^ u]
+      let pts := [0, u, 8, bxor6 8 u]
       pts.all fun i => pts.all fun j => pts.all fun k =>
-        assocSign i j k == 0) = true ∧
+        zassocSign i j k == 0) = true ∧
     -- (2) The canonical octonion block O = {0..7} is strictly left- and right-alternative
     ((List.range 8).all fun i => (List.range 8).all fun j =>
-      assocSign i i j == 0 && assocSign j i i == 0) = true ∧
+      zassocSign i i j == 0 && zassocSign j i i == 0) = true ∧
     -- (3) Every one of the 21 ghost lines carries an explicit basis-pair zero divisor in S
     (ghostLinesA4.all hasBasisPairZeroDivisor) = true :=
   ⟨by decide +kernel, by decide +kernel, by decide +kernel⟩
