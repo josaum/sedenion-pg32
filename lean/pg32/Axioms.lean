@@ -4,7 +4,7 @@ open SedenionPG32
 /-!
 # Exhaustive Kernel Axiom Audit (`#print axioms`) for `SedenionPG32`
 
-Verifies that **all 167 / 167 theorems** across `Core.lean`, `Geometry.lean`,
+Verifies that **all 171 / 171 theorems** across `Core.lean`, `Geometry.lean`,
 `Census.lean`, and `TriangularRootFreeCells.lean` depend on **zero axioms**
 (`does not depend on any axioms` — 0 `propext`, 0 `Classical.choice`, 0 `Quot.sound`,
 0 `Lean.ofReduceBool`, 0 `sorryAx`).
@@ -25,7 +25,7 @@ Verifies that **all 167 / 167 theorems** across `Core.lean`, `Geometry.lean`,
 #print axioms zero_divisor_in_A9
 #print axioms kernel_witness_4
 
--- Geometry.lean (95 theorems)
+-- Geometry.lean (99 theorems)
 #print axioms H_card
 #print axioms H_closed
 #print axioms apex_in_alt_planes
@@ -121,6 +121,11 @@ Verifies that **all 167 / 167 theorems** across `Core.lean`, `Geometry.lean`,
 #print axioms nfc_1356mhz_subcarrier_and_uid_bcc_invariants
 #print axioms kronecker_multitile_16x16_two_stage_gain
 #print axioms wifi_multipath_peeler_step_energy_reduction
+#print axioms closed_form_xor_crossbar_partner_synthesis
+#print axioms sparse_42term_fano_native_associator_equivalence
+#print axioms pg32_embedded_hyperplane_lut_exactness
+#print axioms universal_hinge_locked_fano_wedge_zero
+#print axioms differential_fano_wedge_associator_identity
 
 -- Census.lean (38 theorems)
 #print axioms internal_pair_9

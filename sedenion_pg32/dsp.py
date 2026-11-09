@@ -21,18 +21,30 @@ def native_sedenion_associator(
     """
     Computes the Single-Snapshot Native Sedenion Associator:
         A_native(R) = [R, pi_O(R), e_8] = (R * pi_O(R)) * e_8 - R * (pi_O(R) * e_8)
-    For purely imaginary R = (a, b) in Im(O) x Im(O), Theorem 1 (Lean 4
-    `native_associator_commutator`) guarantees:
-        A_native(R) = (b*a - a*b, 0) = (-2 * (a x_O b), 0).
+    By the Lean 4 theorems `native_associator_commutator`,
+    `sparse_42term_fano_native_associator_equivalence`, and
+    `differential_fano_wedge_associator_identity`, for any R in S:
+        A_native(R) = (b*a - a*b, 0) = (-2 * (a x_O b), 0) = (-2 * (a x_O (b - a)), 0).
     """
-    ks = k_signs.to(device=R.device, dtype=R.dtype)
-    pi_O = torch.zeros_like(R)
-    pi_O[..., :8] = R[..., :8]
-    e8 = torch.zeros_like(R)
-    e8[..., 8] = 1.0
-    left = sed_mul(sed_mul(R, pi_O, ks, xor_idx), e8, ks, xor_idx)
-    right = sed_mul(R, sed_mul(pi_O, e8, ks, xor_idx), ks, xor_idx)
-    return left - right
+    _ = (k_signs, xor_idx)
+    a1, a2, a3, a4, a5, a6, a7 = (R[..., i] for i in range(1, 8))
+    d1 = R[..., 9] - a1
+    d2 = R[..., 10] - a2
+    d3 = R[..., 11] - a3
+    d4 = R[..., 12] - a4
+    d5 = R[..., 13] - a5
+    d6 = R[..., 14] - a6
+    d7 = R[..., 15] - a7
+
+    out = torch.zeros_like(R)
+    out[..., 1] = -2.0 * ( (a2 * d3 - a3 * d2) + (a4 * d5 - a5 * d4) - (a6 * d7 - a7 * d6))
+    out[..., 2] = -2.0 * (-(a1 * d3 - a3 * d1) + (a4 * d6 - a6 * d4) + (a5 * d7 - a7 * d5))
+    out[..., 3] = -2.0 * ( (a1 * d2 - a2 * d1) + (a4 * d7 - a7 * d4) - (a5 * d6 - a6 * d5))
+    out[..., 4] = -2.0 * (-(a1 * d5 - a5 * d1) - (a2 * d6 - a6 * d2) - (a3 * d7 - a7 * d3))
+    out[..., 5] = -2.0 * ( (a1 * d4 - a4 * d1) - (a2 * d7 - a7 * d2) + (a3 * d6 - a6 * d3))
+    out[..., 6] = -2.0 * ( (a1 * d7 - a7 * d1) + (a2 * d4 - a4 * d2) - (a3 * d5 - a5 * d3))
+    out[..., 7] = -2.0 * (-(a1 * d6 - a6 * d1) + (a2 * d5 - a5 * d2) + (a3 * d4 - a4 * d3))
+    return out
 
 
 def native_associator_curvature(

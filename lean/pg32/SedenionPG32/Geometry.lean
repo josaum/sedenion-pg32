@@ -971,4 +971,154 @@ theorem wifi_multipath_peeler_step_energy_reduction (r δ : Int) :
   rw [h1, h2, h3, hsq]
   exact ⟨rfl, rfl, Z.sub_zero (2 * (δ * δ))⟩
 
+/-- Closed-form `O(1)` hardware zero-divisor partner synthesizer (`sedenion_find_null_partners_u8`
+    in `sedenion_pg32_embedded.h` and `find_optimal_null_partners` in `sedenion_pg32_dsp.py`):
+    Given a primitive jammer blade `U_J = e_a + s₁ e_b` (`a ∈ 1..7`, `b ∈ 9..15`, `b ≠ a ⊕ 8`, `s₁ ∈ {±1}`)
+    and any basis seed `c ∈ {1..7} \ {a, b ⊕ 8, a ⊕ (b ⊕ 8)}`, the unique twist partner index is
+    `d = a ⊕ b ⊕ c` and the unique annihilator sign is `s₂ = -s₁ ε(a, c) ε(b, d)`. -/
+def synthNullPartner (a b : Nat) (s1 : Int) (c : Nat) : Vec :=
+  let d := a ^^^ b ^^^ c
+  let s2 := -(s1 * epsT a c * epsT b d)
+  add (cbasis c) (scale s2 (cbasis d))
+
+/-- Theorem 3.18 (Closed-Form `O(1)` XOR Crossbar Partner Synthesis across all `336` Pairs):
+    Certifies that across all `84` primitive jammer blades `(a, b, s₁)` (`a ∈ 1..7`, `b ∈ 9..15`,
+    `b ≠ a ⊕ 8`, `s₁ ∈ {+1, -1}`), iterating `c ∈ {1..7} \ {a, b ⊕ 8, a ⊕ (b ⊕ 8)}` directly
+    synthesizes all `336` optimal zero-divisor partners (`4` per blade) in `O(1)` bitwise XOR
+    arithmetic without nested search, each achieving `0` jammer leakage and `8` (`+3.01 dB`) signal gain. -/
+theorem closed_form_xor_crossbar_partner_synthesis :
+    (sumOct fun a => sumTwist fun b =>
+      cond (!(Nat.beq (b ^^^ 8) a))
+        (let b0 := b ^^^ 8
+         let ab0 := a ^^^ b0
+         sumOct fun c =>
+           cond (!(Nat.beq c a) && !(Nat.beq c b0) && !(Nat.beq c ab0))
+             (let d := a ^^^ b ^^^ c
+              let s2_pos := -(1 * epsT a c * epsT b d)
+              let s2_neg := -((-1) * epsT a c * epsT b d)
+              isOptimalNullPartner a b 1 c d s2_pos +
+              isOptimalNullPartner a b (-1) c d s2_neg)
+             0)
+        0) = 336 ∧
+    cisZero (mul (add (cbasis 1) (cbasis 10)) (synthNullPartner 1 10 1 4)) = true ∧
+    vnormSq (mul (sub (cbasis 1) (cbasis 10)) (synthNullPartner 1 10 1 4)) = 8 ∧
+    cisZero (mul (sub (cbasis 1) (cbasis 10)) (synthNullPartner 1 10 (-1) 4)) = true ∧
+    vnormSq (mul (add (cbasis 1) (cbasis 10)) (synthNullPartner 1 10 (-1) 4)) = 8 :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Embedded 42-multiply-add sparse Fano cross-product native associator
+    (`sedenion_native_associator_f32` in `sedenion_pg32_embedded.h` and
+    `native_associator_inner` in `sedenion_pg32_rust.rs`):
+    For `k ∈ 1..7`, `(A_sparse(u))_k = -2 Σ_{j ∈ 1..7, j ≠ k} ε(k ⊕ j, j) u_{k ⊕ j} u_{j ⊕ 8}`,
+    and `(A_sparse(u))_k = 0` for `k = 0` and `k ∈ 8..15`. -/
+def sparseNativeAssociator (u : Vec) : Vec :=
+  fun k =>
+    cond (Nat.ble 1 k && Nat.ble k 7)
+      ((-2) * sumOct (fun j =>
+        cond (Nat.beq j k) 0
+          (epsT (k ^^^ j) j * u (k ^^^ j) * u (j ^^^ 8))))
+      0
+
+/-- Theorem 3.19 (Exact Equivalence of the 42-Op Sparse Hardware Associator & 1024-Op 4-Product Associator):
+    Across all `7 × 7 = 49` octonion-twist basis pairs `(a, b) ∈ {1..7} × {9..15}` and all `16` basis
+    units `e_0..e_15` (including real `e_0` and octonion-apex `e_8`), the 42-multiply-add kernel
+    `sparseNativeAssociator` is componentwise identical (`cveq = true`) to the 4-multiplication
+    sedenion associator `nativeAssociator u = [u, π_O(u), e_8]`. -/
+theorem sparse_42term_fano_native_associator_equivalence :
+    (allOct (fun a => allTwist (fun b =>
+      let u := add (cbasis a) (cbasis b)
+      cveq (sparseNativeAssociator u) (nativeAssociator u))) = true) ∧
+    (all16 (fun a =>
+      cveq (sparseNativeAssociator (cbasis a)) (nativeAssociator (cbasis a))) = true) :=
+  ⟨rfl, rfl⟩
+
+/-- Theorem 3.20 (Exactness of the Embedded `PG32_H_BLADES[15][7]` Hardware Lookup Table):
+    Certifies that for every projective hyperplane `H_ω` (`ω ∈ 1..15` in `PG(3,2)`):
+    (1) `H_8` (`ω = 8`) contains all `7` octonion basis units `{1..7}`, `0` apex units, and `0` twist units,
+    (2) Every one of the `7` alternative hyperplanes `ω ∈ 1..7` splits into `3` octonion units (`1..7`),
+        the apex `e_8` (`inH ω 8 = true`), and `3` twist units (`9..15`),
+    (3) Every one of the `7` zero-divisor hyperplanes `ω ∈ 9..15` splits into `3` octonion units (`1..7`),
+        `0` apex units (`inH ω 8 = false`), and `4` twist units (`9..15`), and
+    (4) Every hyperplane `H_ω` is closed under bitwise XOR `i ⊕ j` for distinct `i ≠ j ∈ H_ω`. -/
+theorem pg32_embedded_hyperplane_lut_exactness :
+    (sumOct (fun i => cond (inH 8 i) 1 0) = 7) ∧
+    (sumTwist (fun i => cond (inH 8 i) 1 0) = 0) ∧
+    (allOct (fun ω =>
+      intEq (sumOct (fun i => cond (inH ω i) 1 0)) 3 &&
+      inH ω 8 &&
+      intEq (sumTwist (fun i => cond (inH ω i) 1 0)) 3) = true) ∧
+    (allTwist (fun ω =>
+      intEq (sumOct (fun i => cond (inH ω i) 1 0)) 3 &&
+      !(inH ω 8) &&
+      intEq (sumTwist (fun i => cond (inH ω i) 1 0)) 4) = true) ∧
+    (all16 (fun ω =>
+      !(Nat.ble 1 ω && Nat.ble ω 15) ||
+      all16 (fun i => all16 (fun j =>
+        !(Nat.ble 1 i && Nat.ble i 15 && Nat.ble 1 j && Nat.ble j 15 &&
+          !(Nat.beq i j) && inH ω i && inH ω j) ||
+        inH ω (i ^^^ j)))) = true) :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Fano-line wedge residual `ε(i, j) (u_i u_{j⊕8} - u_j u_{i⊕8})` on a projective line `{i, j, i ⊕ j}`. -/
+def fanoLineWedge (u : Vec) (i j : Nat) : Int :=
+  epsT i j * (u i * u (j ^^^ 8) - u j * u (i ^^^ 8))
+
+/-- Differential Fano-line wedge residual `ε(i, j) (u_i (u_{j⊕8} - u_j) - u_j (u_{i⊕8} - u_i))`
+    evaluated by `sedenion_native_associator_f32` (`sedenion_pg32_embedded.h`) and
+    `native_associator_inner` (`sedenion_pg32_rust.rs`). -/
+def diffFanoLineWedge (u : Vec) (i j : Nat) : Int :=
+  epsT i j * (u i * (u (j ^^^ 8) - u j) - u j * (u (i ^^^ 8) - u i))
+
+/-- Differential 21-wedge Fano native associator `[a + b e_8, a, e_8] = -2 (a ×_O (b - a))`. -/
+def diffNativeAssociator (u : Vec) : Vec :=
+  fun k =>
+    cond (Nat.ble 1 k && Nat.ble k 7)
+      ((-2) * sumOct (fun j =>
+        cond (Nat.beq j k) 0
+          (epsT (k ^^^ j) j * (u (k ^^^ j) * (u (j ^^^ 8) - u j)))))
+      0
+
+/-- Theorem 3.21 (Universal Zero Associator Wedge for Any 4D Quaternion Hinge-Locked Pulse Train over `ℤ`):
+    For ANY arbitrary integer-valued 16D state `u : Vec` whose measured octonion taps match its
+    quantized 4D Quaternion Hinge template on Fano pair `(i, j)` (`u (i ⊕ 8) = u i` and `u (j ⊕ 8) = u j`),
+    both the standard Fano-line wedge `fanoLineWedge u i j` and the differential Fano-line wedge
+    `diffFanoLineWedge u i j` vanish identically (`= 0`) without heuristic scaling or clamping. -/
+theorem universal_hinge_locked_fano_wedge_zero (u : Vec) (i j : Nat)
+    (hi : u (i ^^^ 8) = u i) (hj : u (j ^^^ 8) = u j) :
+    fanoLineWedge u i j = 0 ∧ diffFanoLineWedge u i j = 0 := by
+  refine ⟨?_, ?_⟩
+  · dsimp [fanoLineWedge]
+    rw [hi, hj, Z.mul_comm (u j) (u i), Z.sub_self, int_mul_zero]
+  · dsimp [diffFanoLineWedge]
+    rw [hi, hj, Z.sub_self, Z.sub_self, int_mul_zero, int_mul_zero, Z.sub_self, int_mul_zero]
+
+/-- Theorem 3.22 (Differential Fano-Wedge Associator Identity `[a + b e_8, a, e_8] = -2(a ×_O (b - a))`):
+    (1) For ANY `u : Vec` and any `i, j : Nat`, subtracting the octonion core `u_i, u_j` from the twist
+        block `d_i = u_{i⊕8} - u_i`, `d_j = u_{j⊕8} - u_j` preserves every Fano-line wedge identically:
+        `diffFanoLineWedge u i j = fanoLineWedge u i j`, and
+    (2) Across all `7 × 7 = 49` octonion-twist basis pairs `(a, b) ∈ {1..7} × {9..15}`, the differential
+        Fano-wedge associator `diffNativeAssociator (e_a + e_b)` is componentwise identical (`cveq = true`)
+        to `sparseNativeAssociator (e_a + e_b)`. -/
+theorem differential_fano_wedge_associator_identity (u : Vec) (i j : Nat) :
+    diffFanoLineWedge u i j = fanoLineWedge u i j ∧
+    allOct (fun a => allTwist (fun b =>
+      let v := add (cbasis a) (cbasis b)
+      cveq (diffNativeAssociator v) (sparseNativeAssociator v))) = true := by
+  refine ⟨?_, rfl⟩
+  have h1 : u i * (u (j ^^^ 8) - u j) = u i * u (j ^^^ 8) + -(u i * u j) := by
+    rw [Int.sub_eq_add_neg, Z.mul_add, Z.mul_neg]
+  have h2 : u j * (u (i ^^^ 8) - u i) = u j * u (i ^^^ 8) + -(u i * u j) := by
+    rw [Int.sub_eq_add_neg, Z.mul_add, Z.mul_neg, Z.mul_comm (u j) (u i)]
+  have h_inner : u i * (u (j ^^^ 8) - u j) - u j * (u (i ^^^ 8) - u i) =
+      u i * u (j ^^^ 8) - u j * u (i ^^^ 8) := by
+    rw [h1, h2, Int.sub_eq_add_neg, Z.neg_add, Int.neg_neg,
+        Z.add_assoc (u i * u (j ^^^ 8)),
+        ← Z.add_assoc (-(u i * u j)),
+        Z.add_comm (-(u i * u j)) (-(u j * u (i ^^^ 8))),
+        Z.add_assoc (-(u j * u (i ^^^ 8))),
+        Z.add_comm (-(u i * u j)) (u i * u j),
+        Z.add_right_neg, Z.add_zero, ← Int.sub_eq_add_neg]
+  dsimp [diffFanoLineWedge, fanoLineWedge]
+  rw [h_inner]
+
 end SedenionPG32
