@@ -1,16 +1,171 @@
 {
   "total_primitive_zero_divisor_blades": 84,
+  "box_kite_signed_axis_sextets": {
+    "+e_1": [
+      14,
+      27,
+      42,
+      55,
+      71,
+      82
+    ],
+    "+e_2": [
+      3,
+      24,
+      44,
+      58,
+      67,
+      81
+    ],
+    "+e_3": [
+      0,
+      13,
+      46,
+      57,
+      68,
+      79
+    ],
+    "+e_4": [
+      7,
+      21,
+      35,
+      48,
+      62,
+      76
+    ],
+    "+e_5": [
+      4,
+      23,
+      32,
+      37,
+      65,
+      74
+    ],
+    "+e_6": [
+      10,
+      16,
+      31,
+      39,
+      52,
+      73
+    ],
+    "+e_7": [
+      9,
+      18,
+      28,
+      41,
+      51,
+      60
+    ],
+    "-e_1": [
+      15,
+      26,
+      43,
+      54,
+      70,
+      83
+    ],
+    "-e_2": [
+      2,
+      25,
+      45,
+      59,
+      66,
+      80
+    ],
+    "-e_3": [
+      1,
+      12,
+      47,
+      56,
+      69,
+      78
+    ],
+    "-e_4": [
+      6,
+      20,
+      34,
+      49,
+      63,
+      77
+    ],
+    "-e_5": [
+      5,
+      22,
+      33,
+      36,
+      64,
+      75
+    ],
+    "-e_6": [
+      11,
+      17,
+      30,
+      38,
+      53,
+      72
+    ],
+    "-e_7": [
+      8,
+      19,
+      29,
+      40,
+      50,
+      61
+    ]
+  },
+  "pontryagin_bang_bang_alphabet_size": 168,
   "partners_per_blade": 4,
   "analog_resistor_tolerance_null_depth_db": {
     "1.0%_Standard_ThickFilm": 41.82,
-    "0.1%_Precision_ThinFilm": 62.35,
-    "0.05%_Panasonic_ERA3A": 68.38,
-    "0.01%_Vishay_BulkMetalFoil": 82.76,
-    "0.001%_LaserTrimmed_IC": 104.04
+    "0.1%_Precision_ThinFilm": 62.78,
+    "0.05%_Panasonic_ERA3A": 68.23,
+    "0.01%_Vishay_BulkMetalFoil": 83.65,
+    "0.001%_LaserTrimmed_IC": 102.12
+  },
+  "analog_2stage_cascade_ortho_dual_jammer_null_depth_db": {
+    "1.0%_Standard_ThickFilm": 38.72,
+    "0.1%_Precision_ThinFilm": 58.27,
+    "0.05%_Panasonic_ERA3A": 64.54,
+    "0.01%_Vishay_BulkMetalFoil": 78.51,
+    "0.001%_LaserTrimmed_IC": 98.06
+  },
+  "analog_2stage_cascade_antipodal_2tap_null_depth_db": {
+    "1.0%_Standard_ThickFilm": 40.77,
+    "0.1%_Precision_ThinFilm": 59.72,
+    "0.05%_Panasonic_ERA3A": 65.78,
+    "0.01%_Vishay_BulkMetalFoil": 80.04,
+    "0.001%_LaserTrimmed_IC": 98.92
+  },
+  "canonical_2stage_mutually_annihilating_cascade": {
+    "drawing_number": "SCH-NSSP-200-A",
+    "mode_B_orthogonal_axes_lean_thm_5_39": {
+      "jammer_1": "(e_1 + e_10)/sqrt(2) [axis +e_3]",
+      "jammer_2": "(e_1 + e_13)/sqrt(2) [axis -e_4]",
+      "stage_1_blade_w1_2tap": "(e_4 - e_15)/sqrt(2)",
+      "stage_2_blade_w2_4tap_LT5400": "(e_1 - e_6 + e_10 - e_13)/2",
+      "w1_dot_w2_norm": 0.0,
+      "dual_jammer_ideal_null_norm": 0.0,
+      "unnormalized_associator_norm_sq_e2": 4.0,
+      "unit_normalized_associator_gain_db_e2": -3.0103
+    },
+    "mode_A_antipodal_dualpol_axes_2tap": {
+      "jammer_1": "(e_1 + e_10)/sqrt(2) [axis +e_3]",
+      "jammer_2": "(e_1 - e_10)/sqrt(2) [axis -e_3]",
+      "stage_1_blade_w1_2tap": "(e_4 - e_15)/sqrt(2)",
+      "stage_2_blade_w2_2tap": "(e_1 + e_10)/sqrt(2)",
+      "w1_dot_w2_norm": 0.0,
+      "dual_jammer_ideal_null_norm": 0.0,
+      "unit_normalized_associator_gain_db_e3": 3.0103
+    },
+    "interstage_buffer_ic": "Analog Devices ADL5565 (6 GHz, +46 dBm OIP3, 1.5 dB NF)",
+    "summing_network_ic": "Analog Devices LT5400AIMS8E-1 Quad Matched 1kOhm / Vishay VSM0805 (+/-0.01% Foil)"
   },
   "sample_blade_0_routing": {
     "blade_id": 0,
     "jammer_blade": "(e_1 + e_10)/sqrt(2)",
+    "box_kite_axis": "+e_3",
+    "j3_invariant": 0.0,
     "num_primitive_partners": 4,
     "active_partner_blade": "(e_4 - e_15)/sqrt(2)",
     "partner_ids": [
@@ -138,6 +293,8 @@
     {
       "blade_id": 0,
       "jammer_blade": "(e_1 + e_10)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_15)/sqrt(2)",
       "partner_ids": [
         47,
@@ -149,6 +306,8 @@
     {
       "blade_id": 1,
       "jammer_blade": "(e_1 - e_10)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_15)/sqrt(2)",
       "partner_ids": [
         46,
@@ -160,6 +319,8 @@
     {
       "blade_id": 2,
       "jammer_blade": "(e_1 + e_11)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_14)/sqrt(2)",
       "partner_ids": [
         44,
@@ -171,6 +332,8 @@
     {
       "blade_id": 3,
       "jammer_blade": "(e_1 - e_11)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_14)/sqrt(2)",
       "partner_ids": [
         45,
@@ -182,6 +345,8 @@
     {
       "blade_id": 4,
       "jammer_blade": "(e_1 + e_12)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_15)/sqrt(2)",
       "partner_ids": [
         22,
@@ -193,6 +358,8 @@
     {
       "blade_id": 5,
       "jammer_blade": "(e_1 - e_12)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_15)/sqrt(2)",
       "partner_ids": [
         23,
@@ -204,6 +371,8 @@
     {
       "blade_id": 6,
       "jammer_blade": "(e_1 + e_13)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_14)/sqrt(2)",
       "partner_ids": [
         21,
@@ -215,6 +384,8 @@
     {
       "blade_id": 7,
       "jammer_blade": "(e_1 - e_13)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_14)/sqrt(2)",
       "partner_ids": [
         20,
@@ -226,6 +397,8 @@
     {
       "blade_id": 8,
       "jammer_blade": "(e_1 + e_14)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_13)/sqrt(2)",
       "partner_ids": [
         18,
@@ -237,6 +410,8 @@
     {
       "blade_id": 9,
       "jammer_blade": "(e_1 - e_14)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_13)/sqrt(2)",
       "partner_ids": [
         19,
@@ -248,6 +423,8 @@
     {
       "blade_id": 10,
       "jammer_blade": "(e_1 + e_15)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_12)/sqrt(2)",
       "partner_ids": [
         17,
@@ -259,6 +436,8 @@
     {
       "blade_id": 11,
       "jammer_blade": "(e_1 - e_15)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_12)/sqrt(2)",
       "partner_ids": [
         16,
@@ -270,6 +449,8 @@
     {
       "blade_id": 12,
       "jammer_blade": "(e_2 + e_9)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_15)/sqrt(2)",
       "partner_ids": [
         46,
@@ -281,6 +462,8 @@
     {
       "blade_id": 13,
       "jammer_blade": "(e_2 - e_9)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_15)/sqrt(2)",
       "partner_ids": [
         47,
@@ -292,6 +475,8 @@
     {
       "blade_id": 14,
       "jammer_blade": "(e_2 + e_11)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_13)/sqrt(2)",
       "partner_ids": [
         43,
@@ -303,6 +488,8 @@
     {
       "blade_id": 15,
       "jammer_blade": "(e_2 - e_11)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_13)/sqrt(2)",
       "partner_ids": [
         42,
@@ -314,6 +501,8 @@
     {
       "blade_id": 16,
       "jammer_blade": "(e_2 + e_12)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_15)/sqrt(2)",
       "partner_ids": [
         11,
@@ -325,6 +514,8 @@
     {
       "blade_id": 17,
       "jammer_blade": "(e_2 - e_12)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_15)/sqrt(2)",
       "partner_ids": [
         10,
@@ -336,6 +527,8 @@
     {
       "blade_id": 18,
       "jammer_blade": "(e_2 + e_13)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_14)/sqrt(2)",
       "partner_ids": [
         8,
@@ -347,6 +540,8 @@
     {
       "blade_id": 19,
       "jammer_blade": "(e_2 - e_13)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_14)/sqrt(2)",
       "partner_ids": [
         9,
@@ -358,6 +553,8 @@
     {
       "blade_id": 20,
       "jammer_blade": "(e_2 + e_14)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_13)/sqrt(2)",
       "partner_ids": [
         7,
@@ -369,6 +566,8 @@
     {
       "blade_id": 21,
       "jammer_blade": "(e_2 - e_14)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_13)/sqrt(2)",
       "partner_ids": [
         6,
@@ -380,6 +579,8 @@
     {
       "blade_id": 22,
       "jammer_blade": "(e_2 + e_15)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_12)/sqrt(2)",
       "partner_ids": [
         4,
@@ -391,6 +592,8 @@
     {
       "blade_id": 23,
       "jammer_blade": "(e_2 - e_15)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_12)/sqrt(2)",
       "partner_ids": [
         5,
@@ -402,6 +605,8 @@
     {
       "blade_id": 24,
       "jammer_blade": "(e_3 + e_9)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_14)/sqrt(2)",
       "partner_ids": [
         45,
@@ -413,6 +618,8 @@
     {
       "blade_id": 25,
       "jammer_blade": "(e_3 - e_9)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_14)/sqrt(2)",
       "partner_ids": [
         44,
@@ -424,6 +631,8 @@
     {
       "blade_id": 26,
       "jammer_blade": "(e_3 + e_10)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 + e_13)/sqrt(2)",
       "partner_ids": [
         42,
@@ -435,6 +644,8 @@
     {
       "blade_id": 27,
       "jammer_blade": "(e_3 - e_10)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_4 - e_13)/sqrt(2)",
       "partner_ids": [
         43,
@@ -446,6 +657,8 @@
     {
       "blade_id": 28,
       "jammer_blade": "(e_3 + e_12)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_14)/sqrt(2)",
       "partner_ids": [
         8,
@@ -457,6 +670,8 @@
     {
       "blade_id": 29,
       "jammer_blade": "(e_3 - e_12)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_14)/sqrt(2)",
       "partner_ids": [
         9,
@@ -468,6 +683,8 @@
     {
       "blade_id": 30,
       "jammer_blade": "(e_3 + e_13)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_15)/sqrt(2)",
       "partner_ids": [
         10,
@@ -479,6 +696,8 @@
     {
       "blade_id": 31,
       "jammer_blade": "(e_3 - e_13)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_15)/sqrt(2)",
       "partner_ids": [
         11,
@@ -490,6 +709,8 @@
     {
       "blade_id": 32,
       "jammer_blade": "(e_3 + e_14)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_12)/sqrt(2)",
       "partner_ids": [
         5,
@@ -501,6 +722,8 @@
     {
       "blade_id": 33,
       "jammer_blade": "(e_3 - e_14)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_12)/sqrt(2)",
       "partner_ids": [
         4,
@@ -512,6 +735,8 @@
     {
       "blade_id": 34,
       "jammer_blade": "(e_3 + e_15)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_13)/sqrt(2)",
       "partner_ids": [
         7,
@@ -523,6 +748,8 @@
     {
       "blade_id": 35,
       "jammer_blade": "(e_3 - e_15)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_13)/sqrt(2)",
       "partner_ids": [
         6,
@@ -534,6 +761,8 @@
     {
       "blade_id": 36,
       "jammer_blade": "(e_4 + e_9)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_15)/sqrt(2)",
       "partner_ids": [
         23,
@@ -545,6 +774,8 @@
     {
       "blade_id": 37,
       "jammer_blade": "(e_4 - e_9)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_15)/sqrt(2)",
       "partner_ids": [
         22,
@@ -556,6 +787,8 @@
     {
       "blade_id": 38,
       "jammer_blade": "(e_4 + e_10)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_15)/sqrt(2)",
       "partner_ids": [
         10,
@@ -567,6 +800,8 @@
     {
       "blade_id": 39,
       "jammer_blade": "(e_4 - e_10)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_15)/sqrt(2)",
       "partner_ids": [
         11,
@@ -578,6 +813,8 @@
     {
       "blade_id": 40,
       "jammer_blade": "(e_4 + e_11)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_14)/sqrt(2)",
       "partner_ids": [
         9,
@@ -589,6 +826,8 @@
     {
       "blade_id": 41,
       "jammer_blade": "(e_4 - e_11)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_14)/sqrt(2)",
       "partner_ids": [
         8,
@@ -600,6 +839,8 @@
     {
       "blade_id": 42,
       "jammer_blade": "(e_4 + e_13)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_11)/sqrt(2)",
       "partner_ids": [
         15,
@@ -611,6 +852,8 @@
     {
       "blade_id": 43,
       "jammer_blade": "(e_4 - e_13)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_11)/sqrt(2)",
       "partner_ids": [
         14,
@@ -622,6 +865,8 @@
     {
       "blade_id": 44,
       "jammer_blade": "(e_4 + e_14)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_11)/sqrt(2)",
       "partner_ids": [
         2,
@@ -633,6 +878,8 @@
     {
       "blade_id": 45,
       "jammer_blade": "(e_4 - e_14)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_11)/sqrt(2)",
       "partner_ids": [
         3,
@@ -644,6 +891,8 @@
     {
       "blade_id": 46,
       "jammer_blade": "(e_4 + e_15)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_10)/sqrt(2)",
       "partner_ids": [
         1,
@@ -655,6 +904,8 @@
     {
       "blade_id": 47,
       "jammer_blade": "(e_4 - e_15)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_10)/sqrt(2)",
       "partner_ids": [
         0,
@@ -666,6 +917,8 @@
     {
       "blade_id": 48,
       "jammer_blade": "(e_5 + e_9)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_14)/sqrt(2)",
       "partner_ids": [
         20,
@@ -677,6 +930,8 @@
     {
       "blade_id": 49,
       "jammer_blade": "(e_5 - e_9)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_14)/sqrt(2)",
       "partner_ids": [
         21,
@@ -688,6 +943,8 @@
     {
       "blade_id": 50,
       "jammer_blade": "(e_5 + e_10)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_14)/sqrt(2)",
       "partner_ids": [
         9,
@@ -699,6 +956,8 @@
     {
       "blade_id": 51,
       "jammer_blade": "(e_5 - e_10)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_14)/sqrt(2)",
       "partner_ids": [
         8,
@@ -710,6 +969,8 @@
     {
       "blade_id": 52,
       "jammer_blade": "(e_5 + e_11)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_15)/sqrt(2)",
       "partner_ids": [
         11,
@@ -721,6 +982,8 @@
     {
       "blade_id": 53,
       "jammer_blade": "(e_5 - e_11)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_15)/sqrt(2)",
       "partner_ids": [
         10,
@@ -732,6 +995,8 @@
     {
       "blade_id": 54,
       "jammer_blade": "(e_5 + e_12)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_11)/sqrt(2)",
       "partner_ids": [
         14,
@@ -743,6 +1008,8 @@
     {
       "blade_id": 55,
       "jammer_blade": "(e_5 - e_12)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_11)/sqrt(2)",
       "partner_ids": [
         15,
@@ -754,6 +1021,8 @@
     {
       "blade_id": 56,
       "jammer_blade": "(e_5 + e_14)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_10)/sqrt(2)",
       "partner_ids": [
         0,
@@ -765,6 +1034,8 @@
     {
       "blade_id": 57,
       "jammer_blade": "(e_5 - e_14)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_10)/sqrt(2)",
       "partner_ids": [
         1,
@@ -776,6 +1047,8 @@
     {
       "blade_id": 58,
       "jammer_blade": "(e_5 + e_15)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_11)/sqrt(2)",
       "partner_ids": [
         2,
@@ -787,6 +1060,8 @@
     {
       "blade_id": 59,
       "jammer_blade": "(e_5 - e_15)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_11)/sqrt(2)",
       "partner_ids": [
         3,
@@ -798,6 +1073,8 @@
     {
       "blade_id": 60,
       "jammer_blade": "(e_6 + e_9)/sqrt(2)",
+      "box_kite_axis": "+e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_13)/sqrt(2)",
       "partner_ids": [
         19,
@@ -809,6 +1086,8 @@
     {
       "blade_id": 61,
       "jammer_blade": "(e_6 - e_9)/sqrt(2)",
+      "box_kite_axis": "-e_7",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_13)/sqrt(2)",
       "partner_ids": [
         18,
@@ -820,6 +1099,8 @@
     {
       "blade_id": 62,
       "jammer_blade": "(e_6 + e_10)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_13)/sqrt(2)",
       "partner_ids": [
         6,
@@ -831,6 +1112,8 @@
     {
       "blade_id": 63,
       "jammer_blade": "(e_6 - e_10)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_13)/sqrt(2)",
       "partner_ids": [
         7,
@@ -842,6 +1125,8 @@
     {
       "blade_id": 64,
       "jammer_blade": "(e_6 + e_11)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_12)/sqrt(2)",
       "partner_ids": [
         4,
@@ -853,6 +1138,8 @@
     {
       "blade_id": 65,
       "jammer_blade": "(e_6 - e_11)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_12)/sqrt(2)",
       "partner_ids": [
         5,
@@ -864,6 +1151,8 @@
     {
       "blade_id": 66,
       "jammer_blade": "(e_6 + e_12)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_11)/sqrt(2)",
       "partner_ids": [
         3,
@@ -875,6 +1164,8 @@
     {
       "blade_id": 67,
       "jammer_blade": "(e_6 - e_12)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_11)/sqrt(2)",
       "partner_ids": [
         2,
@@ -886,6 +1177,8 @@
     {
       "blade_id": 68,
       "jammer_blade": "(e_6 + e_13)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_10)/sqrt(2)",
       "partner_ids": [
         1,
@@ -897,6 +1190,8 @@
     {
       "blade_id": 69,
       "jammer_blade": "(e_6 - e_13)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_10)/sqrt(2)",
       "partner_ids": [
         0,
@@ -908,6 +1203,8 @@
     {
       "blade_id": 70,
       "jammer_blade": "(e_6 + e_15)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_11)/sqrt(2)",
       "partner_ids": [
         14,
@@ -919,6 +1216,8 @@
     {
       "blade_id": 71,
       "jammer_blade": "(e_6 - e_15)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_11)/sqrt(2)",
       "partner_ids": [
         15,
@@ -930,6 +1229,8 @@
     {
       "blade_id": 72,
       "jammer_blade": "(e_7 + e_9)/sqrt(2)",
+      "box_kite_axis": "-e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_12)/sqrt(2)",
       "partner_ids": [
         16,
@@ -941,6 +1242,8 @@
     {
       "blade_id": 73,
       "jammer_blade": "(e_7 - e_9)/sqrt(2)",
+      "box_kite_axis": "+e_6",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_12)/sqrt(2)",
       "partner_ids": [
         17,
@@ -952,6 +1255,8 @@
     {
       "blade_id": 74,
       "jammer_blade": "(e_7 + e_10)/sqrt(2)",
+      "box_kite_axis": "+e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_12)/sqrt(2)",
       "partner_ids": [
         5,
@@ -963,6 +1268,8 @@
     {
       "blade_id": 75,
       "jammer_blade": "(e_7 - e_10)/sqrt(2)",
+      "box_kite_axis": "-e_5",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_12)/sqrt(2)",
       "partner_ids": [
         4,
@@ -974,6 +1281,8 @@
     {
       "blade_id": 76,
       "jammer_blade": "(e_7 + e_11)/sqrt(2)",
+      "box_kite_axis": "+e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_13)/sqrt(2)",
       "partner_ids": [
         6,
@@ -985,6 +1294,8 @@
     {
       "blade_id": 77,
       "jammer_blade": "(e_7 - e_11)/sqrt(2)",
+      "box_kite_axis": "-e_4",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_13)/sqrt(2)",
       "partner_ids": [
         7,
@@ -996,6 +1307,8 @@
     {
       "blade_id": 78,
       "jammer_blade": "(e_7 + e_12)/sqrt(2)",
+      "box_kite_axis": "-e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_10)/sqrt(2)",
       "partner_ids": [
         0,
@@ -1007,6 +1320,8 @@
     {
       "blade_id": 79,
       "jammer_blade": "(e_7 - e_12)/sqrt(2)",
+      "box_kite_axis": "+e_3",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_10)/sqrt(2)",
       "partner_ids": [
         1,
@@ -1018,6 +1333,8 @@
     {
       "blade_id": 80,
       "jammer_blade": "(e_7 + e_13)/sqrt(2)",
+      "box_kite_axis": "-e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 - e_11)/sqrt(2)",
       "partner_ids": [
         3,
@@ -1029,6 +1346,8 @@
     {
       "blade_id": 81,
       "jammer_blade": "(e_7 - e_13)/sqrt(2)",
+      "box_kite_axis": "+e_2",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_1 + e_11)/sqrt(2)",
       "partner_ids": [
         2,
@@ -1040,6 +1359,8 @@
     {
       "blade_id": 82,
       "jammer_blade": "(e_7 + e_14)/sqrt(2)",
+      "box_kite_axis": "+e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 - e_11)/sqrt(2)",
       "partner_ids": [
         15,
@@ -1051,6 +1372,8 @@
     {
       "blade_id": 83,
       "jammer_blade": "(e_7 - e_14)/sqrt(2)",
+      "box_kite_axis": "-e_1",
+      "j3_invariant": 0.0,
       "active_partner_blade": "(e_2 + e_11)/sqrt(2)",
       "partner_ids": [
         14,

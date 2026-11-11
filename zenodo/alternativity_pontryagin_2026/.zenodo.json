@@ -1,0 +1,86 @@
+{
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "publication_date": "2026-11-11",
+  "title": "Beyond Associativity and Alternativity in 16D Sedenion Signal Processing: Mutually-Annihilating Filter Cascades, the Cubic Alternativity-Defect Calculus N_u, and Closed-Form Pontryagin Optimal Control",
+  "creators": [
+    {
+      "name": "Agourakis, Dionisio Chiuratto",
+      "orcid": "0009-0000-4863-9143"
+    }
+  ],
+  "description": "<p>In every associative algebra (ℝ, ℂ, ℍ, and matrix rings M<sub>n</sub>(ℂ)), two linear filter stages w<sub>1</sub>, w<sub>2</sub> that annihilate each other (w<sub>1</sub> &middot; w<sub>2</sub> = 0) produce identically zero output when cascaded on any input signal x, since (x &middot; w<sub>1</sub>) &middot; w<sub>2</sub> = x &middot; (w<sub>1</sub> &middot; w<sub>2</sub>) = 0. Similarly, inverting or equalizing a 16-dimensional channel operator L(u) or solving a quadratic optimal control Hamiltonian conventionally requires O(16<sup>3</sup>) Cholesky/SVD decompositions.</p><p>In this work, we prove that crossing both the Hurwitz (dim 8) and Moufang (dim 16) thresholds into the 16-dimensional Cayley&ndash;Dickson sedenion algebra 𝕊 = 𝕆 &oplus; 𝕆 e<sub>8</sub> overturns both paradigms via five exact algebraic laws, all formally verified from first principles in the Lean 4.15.0 kernel with <strong>zero axioms</strong> (<strong>204/204 theorems</strong> in <code>MaxwellExterior.lean</code> reporting <code>0 propext</code>, <code>0 Quot.sound</code>, <code>0 Classical.choice</code>, and <code>0 sorry</code>; <strong>376 zero-axiom / 516 total machine-checked Lean 4.15.0 theorems</strong> across the unified <code>v3sp3r</code> + <code>sedenion-pg32</code> formalization):</p><ol><li><strong>Symmetric Alternativity-Defect Calculus (N<sub>u</sub>):</strong> Left and right alternativity fail by the exact same symmetric linear operator N<sub>u</sub>(y) = u(uy) &minus; u<sup>2</sup>y = (yu)u &minus; yu<sup>2</sup> = ([a,b,d]<sub>𝕆</sub>, &minus;[a,b,c]<sub>𝕆</sub>), which governs the normal operator L(u)<sup>T</sup>L(u) = ||u||<sub>2</sub><sup>2</sup> I<sub>16</sub> &minus; N<sub>u</sub>, extends the unit-Moreno-cone square decomposition 2(T<sub>1</sub>d, T<sub>2</sub>c) of <code>SedenionRank.square_identity</code> unconditionally to all u &isin; 𝕊, and satisfies the universal cubic minimal polynomial N<sub>u</sub><sup>3</sup> = 4&Lambda;(u)<sup>2</sup> N<sub>u</sub>. Consequently, exact channel inversion L(u)<sup>&minus;1</sup> (2.87 &times; 10<sup>&minus;14</sup> residual), Tikhonov/MMSE equalization (1.04 &times; 10<sup>&minus;14</sup>), Moore&ndash;Penrose pseudoinversion L(u)<sup>+</sup> on the singular zero-divisor cone (1.45 &times; 10<sup>&minus;15</sup>), and rank-4 nullspace projection P<sub>ker L(u)</sub> collapse to 3-term SVD-free polynomials in N<sub>u</sub> costing only two octonion associators.</li><li><strong>Co-Axial Box-Kite Kernel Dichotomy and Mutually-Annihilating 2-Stage Cascades (w<sub>1</sub> &middot; w<sub>2</sub> = 0):</strong> Unites the Moreno partner map (a'p)b' = &minus;n(u)p (<code>SedenionReal.nullspace</code>) with the S<sup>6</sup> box-kite axis fibration n(u) = (a' &times;<sub>𝕆</sub> b')/&Lambda;(u) across 14 box-kite sextets (14 &times; 6 = 84), proving dim(ker L(u<sub>1</sub>) &cap; ker L(u<sub>2</sub>)) &isin; {0, 2, 4} is non-zero if and only if n(u<sub>1</sub>) = +n(u<sub>2</sub>). When two jammers are non-coaxial (ker L(u<sub>1</sub>) &cap; ker L(u<sub>2</sub>) = {0}), a 2-stage cascade (w<sub>1</sub>, w<sub>2</sub>) satisfying w<sub>1</sub> &middot; w<sub>2</sub> = 0 drives every linear combination J = &alpha;u<sub>1</sub> + &beta;u<sub>2</sub> to exact zero while transmitting desired signals 100% through the non-associative sedenion associator (s &middot; w<sub>1</sub>) &middot; w<sub>2</sub> = [s, w<sub>1</sub>, w<sub>2</sub>] &ne; 0.</li><li><strong>Closed-Form Sedenion Pontryagin Maximum Principle (PMP):</strong> Maximizing H(x, p, J, w) = &lang;p, x &middot; w&rang; &minus; (&gamma;/2)||J &middot; w||<sub>2</sub><sup>2</sup> &minus; (&rho;/2)||w||<sub>2</sub><sup>2</sup> reduces via the switching vector &psi; = x<sup>*</sup> &middot; p to a strictly concave quadratic program solved in closed 3-term SVD-free form by N<sub>J</sub>(&psi;) (1.11 &times; 10<sup>&minus;16</sup> residual), on the zero-divisor sphere by w<sup>*</sup><sub>ker</sub> = P<sub>ker L(J)</sub>(&psi;)/||P<sub>ker L(J)</sub>(&psi;)||<sub>2</sub>, and on pre-ADC hardware by 168-blade bang-bang selection.</li><li><strong>Eisenstein S<sub>3</sub> Phase Automorphisms and the Sextic G<sub>2</sub> &times; S<sub>3</sub> Invariant J<sub>3</sub>(u):</strong> Proves that the S<sub>3</sub> factor in Aut(𝕊) &cong; G<sub>2</sub> &times; S<sub>3</sub> originates from cube-root-of-unity phase rotations Z &mapsto; e<sup>2&pi;i/3</sup>Z (&omega;&#772;<sup>2</sup> = &omega; &hArr; &omega;<sup>3</sup> = 1) in ℂ &oplus; ℂ<sup>7</sup>, yielding J<sub>3</sub>(u) = Re(q<sup>3</sup>)/|q|<sup>3</sup> &isin; [&minus;1, +1] to separate lower-octonion (+1) from twisted-sector (&minus;1) states sharing identical singular values.</li><li><strong>Hurwitz&ndash;Radon 9-Frame Isometries and Extremal [16, 8, 6]<sub>3</sub> Ternary FEC:</strong> Establishes universal norm preservation ||u &middot; x||<sub>2</sub> = ||u||<sub>2</sub>||x||<sub>2</sub> on span{e<sub>0</sub>, ..., e<sub>8</sub>} against arbitrary zero-divisor keys and constructs an extremal self-dual [16, 8, 6]<sub>3</sub> ternary code correcting all 513/513 error patterns of Hamming weight &le; 2 on bare-metal 64 MHz STM32WB55RG ARM Cortex-M4F and 240 MHz ESP32-S2 Xtensa LX7 hardware.</li></ol>",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "language": "eng",
+  "version": "1.0.0",
+  "keywords": [
+    "sedenion algebra",
+    "Cayley-Dickson algebras",
+    "alternativity defect",
+    "non-associative filter cascades",
+    "Pontryagin Maximum Principle",
+    "zero divisors",
+    "box-kites",
+    "PG(3,2)",
+    "G2 x S3 automorphisms",
+    "Hurwitz-Radon theorem",
+    "extremal self-dual ternary codes",
+    "electronic protection",
+    "anti-jamming",
+    "Lean 4 formal verification",
+    "zero-axiom proofs",
+    "embedded DSP"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.23588273",
+      "relation": "continues",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.23652148",
+      "relation": "continues",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.23588274",
+      "relation": "references",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.23603006",
+      "relation": "continues",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.21665205",
+      "relation": "references",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.21772201",
+      "relation": "references",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.21246673",
+      "relation": "references",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/josaum/sedenion-pg32",
+      "relation": "isSupplementedBy",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Includes IEEEtran manuscript PDF/LaTeX, 2-page Heilmeier executive concept white paper, all 204 zero-axiom Lean 4.15.0 theorems (MaxwellExterior.lean + Axioms.lean; 376 zero-axiom / 516 total machine-checked theorems with companion sedenion-pg32), 2-stage analog crossbar hardware (5-sheet ANSI-B schematic PDF, SPICE3 netlist, KiCad 8 schematic, Q1.14 SystemVerilog RTL), and standalone Rust/Python/embedded-C implementations validated on STM32WB55RG Cortex-M4F and 240 MHz ESP32-S2 Xtensa LX7 hardware."
+}
